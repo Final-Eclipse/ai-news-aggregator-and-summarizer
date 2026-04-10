@@ -34,7 +34,7 @@ public class Main
         // newsScraper.getResponse();
 
         // For top-headlines, cannot have sources parameter as well as category or country.
-        Endpoint2 topHeadlines = new Endpoint2("/v2/top-headlines", true)
+        Endpoint topHeadlines = new Endpoint("/v2/top-headlines", true)
             .addQueryParameterCategory("general")
             // .addQueryParameterLanguage("EN")  
             .addQueryParameterCountry("US") // country might need to be two letter length as well like language.

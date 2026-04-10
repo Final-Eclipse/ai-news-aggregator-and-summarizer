@@ -24,7 +24,7 @@ public class Endpoint
 
     private String[][] parametersArray = {everythingParametersArray, topHeadlinesParametersArray, sourcesParametersArray};
 
-    public Endpoint2(String endpoint)
+    public Endpoint(String endpoint)
     {
         this.endpoint = endpoint;
 
@@ -35,7 +35,7 @@ public class Endpoint
     // Serves the same purpose as the single parameter constructor.
     // However, if it is given the "/v2/top-headlines" endpoint,
     // it will automatically remove the "country" and "category" parameters if "sources" == true.
-    public Endpoint2(String endpoint, boolean sources)
+    public Endpoint(String endpoint, boolean sources)
     {
         this.endpoint = endpoint;
         this.sources = sources;
@@ -50,7 +50,7 @@ public class Endpoint
     }
     
     // Possible options include: business, entertainment, health, science, sports, and technology.
-    public Endpoint2 addQueryParameterCategory(String category)
+    public Endpoint addQueryParameterCategory(String category)
     {
         // checkForInvalidParameter("category");
         parametersHashMap.put("category", category);
@@ -58,7 +58,7 @@ public class Endpoint
     }
 
     // Language needs to be a two letter string (EN, FR, ES).
-    public Endpoint2 addQueryParameterLanguage(String language)
+    public Endpoint addQueryParameterLanguage(String language)
     { 
         // checkForInvalidParameter("language");
         // parametersHashMap.remove("sources");
@@ -66,7 +66,7 @@ public class Endpoint
         return this;
     }
 
-    public Endpoint2 addQueryParameterCountry(String country)
+    public Endpoint addQueryParameterCountry(String country)
     {
         // checkForInvalidParameter("country");
         // parametersHashMap.remove("sources");
@@ -75,7 +75,7 @@ public class Endpoint
     }
 
     // Sources is a comma separated string.
-    public Endpoint2 addQueryParameterSources(String... sources)
+    public Endpoint addQueryParameterSources(String... sources)
     {
         // checkForInvalidParameter("sources");
         // parametersHashMap.remove("country");
@@ -84,21 +84,21 @@ public class Endpoint
         return this;
     }
 
-    public Endpoint2 addQueryParameterQ(String q)
+    public Endpoint addQueryParameterQ(String q)
     {
         // checkForInvalidParameter("q");
         parametersHashMap.put("q", q);
         return this;
     }
 
-    public Endpoint2 addQueryParameterPageSize(int pageSize)
+    public Endpoint addQueryParameterPageSize(int pageSize)
     {
         // checkForInvalidParameter("pageSize");
         parametersHashMap.put("pageSize", String.valueOf(pageSize));
         return this;
     }
 
-    public Endpoint2 addQueryParameterPage(int page)
+    public Endpoint addQueryParameterPage(int page)
     {
         // checkForInvalidParameter("page");
         parametersHashMap.put("page", String.valueOf(page));
@@ -266,7 +266,7 @@ public class Endpoint
     }
 
     // Appends each query parameter to the API URL.
-    protected Endpoint2 appendQueryParameters()
+    protected Endpoint appendQueryParameters()
     {
         removeIncompatibleParameters();
         checkForNullParameters();
