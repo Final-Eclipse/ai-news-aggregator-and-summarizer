@@ -1,0 +1,12 @@
+# C#
+bin/
+obj/
+
+# Java
+target/
+
+# Python
+__pycache__/
+venv/
+.venv/
+env/
