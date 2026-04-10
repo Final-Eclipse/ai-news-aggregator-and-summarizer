@@ -34,7 +34,7 @@ public class Main
         // newsScraper.getResponse();
 
         // For top-headlines, cannot have sources parameter as well as category or country.
-        Endpoint topHeadlines = new Endpoint("/v2/top-headlines", true)
+        Endpoint2 topHeadlines = new Endpoint2("/v2/top-headlines", true)
             .addQueryParameterCategory("general")
             // .addQueryParameterLanguage("EN")  
             .addQueryParameterCountry("US") // country might need to be two letter length as well like language.
@@ -46,11 +46,15 @@ public class Main
 
         // System.out.println(x.apiURL);
 
-        NewsScraper y = new NewsScraper(topHeadlines.getEndpointURL());  
-        y.getResponse();
+        // NewsScraper y = new NewsScraper(topHeadlines.getEndpointURL());  
+        // y.getResponse();
+        // System.out.println(topHeadlines.getEndpointURL());
 
-        System.out.println(topHeadlines.getEndpointURL());
+        //{"status":"ok","totalResults":8,"articles":[{"source":{"id":"the-washington-post","name":"The Washington Post"},
+        // "author":"Scott Nover","title":"Judge rules Trump order eliminating NPR, PBS funding is unconstitutional - The Washington Post",
+        // "description":"A federal judge struck down part of Trump?s order cutting NPR and PBS funding
 
-        //{"status":"ok","totalResults":8,"articles":[{"source":{"id":"the-washington-post","name":"The Washington Post"},"author":"Scott Nover","title":"Judge rules Trump order eliminating NPR, PBS funding is unconstitutional - The Washington Post","description":"A federal judge struck down part of Trump?s order cutting NPR and PBS funding
+        test x = new test();
+        System.out.println(x);
     }
 }
