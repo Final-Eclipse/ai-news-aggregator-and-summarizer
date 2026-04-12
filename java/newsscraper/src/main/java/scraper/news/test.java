@@ -1,6 +1,6 @@
-package scraper.news;
+// package scraper.news;
 
-public class test extends Endpoint 
-{
+// public class test extends Endpoint 
+// {
     
-}
+// }
