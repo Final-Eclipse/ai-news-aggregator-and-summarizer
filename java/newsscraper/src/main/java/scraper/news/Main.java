@@ -12,6 +12,7 @@ package scraper.news;
 // private static Endpoint x = new Endpoint("sources")
 public class Main 
 {
+    
     // private static String apiURL = "https://newsapi.org/v2/everything";
     // private static String apiURL = "https://newsapi.org/v2/top-headlines";
 
