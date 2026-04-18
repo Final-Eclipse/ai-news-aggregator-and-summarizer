@@ -12,7 +12,6 @@ package scraper.news;
 // private static Endpoint x = new Endpoint("sources")
 public class Main 
 {
-    
     // private static String apiURL = "https://newsapi.org/v2/everything";
     // private static String apiURL = "https://newsapi.org/v2/top-headlines";
 
@@ -35,19 +34,19 @@ public class Main
         // newsScraper.getResponse();
 
         // For top-headlines, cannot have sources parameter as well as category or country.
-        Endpoint topHeadlines = new Endpoint("/v2/top-headlines", true)
-            .addQueryParameterCategory("general")
-            // .addQueryParameterLanguage("EN")  
-            .addQueryParameterCountry("US") // country might need to be two letter length as well like language.
-            .addQueryParameterSources("associated-press")   // Ensure that the overloaded constructor is used for the "/v2/top-headlines" endpoint and that sources = true.
-            .addQueryParameterQ("iran")
-            .addQueryParameterPageSize(100)
-            .addQueryParameterPage(1)
-            .appendQueryParameters();
+        // Endpoint topHeadlines = new Endpoint("/v2/top-headlines", true)
+        //     .addQueryParameterCategory("general")
+        //     // .addQueryParameterLanguage("EN")  
+        //     .addQueryParameterCountry("US") // country might need to be two letter length as well like language.
+        //     .addQueryParameterSources("associated-press")   // Ensure that the overloaded constructor is used for the "/v2/top-headlines" endpoint and that sources = true.
+        //     .addQueryParameterQ("iran")
+        //     .addQueryParameterPageSize(100)
+        //     .addQueryParameterPage(1)
+        //     .appendQueryParameters();
 
         // System.out.println(x.apiURL);
 
-        // NewsScraper y = new NewsScraper(topHeadlines.getEndpointURL());  
+        // NewsScraper y = new NewsScraper("https://newsapi.org/v2/everything");  
         // y.getResponse();
         // System.out.println(topHeadlines.getEndpointURL());
 
@@ -55,7 +54,15 @@ public class Main
         // "author":"Scott Nover","title":"Judge rules Trump order eliminating NPR, PBS funding is unconstitutional - The Washington Post",
         // "description":"A federal judge struck down part of Trump?s order cutting NPR and PBS funding
 
-        test x = new test();
-        System.out.println(x);
+        // test x = new test();
+        // System.out.println(x);
+
+        EverythingEndpoint x = new EverythingEndpoint.EverythingEndpointBuilder()
+        .q("trump")
+        .sources("AP News")
+        .domains("")
+        .excludeDomains("")
+        .build();
+        
     }
 }
