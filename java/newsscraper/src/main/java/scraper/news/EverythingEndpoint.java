@@ -1,5 +1,8 @@
 package scraper.news;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 // Have a parent Endpoint class that has general methods.
 // Have each Endpoint child contain its specific methods.
@@ -12,18 +15,17 @@ public class EverythingEndpoint
 
     // what data type to hold parameters
     private String q;
-    private String searchIn;
-    private String[] sources;
-    private String[] domains;
-    private String[] excludeDomains;
+    private List<String> searchIn = new ArrayList<>();
+    private List<String> sources = new ArrayList<>();
+    private List<String> domains = new ArrayList<>();
+    private List<String> excludeDomains = new ArrayList<>();
     private String from;
     private String to;
     private String language;
     private String sortBy;
     private String pageSize;
     private String page; 
-    // ainaas
-    // ainas
+    
     
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
 
@@ -59,11 +61,12 @@ public class EverythingEndpoint
         this.page = builder.page;
 
         addParametersToHashMap();
+        appendQueryParameters();
 
-        for (Object x : parametersHashMap.keySet())
-        {
-            System.out.println(x + " : " + parametersHashMap.get(x));
-        }
+        // for (Object x : parametersHashMap.keySet())
+        // {
+        //     System.out.println(x + " : " + parametersHashMap.get(x));
+        // }
     }
 
     private void addParametersToHashMap()
@@ -82,33 +85,43 @@ public class EverythingEndpoint
     }
 
     // Appends each query parameter to the API URL.
-    // protected Endpoint appendQueryParameters()
-    // {
-    //     removeIncompatibleParameters();
-    //     checkForNullParameters();
-    //     checkForInvalidParameters();
+    private void appendQueryParameters()
+    {
+        apiEndpointUrl = apiEndpointUrl + "?";
 
-    //     apiEndpointUrl = apiEndpointUrl + "?";
+        for (String parameter : parametersHashMap.keySet())
+        {
+            int index = 0;
+            if (parameter.equals("searchIn"))
+            {
+                List<String> searchInList = (List<String>) parametersHashMap.get(parameter);
+                for (String option : searchInList)
+                {
+                    apiEndpointUrl = apiEndpointUrl + parameter + "=" + option + "&";   
+                    // Should be https://newsapi.org/v2/everything?q=apple&searchIn=title,content
+                    // not https://newsapi.org/v2/everything?q=trump&searchIn=title&searchIn=description&searchIn=content
+                }
+            }
+            else
+            {
+                apiEndpointUrl = apiEndpointUrl + parameter + "=" + parametersHashMap.get(parameter) + "&";
+            }
+        }
 
-    //     for (String parameter : parametersHashMap.keySet())
-    //     {
-    //         endpointURL = endpointURL + parameter + "=" + parametersHashMap.get(parameter) + "&";
-    //     }
+        // Removes the last "&".
+        int index = apiEndpointUrl.lastIndexOf("&");
+        apiEndpointUrl = apiEndpointUrl.substring(0, index);
 
-    //     // Removes the last "&".
-    //     int index = endpointURL.lastIndexOf("&");
-    //     endpointURL = endpointURL.substring(0, index);
-
-    //     return this;
-    // }
+        System.out.println(apiEndpointUrl);
+    }
 
     public static class EverythingEndpointBuilder
     {
         private String q;
-        private String searchIn;
-        private String[] sources;
-        private String[] domains;
-        private String[] excludeDomains;
+        private List<String> searchIn = new ArrayList<>();
+        private List<String> sources = new ArrayList<>();
+        private List<String> domains = new ArrayList<>();
+        private List<String> excludeDomains = new ArrayList<>();
         private String from;
         private String to;
         private String language;
@@ -123,12 +136,17 @@ public class EverythingEndpoint
         
         // Required, at least one.
         public EverythingEndpointBuilder q(String q) { this.q = q; return this; }
-        public EverythingEndpointBuilder searchIn(String searchIn) { this.searchIn = searchIn; return this; }
-        public EverythingEndpointBuilder sources(String... sources) { this.sources = sources; return this; }
-        public EverythingEndpointBuilder domains(String... domains) { this.domains = domains; return this; }
+        public EverythingEndpointBuilder searchIn(String searchIn) 
+        { 
+            // System.out.println(split);
+            this.searchIn = splitCommaSeparatedString(searchIn); 
+            return this; 
+        }
+        public EverythingEndpointBuilder sources(String sources) { this.sources.add(sources); return this; }
+        public EverythingEndpointBuilder domains(String domains) { this.domains.add(domains); return this; }
 
         // Optional.
-        public EverythingEndpointBuilder excludeDomains(String... domains) { this.excludeDomains = domains; return this; }
+        public EverythingEndpointBuilder excludeDomains(String domains) { this.excludeDomains.add(domains); return this; }
         public EverythingEndpointBuilder from(String from) { this.from = from; return this; }
         public EverythingEndpointBuilder to(String to) { this.to = to; return this; }
         public EverythingEndpointBuilder language(String language) { this.language = language; return this; }
@@ -140,10 +158,16 @@ public class EverythingEndpoint
         {
             if (q == null && searchIn == null && sources == null && domains == null)
             {
-                throw new NullPointerException("At least one of these must not be null (q, searchIn, sources, domains).");
+                throw new NullPointerException("At least one of these parameters must not be null (q, searchIn, sources, domains).");
             }
             
             return new EverythingEndpoint(this);
+        }
+
+        private ArrayList<String> splitCommaSeparatedString(String input)
+        {
+            String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
+            return new ArrayList<String>(Arrays.asList(splitArray));   
         }
     }
 }

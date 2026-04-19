@@ -62,6 +62,7 @@ public class Main
         .sources("AP News")
         .domains("")
         .excludeDomains("")
+        .searchIn("title, description, content")
         .build();
         
     }
