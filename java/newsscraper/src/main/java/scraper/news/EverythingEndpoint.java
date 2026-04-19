@@ -22,6 +22,8 @@ public class EverythingEndpoint
     private String sortBy;
     private String pageSize;
     private String page; 
+    // ainaas
+    // ainas
     
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
 
@@ -116,7 +118,7 @@ public class EverythingEndpoint
 
         public EverythingEndpointBuilder()
         {
-         
+            
         }
         
         // Required, at least one.
@@ -136,6 +138,11 @@ public class EverythingEndpoint
         
         public EverythingEndpoint build()
         {
+            if (q == null && searchIn == null && sources == null && domains == null)
+            {
+                throw new NullPointerException("At least one of these must not be null (q, searchIn, sources, domains).");
+            }
+            
             return new EverythingEndpoint(this);
         }
     }
