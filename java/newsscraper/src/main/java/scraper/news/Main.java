@@ -57,13 +57,23 @@ public class Main
         // test x = new test();
         // System.out.println(x);
 
+        // Arguments that contains spaces must be hyphenated (ex. associated press -> associated-press).
         EverythingEndpoint x = new EverythingEndpoint.EverythingEndpointBuilder()
-        .q("trump")
-        .sources("AP News")
-        .domains("")
-        .excludeDomains("")
-        .searchIn("title, description, content")
-        .build();
+            // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
+            // Wrap q in double quotes for exact phrase.
+            // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
+            .q("department of homeland security")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
+            .sources("associated-press, techcrunch, wired")
+            .searchIn("title")
+            .language("en")
+            .build();
+        
+            // .q("tiktok")
+            // .sources("associated-press")
+            // // .domains("bbc, abc")
+            // // .excludeDomains("fox-news") 
+            // .searchIn("title, description, content")
+            // .build();
         
     }
 }
