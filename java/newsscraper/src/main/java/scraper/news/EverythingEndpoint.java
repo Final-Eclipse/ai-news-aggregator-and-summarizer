@@ -26,25 +26,7 @@ public class EverythingEndpoint
     private String pageSize;
     private String page; 
     
-    
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
-
-    // Use builder?
-    // public EverythingEndpoint(String q, String searchIn, String[] sources, String[] domains, 
-    //     String[] excludeDomains, String from, String to, String language, String sortBy, String pageSize, String page)
-    // {
-    //     this.q = q;
-    //     this.searchIn = searchIn;
-    //     this.sources = sources;
-    //     this.domains = domains;
-    //     this.excludeDomains = excludeDomains;
-    //     this.from = from;
-    //     this.to = to;
-    //     this.language = language;
-    //     this.sortBy = sortBy;
-    //     this.pageSize = pageSize;
-    //     this.page = page;
-    // }
 
     public EverythingEndpoint(EverythingEndpointBuilder builder)
     {
@@ -65,7 +47,7 @@ public class EverythingEndpoint
 
         // for (Object x : parametersHashMap.keySet())
         // {
-        //     System.out.println(x + " : " + parametersHashMap.get(x));
+        //     // System.out.println(x + " : " + parametersHashMap.get(x));
         // }
     }
 
@@ -85,34 +67,109 @@ public class EverythingEndpoint
     }
 
     // Appends each query parameter to the API URL.
+    // Uses appendCSVQueryParameters() as a helper method.
     private void appendQueryParameters()
     {
         apiEndpointUrl = apiEndpointUrl + "?";
 
-        for (String parameter : parametersHashMap.keySet())
+        for (String queryParameter : parametersHashMap.keySet())
         {
-            int index = 0;
-            if (parameter.equals("searchIn"))
+            Object value = parametersHashMap.get(queryParameter);
+            if (isQueryParameterNullOrEmpty(value) == true)
             {
-                List<String> searchInList = (List<String>) parametersHashMap.get(parameter);
-                for (String option : searchInList)
-                {
-                    apiEndpointUrl = apiEndpointUrl + parameter + "=" + option + "&";   
-                    // Should be https://newsapi.org/v2/everything?q=apple&searchIn=title,content
-                    // not https://newsapi.org/v2/everything?q=trump&searchIn=title&searchIn=description&searchIn=content
-                }
+                continue;
             }
             else
             {
-                apiEndpointUrl = apiEndpointUrl + parameter + "=" + parametersHashMap.get(parameter) + "&";
+                apiEndpointUrl += queryParameter + "=";
+            }
+
+            if (queryParameter.equals("searchIn") || queryParameter.equals("sources") || queryParameter.equals("domains") || queryParameter.equals("excludeDomains"))
+            {
+                appendCsvQueryParameters(value);
+            }
+            else
+            {  
+                if (((String) value).contains(" "))
+                {
+                    value = encodeQueryParameterValue((String) value);
+                    apiEndpointUrl += value + "&";
+                    truncateUrl(3);
+                }
+                else
+                {
+                    apiEndpointUrl += value + "&";
+                }
             }
         }
 
-        // Removes the last "&".
-        int index = apiEndpointUrl.lastIndexOf("&");
-        apiEndpointUrl = apiEndpointUrl.substring(0, index);
-
+        truncateUrl(1);
         System.out.println(apiEndpointUrl);
+    }
+
+    // Returns a boolean after checking if the value parameter is null or empty.
+    private boolean isQueryParameterNullOrEmpty(Object value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        else if (value instanceof String)
+        {
+            return value.equals("");
+        }
+        else if (value instanceof List)
+        {
+            List<String> searchInList = (List<String>) value;
+            return searchInList.isEmpty();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Only used and called from within appendQueryParameters().
+    private void appendCsvQueryParameters(Object value)
+    {
+        List<String> searchInList = (List<String>) value;
+        apiEndpointUrl += getCsvString(searchInList);
+
+        truncateUrl(1);
+        apiEndpointUrl = apiEndpointUrl + "&";
+    }
+
+    // Only used and called from within appendCSVQueryParameters().
+    private String getCsvString(List<String> searchInList)
+    {
+        String csvString = "";
+        for (String element : searchInList)
+        {
+            csvString = csvString + element + ",";   
+        }
+
+        return csvString;
+    }
+
+    private String encodeQueryParameterValue(String queryParameter)
+    {
+        String[] splitArray = queryParameter.split(" ");
+        String newString = "";
+
+        for (String x : splitArray)
+        {
+            newString += x + "%20";
+        }
+
+        return newString;
+    }
+
+    // Removes the last character of the apiEndpointUrl.
+    // This is useful in cases where there may be an "&" or "," at the end of the string,
+    // after appending query parameters.
+    private void truncateUrl(int elementsToTruncate)
+    {
+        apiEndpointUrl = apiEndpointUrl.substring(0, apiEndpointUrl.length() - elementsToTruncate);
     }
 
     public static class EverythingEndpointBuilder
@@ -138,15 +195,27 @@ public class EverythingEndpoint
         public EverythingEndpointBuilder q(String q) { this.q = q; return this; }
         public EverythingEndpointBuilder searchIn(String searchIn) 
         { 
-            // System.out.println(split);
             this.searchIn = splitCommaSeparatedString(searchIn); 
             return this; 
         }
-        public EverythingEndpointBuilder sources(String sources) { this.sources.add(sources); return this; }
-        public EverythingEndpointBuilder domains(String domains) { this.domains.add(domains); return this; }
+        public EverythingEndpointBuilder sources(String sources) 
+        { 
+            this.sources = splitCommaSeparatedString(sources); 
+            return this; 
+        }
+        public EverythingEndpointBuilder domains(String domains) 
+        { 
+            this.domains = splitCommaSeparatedString(domains); 
+            return this; 
+        }
 
         // Optional.
-        public EverythingEndpointBuilder excludeDomains(String domains) { this.excludeDomains.add(domains); return this; }
+        public EverythingEndpointBuilder excludeDomains(String domains) 
+        { 
+            this.excludeDomains = 
+            splitCommaSeparatedString(domains); 
+            return this; 
+        }
         public EverythingEndpointBuilder from(String from) { this.from = from; return this; }
         public EverythingEndpointBuilder to(String to) { this.to = to; return this; }
         public EverythingEndpointBuilder language(String language) { this.language = language; return this; }
@@ -164,6 +233,8 @@ public class EverythingEndpoint
             return new EverythingEndpoint(this);
         }
 
+        // Returns an ArrayList containing the individual elements of a CSV input.
+        // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
         private ArrayList<String> splitCommaSeparatedString(String input)
         {
             String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
