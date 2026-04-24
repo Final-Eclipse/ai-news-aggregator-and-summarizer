@@ -62,10 +62,15 @@ public class Main
             // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
             // Wrap q in double quotes for exact phrase.
             // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
-            .q("department of homeland security")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
-            .sources("associated-press, techcrunch, wired")
+            .q("trump")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
             .searchIn("title")
+            // .sources("associated-press")
+            .domains("apnews.com, nbcnews.com")
+            .excludeDomains("foxnews.com")
+            .from("2026-04-20")
+            .to("2026-04-24")
             .language("en")
+            .sortBy(null)
             .build();
         
             // .q("tiktok")

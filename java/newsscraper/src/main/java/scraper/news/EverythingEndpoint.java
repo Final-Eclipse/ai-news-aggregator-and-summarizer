@@ -14,6 +14,7 @@ public class EverythingEndpoint
     private String apiEndpointUrl = "https://newsapi.org/v2/everything";
 
     // what data type to hold parameters
+    // Add javadocs to all methods and builder methods.
     private String q;
     private List<String> searchIn = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
@@ -87,6 +88,8 @@ public class EverythingEndpoint
             if (queryParameter.equals("searchIn") || queryParameter.equals("sources") || queryParameter.equals("domains") || queryParameter.equals("excludeDomains"))
             {
                 appendCsvQueryParameters(value);
+                truncateUrl(1);
+                apiEndpointUrl = apiEndpointUrl + "&";
             }
             else
             {  
@@ -94,7 +97,6 @@ public class EverythingEndpoint
                 {
                     value = encodeQueryParameterValue((String) value);
                     apiEndpointUrl += value + "&";
-                    truncateUrl(3);
                 }
                 else
                 {
@@ -134,9 +136,6 @@ public class EverythingEndpoint
     {
         List<String> searchInList = (List<String>) value;
         apiEndpointUrl += getCsvString(searchInList);
-
-        truncateUrl(1);
-        apiEndpointUrl = apiEndpointUrl + "&";
     }
 
     // Only used and called from within appendCSVQueryParameters().
@@ -161,7 +160,16 @@ public class EverythingEndpoint
             newString += x + "%20";
         }
 
+        newString = newString.substring(0, newString.length() - 3);
+        newString = encodeDoubleQuotes(newString);
         return newString;
+    }
+
+    // Encodes the API URL with double quotes.
+    // This will cause the News API to look for that exact phrase instead of any of those words.
+    private String encodeDoubleQuotes(String newString)
+    {
+        return "%22" + newString + "%22";
     }
 
     // Removes the last character of the apiEndpointUrl.
@@ -216,8 +224,13 @@ public class EverythingEndpoint
             splitCommaSeparatedString(domains); 
             return this; 
         }
-        public EverythingEndpointBuilder from(String from) { this.from = from; return this; }
-        public EverythingEndpointBuilder to(String to) { this.to = to; return this; }
+        /**
+         * The starting date for which articles must be from.
+         * @param from A date in ISO 8601 format (2026-04-20T00:00:00).
+         * @return EverythingEndpointBuilder
+         */
+        public EverythingEndpointBuilder from(String from) { this.from = from; return this; }   // from
+        public EverythingEndpointBuilder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
         public EverythingEndpointBuilder language(String language) { this.language = language; return this; }
         public EverythingEndpointBuilder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
         public EverythingEndpointBuilder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
