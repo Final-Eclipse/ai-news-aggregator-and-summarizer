@@ -1,20 +1,13 @@
 package scraper.news;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 
-// Have a parent Endpoint class that has general methods.
-// Have each Endpoint child contain its specific methods.
-// https://newsapi.org/docs/endpoints/everything
-
-public class EverythingEndpoint 
+public class EverythingEndpoint extends AbstractEndpoint
 {
-    private String apiKey;
-    private String apiEndpointUrl = "https://newsapi.org/v2/everything";
-
-    // what data type to hold parameters
-    // Add javadocs to all methods and builder methods.
+    private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     private String q;
     private List<String> searchIn = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
@@ -26,11 +19,11 @@ public class EverythingEndpoint
     private String sortBy;
     private String pageSize;
     private String page; 
-    
-    private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
 
-    public EverythingEndpoint(EverythingEndpointBuilder builder)
+    public EverythingEndpoint(Builder builder)
     {
+        setApiEndpointUrl(baseApiEndpointUrl);
+
         this.q = builder.q;
         this.searchIn = builder.searchIn;
         this.sources = builder.sources;
@@ -45,15 +38,12 @@ public class EverythingEndpoint
 
         addParametersToHashMap();
         appendQueryParameters();
-
-        // for (Object x : parametersHashMap.keySet())
-        // {
-        //     // System.out.println(x + " : " + parametersHashMap.get(x));
-        // }
     }
 
-    private void addParametersToHashMap()
+    public void addParametersToHashMap()
     {
+        HashMap<String, Object> parametersHashMap = getParametersHashMap();
+
         parametersHashMap.put("q", q);
         parametersHashMap.put("searchIn", searchIn);
         parametersHashMap.put("sources", sources);
@@ -65,122 +55,11 @@ public class EverythingEndpoint
         parametersHashMap.put("sortBy", sortBy);
         parametersHashMap.put("pageSize", pageSize);
         parametersHashMap.put("page", page);
+
+        setParametersHashMap(parametersHashMap);
     }
 
-    // Appends each query parameter to the API URL.
-    // Uses appendCSVQueryParameters() as a helper method.
-    private void appendQueryParameters()
-    {
-        apiEndpointUrl = apiEndpointUrl + "?";
-
-        for (String queryParameter : parametersHashMap.keySet())
-        {
-            Object value = parametersHashMap.get(queryParameter);
-            if (isQueryParameterNullOrEmpty(value) == true)
-            {
-                continue;
-            }
-            else
-            {
-                apiEndpointUrl += queryParameter + "=";
-            }
-
-            if (queryParameter.equals("searchIn") || queryParameter.equals("sources") || queryParameter.equals("domains") || queryParameter.equals("excludeDomains"))
-            {
-                appendCsvQueryParameters(value);
-                truncateUrl(1);
-                apiEndpointUrl = apiEndpointUrl + "&";
-            }
-            else
-            {  
-                if (((String) value).contains(" "))
-                {
-                    value = encodeQueryParameterValue((String) value);
-                    apiEndpointUrl += value + "&";
-                }
-                else
-                {
-                    apiEndpointUrl += value + "&";
-                }
-            }
-        }
-
-        truncateUrl(1);
-        System.out.println(apiEndpointUrl);
-    }
-
-    // Returns a boolean after checking if the value parameter is null or empty.
-    private boolean isQueryParameterNullOrEmpty(Object value)
-    {
-        if (value == null)
-        {
-            return true;
-        }
-        else if (value instanceof String)
-        {
-            return value.equals("");
-        }
-        else if (value instanceof List)
-        {
-            List<String> searchInList = (List<String>) value;
-            return searchInList.isEmpty();
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // Only used and called from within appendQueryParameters().
-    private void appendCsvQueryParameters(Object value)
-    {
-        List<String> searchInList = (List<String>) value;
-        apiEndpointUrl += getCsvString(searchInList);
-    }
-
-    // Only used and called from within appendCSVQueryParameters().
-    private String getCsvString(List<String> searchInList)
-    {
-        String csvString = "";
-        for (String element : searchInList)
-        {
-            csvString = csvString + element + ",";   
-        }
-
-        return csvString;
-    }
-
-    private String encodeQueryParameterValue(String queryParameter)
-    {
-        String[] splitArray = queryParameter.split(" ");
-        String newString = "";
-
-        for (String x : splitArray)
-        {
-            newString += x + "%20";
-        }
-
-        newString = newString.substring(0, newString.length() - 3);
-        newString = encodeDoubleQuotes(newString);
-        return newString;
-    }
-
-    // Encodes the API URL with double quotes.
-    // This will cause the News API to look for that exact phrase instead of any of those words.
-    private String encodeDoubleQuotes(String newString)
-    {
-        return "%22" + newString + "%22";
-    }
-
-    // Removes the last character of the apiEndpointUrl.
-    // This is useful in cases where there may be an "&" or "," at the end of the string,
-    // after appending query parameters.
-    private void truncateUrl(int elementsToTruncate)
-    {
-        apiEndpointUrl = apiEndpointUrl.substring(0, apiEndpointUrl.length() - elementsToTruncate);
-    }
-
-    public static class EverythingEndpointBuilder
+    public static class Builder
     {
         private String q;
         private List<String> searchIn = new ArrayList<>();
@@ -194,31 +73,31 @@ public class EverythingEndpoint
         private String pageSize;
         private String page; 
 
-        public EverythingEndpointBuilder()
+        public Builder()
         {
             
         }
         
         // Required, at least one.
-        public EverythingEndpointBuilder q(String q) { this.q = q; return this; }
-        public EverythingEndpointBuilder searchIn(String searchIn) 
+        public Builder q(String q) { this.q = q; return this; }
+        public Builder searchIn(String searchIn) 
         { 
             this.searchIn = splitCommaSeparatedString(searchIn); 
             return this; 
         }
-        public EverythingEndpointBuilder sources(String sources) 
+        public Builder sources(String sources) 
         { 
             this.sources = splitCommaSeparatedString(sources); 
             return this; 
         }
-        public EverythingEndpointBuilder domains(String domains) 
+        public Builder domains(String domains) 
         { 
             this.domains = splitCommaSeparatedString(domains); 
             return this; 
         }
 
         // Optional.
-        public EverythingEndpointBuilder excludeDomains(String domains) 
+        public Builder excludeDomains(String domains) 
         { 
             this.excludeDomains = 
             splitCommaSeparatedString(domains); 
@@ -227,14 +106,14 @@ public class EverythingEndpoint
         /**
          * The starting date for which articles must be from.
          * @param from A date in ISO 8601 format (2026-04-20T00:00:00).
-         * @return EverythingEndpointBuilder
+         * @return Builder
          */
-        public EverythingEndpointBuilder from(String from) { this.from = from; return this; }   // from
-        public EverythingEndpointBuilder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
-        public EverythingEndpointBuilder language(String language) { this.language = language; return this; }
-        public EverythingEndpointBuilder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
-        public EverythingEndpointBuilder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
-        public EverythingEndpointBuilder page(String page) { this.page = page; return this; }
+        public Builder from(String from) { this.from = from; return this; }   // from
+        public Builder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
+        public Builder language(String language) { this.language = language; return this; }
+        public Builder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
+        public Builder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
+        public Builder page(String page) { this.page = page; return this; }
         
         public EverythingEndpoint build()
         {

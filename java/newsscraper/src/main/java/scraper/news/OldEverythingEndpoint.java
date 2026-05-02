@@ -8,7 +8,7 @@ import java.util.ArrayList;
 // Have each Endpoint child contain its specific methods.
 // https://newsapi.org/docs/endpoints/everything
 
-public class Test 
+public class OldEverythingEndpoint 
 {
     private String apiEndpointUrl = "https://newsapi.org/v2/everything";
 
@@ -28,7 +28,7 @@ public class Test
     
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
 
-    public Test(TestBuilder builder)
+    public OldEverythingEndpoint(EverythingEndpointBuilder builder)
     {
         this.q = builder.q;
         this.searchIn = builder.searchIn;
@@ -179,7 +179,7 @@ public class Test
         apiEndpointUrl = apiEndpointUrl.substring(0, apiEndpointUrl.length() - elementsToTruncate);
     }
 
-    public static class TestBuilder
+    public static class EverythingEndpointBuilder
     {
         private String q;
         private List<String> searchIn = new ArrayList<>();
@@ -193,31 +193,31 @@ public class Test
         private String pageSize;
         private String page; 
 
-        public TestBuilder()
+        public EverythingEndpointBuilder()
         {
             
         }
         
         // Required, at least one.
-        public TestBuilder q(String q) { this.q = q; return this; }
-        public TestBuilder searchIn(String searchIn) 
+        public EverythingEndpointBuilder q(String q) { this.q = q; return this; }
+        public EverythingEndpointBuilder searchIn(String searchIn) 
         { 
             this.searchIn = splitCommaSeparatedString(searchIn); 
             return this; 
         }
-        public TestBuilder sources(String sources) 
+        public EverythingEndpointBuilder sources(String sources) 
         { 
             this.sources = splitCommaSeparatedString(sources); 
             return this; 
         }
-        public TestBuilder domains(String domains) 
+        public EverythingEndpointBuilder domains(String domains) 
         { 
             this.domains = splitCommaSeparatedString(domains); 
             return this; 
         }
 
         // Optional.
-        public TestBuilder excludeDomains(String domains) 
+        public EverythingEndpointBuilder excludeDomains(String domains) 
         { 
             this.excludeDomains = 
             splitCommaSeparatedString(domains); 
@@ -226,23 +226,23 @@ public class Test
         /**
          * The starting date for which articles must be from.
          * @param from A date in ISO 8601 format (2026-04-20T00:00:00).
-         * @return TestBuilder
+         * @return EverythingEndpointBuilder
          */
-        public TestBuilder from(String from) { this.from = from; return this; }   // from
-        public TestBuilder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
-        public TestBuilder language(String language) { this.language = language; return this; }
-        public TestBuilder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
-        public TestBuilder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
-        public TestBuilder page(String page) { this.page = page; return this; }
+        public EverythingEndpointBuilder from(String from) { this.from = from; return this; }   // from
+        public EverythingEndpointBuilder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
+        public EverythingEndpointBuilder language(String language) { this.language = language; return this; }
+        public EverythingEndpointBuilder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
+        public EverythingEndpointBuilder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
+        public EverythingEndpointBuilder page(String page) { this.page = page; return this; }
         
-        public Test build()
+        public OldEverythingEndpoint build()
         {
             if (q == null && searchIn == null && sources == null && domains == null)
             {
                 throw new NullPointerException("At least one of these parameters must not be null (q, searchIn, sources, domains).");
             }
             
-            return new Test(this);
+            return new OldEverythingEndpoint(this);
         }
 
         // Returns an ArrayList containing the individual elements of a CSV input.
