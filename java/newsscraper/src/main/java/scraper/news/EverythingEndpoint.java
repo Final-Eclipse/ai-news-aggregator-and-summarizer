@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EverythingEndpoint extends AbstractEndpoint
+public class EverythingEndpoint extends Endpoint
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     private String q;
