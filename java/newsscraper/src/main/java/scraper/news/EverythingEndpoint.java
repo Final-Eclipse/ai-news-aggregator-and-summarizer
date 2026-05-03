@@ -8,6 +8,7 @@ import java.util.List;
 public class EverythingEndpoint extends Endpoint
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
+    
     private String q;
     private List<String> searchIn = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
@@ -22,8 +23,6 @@ public class EverythingEndpoint extends Endpoint
 
     public EverythingEndpoint(Builder builder)
     {
-        setApiEndpointUrl(baseApiEndpointUrl);
-
         this.q = builder.q;
         this.searchIn = builder.searchIn;
         this.sources = builder.sources;
@@ -36,6 +35,7 @@ public class EverythingEndpoint extends Endpoint
         this.pageSize = builder.pageSize;
         this.page = builder.page;
 
+        setApiEndpointUrl(baseApiEndpointUrl);
         addParametersToHashMap();
         appendQueryParameters();
     }

@@ -1,4 +1,6 @@
 package scraper.news;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -133,6 +135,14 @@ public abstract class Endpoint
     {
         apiEndpointUrl = apiEndpointUrl.substring(0, apiEndpointUrl.length() - elementsToTruncate);
     }
+
+    // // Returns an ArrayList containing the individual elements of a CSV input.
+    // // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
+    // public ArrayList<String> splitCommaSeparatedString(String input)
+    // {
+    //     String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
+    //     return new ArrayList<String>(Arrays.asList(splitArray));   
+    // }
 
     public HashMap<String, Object> getParametersHashMap()
     {
