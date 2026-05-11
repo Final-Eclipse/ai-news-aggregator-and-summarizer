@@ -10,10 +10,14 @@ public class EverythingEndpoint extends Endpoint
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     
     private String q;
+    
+    // At least one is required.
     private List<String> searchIn = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> domains = new ArrayList<>();
     private List<String> excludeDomains = new ArrayList<>();
+
+    // Optional.
     private String from;
     private String to;
     private String language;
