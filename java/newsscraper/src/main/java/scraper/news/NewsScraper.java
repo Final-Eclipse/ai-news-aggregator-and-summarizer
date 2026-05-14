@@ -7,25 +7,23 @@ import java.net.URI;
 
 public class NewsScraper 
 {
-    private String apiEndpointUrl;
     private HttpClient client = HttpClient.newHttpClient();
     private String apiKey = System.getenv("NEWSAPI_API_KEY");
 
-    public NewsScraper(String apiEndpointUrl)
-    {
-        this.apiEndpointUrl = apiEndpointUrl;
-    }
-    
-    protected void getResponse()
-    {
+    protected String getResponse(String apiEndpointUrl)
+    {   
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(apiEndpointUrl))
             .header("x-api-key", apiKey)
             .build();
 
-        client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(System.out::println)
-            .join();
+        HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
+
+        if (response.statusCode() != 200)
+        {
+            throw new RuntimeException("Error Code " + response.statusCode());
+        }
+
+        return response.body();
     }    
 }

@@ -1,5 +1,5 @@
 package scraper.news;
-
+import static spark.Spark.*;
 // Make a class that deals with each endpoint of the API.
 // A class for /v2/everything, /v2/top-headlines, and /v2/top-headlines/sources.
 // Or have one class that determines what the endpoint is and decides which logic to apply.
@@ -12,21 +12,7 @@ package scraper.news;
 // private static Endpoint x = new Endpoint("sources")
 public class Main 
 {
-    // private static String apiURL = "https://newsapi.org/v2/everything";
-    // private static String apiURL = "https://newsapi.org/v2/top-headlines";
-
-    // To ignore certain values, set as null (.setCategory(null)).
-    // private static NewsScraper newsScraper = new NewsScraper.Builder()
-    //     .setApiURL(apiURL)
-    //     .setCountry("US")
-    //     .setCategory("general") 
-    //     .buildNewsScraper();
-
-    // private static NewsScraper newsScraper = new Builder();
-    //     .setApiURL(apiURL)
-    //     .setCountry("US")
-    //     .setCategory("general") 
-    //     .buildNewsScraper();
+    private static String summarizationString;
 
     public static void main(String[] args) 
     {
@@ -75,22 +61,30 @@ public class Main
             .page("1")
             .build();
         
-        // TopHeadlinesEndpoint y = new TopHeadlinesEndpoint.Builder()
-        //     .country("US")
-        //     .category("general")
-        //     // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
-        //     .q("trump")
-        //     .pageSize("10")
-        //     .page("1")
-        //     .build();
+        TopHeadlinesEndpoint y = new TopHeadlinesEndpoint.Builder()
+            .country("US")
+            .category("general")
+            // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
+            .q("trump")
+            .pageSize("10")
+            .page("1")
+            .build();
 
-        // SourcesEndpoint z = new SourcesEndpoint.Builder()
-        //     .category("sports")
-        //     .language("en")
-        //     .country("us")
-        //     .build();
+        SourcesEndpoint z = new SourcesEndpoint.Builder()
+            .category("sports")
+            .language("en")
+            .country("us")
+            .build();
 
-        NewsScraper newsScraper = new NewsScraper(x.getApiEndpointUrl());
-        newsScraper.getResponse();
+        NewsScraper newsScraper = new NewsScraper();
+        get("/EverythingEndpoint", (request, response) -> newsScraper.getResponse(x.getApiEndpointUrl()));       
+        get("/TopHeadlinesEndpoint", (request, response) -> newsScraper.getResponse(y.getApiEndpointUrl()));       
+        get("/SourcesEndpoint", (request, response) -> newsScraper.getResponse(z.getApiEndpointUrl()));   
+        
+        get("/Summarization", (request, response) -> summarizationString);
+        post("/Summarization", (request, response) -> { 
+            summarizationString = request.body();
+            return "Successful Post";
+        });   
     }
 }
