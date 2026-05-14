@@ -1,0 +1,1 @@
+namespace ai_news_aggregator_and_summarizer;

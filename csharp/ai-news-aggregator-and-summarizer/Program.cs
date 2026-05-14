@@ -1,40 +1,14 @@
-﻿using System.Net.Http;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System;
+﻿namespace ai_news_aggregator_and_summarizer;
 
-// Do the news websites have apis.
-
-// using var client = new HttpClient();
-// var response = await client.GetAsync("https://myanimelist.net");
-// var content = await response.Content.ReadAsStringAsync();
-// System.Console.WriteLine(content);
-
-class Scraper
+public class Program
 {   
-//     string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-    
-    private static HttpClient client = new HttpClient();
-
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        // SetBaseAddress();
-        // GetResponse().GetAwaiter().GetResult();
-        System.Console.WriteLine("test");
-    }
-
-    private static void SetBaseAddress()
-    {
-        client.BaseAddress = new Uri("https://api.ap.org");
-    }
-
-    static async Task GetResponse()
-    {
-        // client.DefaultRequestHeaders.Add("x-api-key", "");
-        var response = await client.GetAsync("https://myanimelist.net");
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-        System.Console.WriteLine(response.IsSuccessStatusCode);
-        System.Console.WriteLine(responseBody);
+        // RestApiClient.PrintResponse();
+        
+        // Start localhost then run this.
+        // Refresh localhost to show posted data.
+        HttpContent httpContent = new StringContent("testing if this will post", System.Text.Encoding.UTF8, "text/plain");
+        await RestApiClient.PostSummarization("Summarization", httpContent);
     }
 }
