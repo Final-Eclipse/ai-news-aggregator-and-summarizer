@@ -1,4 +1,5 @@
 package scraper.news;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -10,7 +11,7 @@ public class NewsScraper
     private HttpClient client = HttpClient.newHttpClient();
     private String apiKey = System.getenv("NEWSAPI_API_KEY");
 
-    protected String getResponse(String apiEndpointUrl)
+    public String getResponse(String apiEndpointUrl)
     {   
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(apiEndpointUrl))
