@@ -1,8 +1,15 @@
 package scraper.news;
+
 import static spark.Spark.*;
 // Make a class that deals with each endpoint of the API.
 // A class for /v2/everything, /v2/top-headlines, and /v2/top-headlines/sources.
 // Or have one class that determines what the endpoint is and decides which logic to apply.
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 // Have one class for every endpoint.
 // Have a HashMap for each endpoint that contains what the parameters of that endpoint is.
@@ -10,6 +17,8 @@ import static spark.Spark.*;
 // private static Endpoint x = new Endpoint("everything")
 // private static Endpoint x = new Endpoint("top-headlines")
 // private static Endpoint x = new Endpoint("sources")
+
+@SpringBootApplication
 public class Main 
 {
     private static String summarizationString;
@@ -43,48 +52,53 @@ public class Main
         // test x = new test();
         // System.out.println(x);
 
-        // Arguments that contains spaces must be hyphenated (ex. associated press -> associated-press).
-        EverythingEndpoint x = new EverythingEndpoint.Builder()
-            // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
-            // Wrap q in double quotes for exact phrase.
-            // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
-            .q("trump")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
-            .searchIn("title")
-            .sources("associated-press")
-            .domains("apnews.com, nbcnews.com")
-            .excludeDomains("foxnews.com")
-            .from("2026-04-20")
-            .to("2026-04-24")
-            .language("en")
-            .sortBy(null)
-            .pageSize("10")
-            .page("1")
-            .build();
+        // // Arguments that contains spaces must be hyphenated (ex. associated press -> associated-press).
+        // EverythingEndpoint x = new EverythingEndpoint.Builder()
+        //     // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
+        //     // Wrap q in double quotes for exact phrase.
+        //     // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
+        //     .q("trump")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
+        //     .searchIn("title")
+        //     .sources("associated-press")
+        //     .domains("apnews.com, nbcnews.com")
+        //     .excludeDomains("foxnews.com")
+        //     .from("2026-04-20")
+        //     .to("2026-04-24")
+        //     .language("en")
+        //     .sortBy(null)
+        //     .pageSize("10")
+        //     .page("1")
+        //     .build();
         
-        TopHeadlinesEndpoint y = new TopHeadlinesEndpoint.Builder()
-            .country("US")
-            .category("general")
-            // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
-            .q("trump")
-            .pageSize("10")
-            .page("1")
-            .build();
+        // TopHeadlinesEndpoint y = new TopHeadlinesEndpoint.Builder()
+        //     .country("US")
+        //     .category("general")
+        //     // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
+        //     .q("trump")
+        //     .pageSize("10")
+        //     .page("1")
+        //     .build();
 
-        SourcesEndpoint z = new SourcesEndpoint.Builder()
-            .category("sports")
-            .language("en")
-            .country("us")
-            .build();
+        // SourcesEndpoint z = new SourcesEndpoint.Builder()
+        //     .category("sports")
+        //     .language("en")
+        //     .country("us")
+        //     .build();
 
-        NewsScraper newsScraper = new NewsScraper();
-        get("/EverythingEndpoint", (request, response) -> newsScraper.getResponse(x.getApiEndpointUrl()));       
-        get("/TopHeadlinesEndpoint", (request, response) -> newsScraper.getResponse(y.getApiEndpointUrl()));       
-        get("/SourcesEndpoint", (request, response) -> newsScraper.getResponse(z.getApiEndpointUrl()));   
+        // NewsScraper newsScraper = new NewsScraper();
+
+        // Sparkjava
+        // get("/EverythingEndpoint", (request, response) -> newsScraper.getResponse(x.getApiEndpointUrl()));       
+        // get("/TopHeadlinesEndpoint", (request, response) -> newsScraper.getResponse(y.getApiEndpointUrl()));       
+        // get("/SourcesEndpoint", (request, response) -> newsScraper.getResponse(z.getApiEndpointUrl()));   
         
-        get("/Summarization", (request, response) -> summarizationString);
-        post("/Summarization", (request, response) -> { 
-            summarizationString = request.body();
-            return "Successful Post";
-        });   
+        // get("/Summarization", (request, response) -> summarizationString);
+        // post("/Summarization", (request, response) -> { 
+        //     summarizationString = request.body();
+        //     return "Successful Post";
+        // });   
+
+        // Spring Boot
+        SpringApplication.run(Main.class, args);
     }
 }
