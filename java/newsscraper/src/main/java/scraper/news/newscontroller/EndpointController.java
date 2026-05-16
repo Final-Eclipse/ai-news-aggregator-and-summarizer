@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -80,8 +81,15 @@ public class EndpointController
         return newsScraper.getResponse(z.getApiEndpointUrl());
     }
 
+    // @PostMapping("/api/v1/news/summary")
+    // public void summarization(@RequestParam(value = "summary", defaultValue = "Summary failed!") String summary)    // @RequestParam is a query parameter. Try using @RequestBody instead.
+    // {
+    //     System.out.println("posting summary");
+    //     this.summary = summary;
+    // }
+
     @PostMapping("/api/v1/news/summary")
-    public void summarization(@RequestParam(value = "summary", defaultValue = "Summary failed!") String summary)    // @RequestParam is a query parameter. Try using @RequestBody instead.
+    public void summarization(@RequestBody String summary)    // @RequestParam is a query parameter. Try using @RequestBody instead.
     {
         System.out.println("posting summary");
         this.summary = summary;
