@@ -2,15 +2,15 @@ namespace ai_news_aggregator_and_summarizer;
 
 public class RestApiClient
 {
-    private static HttpClient client = new HttpClient();
-    
-    // Sparkjava
-    // private static string[] endpoints = {"EverythingEndpoint", "TopHeadlinesEndpoint", "SourcesEndpoint"};
-
-    // Spring Boot
+    private readonly HttpClient httpClient;
     private static string[] endpoints = {"api/v1/news/everything", "api/v1/news/top-headlines", "api/v1/news/top-headlines/sources", "api/v1/news/summary"};
 
-    public static void PrintResponse()
+    public RestApiClient(HttpClient x)
+    {
+        httpClient = x;
+    }
+    
+    public void PrintResponse()
     {
         foreach (string endpoint in endpoints)
         {
@@ -24,14 +24,9 @@ public class RestApiClient
         }
     }
 
-    protected static async Task<string> GetResponse(string endpoint)
+    protected async Task<string> GetResponse(string endpoint)
     {
-        // Sparkjava
-        // var response = await client.GetAsync($"http://localhost:4567/{endpoint}"); 
-
-        // Spring Boot
-        var response = await client.GetAsync($"http://localhost:8080/{endpoint}");
-
+        var response = await httpClient.GetAsync($"http://localhost:8080/{endpoint}");
         var responseBody = await response.Content.ReadAsStringAsync();
         
         if (response.IsSuccessStatusCode == false)
@@ -42,12 +37,8 @@ public class RestApiClient
         return responseBody;
     }
 
-    public static async Task PostSummarization(string endpoint, HttpContent summarization)
+    public async Task PostSummarization(string endpoint, HttpContent summarization)
     {
-        // Sparkjava
-        // var response = await client.PostAsync($"http://localhost:4567/{endpoint}", summarization);
-        
-        // Spring Boot
-        var response = await client.PostAsync($"http://localhost:8080/{endpoint}", summarization);
+        var response = await httpClient.PostAsync($"http://localhost:8080/{endpoint}", summarization);
     }
 }
