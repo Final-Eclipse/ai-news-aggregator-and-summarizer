@@ -43,8 +43,8 @@ public class EndpointController
             .sources("associated-press")
             .domains("apnews.com, nbcnews.com")
             .excludeDomains("foxnews.com")
-            .from("2026-04-20")
-            .to("2026-04-24")
+            .from("2026-05-10")
+            .to("2026-05-15")
             .language("en")
             .sortBy(null)
             .pageSize("10")
@@ -80,13 +80,6 @@ public class EndpointController
 
         return newsScraper.getResponse(z.getApiEndpointUrl());
     }
-
-    // @PostMapping("/api/v1/news/summary")
-    // public void summarization(@RequestParam(value = "summary", defaultValue = "Summary failed!") String summary)    // @RequestParam is a query parameter. Try using @RequestBody instead.
-    // {
-    //     System.out.println("posting summary");
-    //     this.summary = summary;
-    // }
 
     @PostMapping("/api/v1/news/summary")
     public void summarization(@RequestBody String summary)    // @RequestParam is a query parameter. Try using @RequestBody instead.
