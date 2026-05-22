@@ -12,23 +12,28 @@ import scraper.news.EverythingEndpoint;
 import scraper.news.NewsScraper;
 import scraper.news.SourcesEndpoint;
 import scraper.news.TopHeadlinesEndpoint;
+import scraper.news.CreateEndpoint;
+// import scraper.news.Endpoint;
+
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.HashMap;
 
 @RestController
 public class EndpointController 
 {
     private static NewsScraper newsScraper = new NewsScraper();
     private String summary = "Summary failed!";
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private String apiEndpointUrl;
 
-    @GetMapping("/test")
-    public String test()
+    @PostMapping("/api/v1/news/post-endpoint-data")
+    public void postEndpointData(@RequestBody String endpointData)
     {
-        return "Successful Test";
-    }
-
-    @GetMapping("/springboot")
-    public String springBoot()
-    {
-        return "spring boot";
+        HashMap<String, String> endpointDataHashMap = objectMapper.readValue(endpointData, new TypeReference<>() {});
+        apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap);
+        System.out.println(endpointDataHashMap.get("endpoint"));
     }
 
     @GetMapping("/api/v1/news/everything")
