@@ -17,12 +17,17 @@ def create_top_headlines():
     """Returns a JSON string."""
     query_params = {
         "endpoint": "everything",
-        "country": "US",
-        "category": "general",
-        # "sources": "associated-press",
-        "q": "trump",
-        "pageSize": "10",
-        "page": 1
+        "q": "iran",
+        "searchIn": "title",
+        "sources": "associated-press",
+        "domains": "null",
+        "excludeDomains": "null",
+        "from": "2026-05-01",
+        "to": "2026-05-22",
+        "language": "en",
+        "sortBy": "relevancy",
+        "pageSize": "100",
+        "page": "1" 
     }
 
     return json.dumps(query_params)
