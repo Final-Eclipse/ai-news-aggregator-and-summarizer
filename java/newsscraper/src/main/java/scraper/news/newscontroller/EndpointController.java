@@ -1,24 +1,19 @@
 package scraper.news.newscontroller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.HashMap;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import scraper.news.CreateEndpoint;
 import scraper.news.EverythingEndpoint;
 import scraper.news.NewsScraper;
 import scraper.news.SourcesEndpoint;
 import scraper.news.TopHeadlinesEndpoint;
-import scraper.news.CreateEndpoint;
-// import scraper.news.Endpoint;
-
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
-
-import java.util.HashMap;
 
 @RestController
 public class EndpointController 
@@ -32,8 +27,9 @@ public class EndpointController
     public void postEndpointData(@RequestBody String endpointData)
     {
         HashMap<String, String> endpointDataHashMap = objectMapper.readValue(endpointData, new TypeReference<>() {});
-        apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap);
-        System.out.println(endpointDataHashMap.get("endpoint"));
+        apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap).getApiEndpointUrl();
+        System.out.println(apiEndpointUrl);
+        // System.out.println(endpointDataHashMap.get("endpoint"));
     }
 
     @GetMapping("/api/v1/news/everything")
