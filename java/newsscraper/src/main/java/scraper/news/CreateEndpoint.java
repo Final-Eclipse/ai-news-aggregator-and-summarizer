@@ -10,7 +10,7 @@ public class CreateEndpoint
         {
             case "everything":
                 return new EverythingEndpoint.Builder() 
-                    .q(endpointDataHashMap.getOrDefault("q", null)) // Check if q is required and fall under "At least one is required." or "Optional."
+                    .q(endpointDataHashMap.getOrDefault("q", null))
                     .searchIn(endpointDataHashMap.getOrDefault("searchIn", null))
                     .sources(endpointDataHashMap.getOrDefault("sources", null))
                     .domains(endpointDataHashMap.getOrDefault("domains", null))
@@ -24,6 +24,12 @@ public class CreateEndpoint
                     .build();
 
             case "top-headlines":
+                // Assigns a default value to category.
+                if (endpointDataHashMap.get("category").equals("null"))
+                {
+                    endpointDataHashMap.put("category", "general");
+                }
+                
                 return new TopHeadlinesEndpoint.Builder()
                     .country(endpointDataHashMap.getOrDefault("country", null))
                     .category(endpointDataHashMap.getOrDefault("category", null))
@@ -48,12 +54,6 @@ public class CreateEndpoint
     public static Endpoint create(HashMap<String, String> endpointDataHashMap)
     {
         return determineEndpoint(endpointDataHashMap);
-
-        // return new SourcesEndpoint.Builder()
-        //     .category("sports")
-        //     .language("en")
-        //     .country("us")
-        //     .build();
     }
 
     // public EverythingEndpoint create()
