@@ -13,7 +13,7 @@ def send_post_request(endpoint_data):
     """Sends a POST request to upload endpoint data."""
     requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
 
-def create_top_headlines():
+def create_everything():
     """Returns a JSON string."""
     query_params = {
         "endpoint": "everything",
@@ -32,7 +32,34 @@ def create_top_headlines():
 
     return json.dumps(query_params)
 
+def create_top_headlines():
+    """Returns a JSON string."""
+    query_params = {
+        "endpoint": "top-headlines",
+        "country": "us",
+        "category": "null",
+        # "sources": "associated-press",
+        "q": "trump",
+        "pageSize": "100",
+        "page": "1"
+    }
+
+    return json.dumps(query_params)
+
+def create_sources():
+    """Returns a JSON string."""
+    query_params = {
+        "endpoint": "top-headlines/sources",
+        "category": "general",
+        "language": "en",
+        "country": "us"
+    }
+
+    return json.dumps(query_params)
+
+send_post_request(create_everything())
 send_post_request(create_top_headlines())    
+send_post_request(create_sources())
 
 
     
