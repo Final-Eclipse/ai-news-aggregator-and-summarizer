@@ -8,6 +8,7 @@ import java.util.List;
 public class SourcesEndpoint extends Endpoint
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines/sources";
+    
     private String category;
     private String language;
     private String country;    

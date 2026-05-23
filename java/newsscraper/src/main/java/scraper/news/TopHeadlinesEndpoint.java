@@ -10,6 +10,7 @@ public class TopHeadlinesEndpoint extends Endpoint
     // Add javadocs to all methods and builder methods.
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
     
+    // At least one is required.
     private String country; // Can't be mixed with the sources parameter.
     private String category;    // Can't be mixed with the sources parameter.
     private List<String> sources = new ArrayList<>();   // Can't be mixed with country or category parameters.
@@ -59,7 +60,7 @@ public class TopHeadlinesEndpoint extends Endpoint
             
         }
         
-        // Required, at least one.
+        // At least one is required.
         public Builder country(String country) { this.country = country; return this; }
         public Builder category(String category) { this.category = category; return this; }
         public Builder sources(String sources)
@@ -75,11 +76,19 @@ public class TopHeadlinesEndpoint extends Endpoint
         {
             if (country == null && category == null && sources == null && q == null && pageSize == null && page == null)
             {
-                throw new NullPointerException("At least one of these parameters must not be null (country, category, sources, q, pageSize, page).");
+                throw new NullPointerException("At least one of these parameters must not be null (country, category, sources, q, pageSize, page) for the top-headlines endpoint.");
             }
-            else if ((country != null || category != null) && sources.size() != 0)
+            else if ((country != null || category != null)) 
             {
-                throw new IllegalArgumentException("Cannot mix the sources parameter with the country or category parameters.");
+                // Prevents sources.size() from triggering a NullPointerException.
+                if (sources == null)
+                {
+                    
+                }
+                else if (sources.size() != 0)
+                {
+                    throw new IllegalArgumentException("Cannot mix the sources parameter with the country or category parameters for the top-headlines endpoint.");
+                }
             }
             
             return new TopHeadlinesEndpoint(this);
@@ -89,6 +98,11 @@ public class TopHeadlinesEndpoint extends Endpoint
         // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
         private ArrayList<String> splitCommaSeparatedString(String input)
         {
+            if (input == null)
+            {
+                return null;
+            }
+
             String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
             return new ArrayList<String>(Arrays.asList(splitArray));   
         }

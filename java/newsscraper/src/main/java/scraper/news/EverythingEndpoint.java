@@ -9,9 +9,8 @@ public class EverythingEndpoint extends Endpoint
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     
-    private String q;
-    
     // At least one is required.
+    private String q;
     private List<String> searchIn = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> domains = new ArrayList<>();
@@ -82,7 +81,7 @@ public class EverythingEndpoint extends Endpoint
             
         }
         
-        // Required, at least one.
+        // At least one is required.
         public Builder q(String q) { this.q = q; return this; }
         public Builder searchIn(String searchIn) 
         { 
@@ -103,8 +102,7 @@ public class EverythingEndpoint extends Endpoint
         // Optional.
         public Builder excludeDomains(String domains) 
         { 
-            this.excludeDomains = 
-            splitCommaSeparatedString(domains); 
+            this.excludeDomains = splitCommaSeparatedString(domains); 
             return this; 
         }
         /**
@@ -133,6 +131,11 @@ public class EverythingEndpoint extends Endpoint
         // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
         private ArrayList<String> splitCommaSeparatedString(String input)
         {
+            if (input == null)
+            {
+                return null;
+            }
+
             String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
             return new ArrayList<String>(Arrays.asList(splitArray));   
         }
