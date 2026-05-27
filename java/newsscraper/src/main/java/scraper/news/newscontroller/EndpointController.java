@@ -24,12 +24,13 @@ public class EndpointController
     private String apiEndpointUrl;
 
     @PostMapping("/api/v1/news/post-endpoint-data")
-    public void postEndpointData(@RequestBody String endpointData)
+    public String postEndpointData(@RequestBody String endpointData)
     {
         HashMap<String, String> endpointDataHashMap = objectMapper.readValue(endpointData, new TypeReference<>() {});
         apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap).getApiEndpointUrl();
+     
         System.out.println(apiEndpointUrl);
-        // System.out.println(endpointDataHashMap.get("endpoint"));
+        return "Successful post! Make summary call to C# and return here eventually.";
     }
 
     @GetMapping("/api/v1/news/everything")
