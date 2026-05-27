@@ -9,9 +9,14 @@ import requests, json
 # Send a POST request back to Spring Boot at "/summary" with the article's summary.
 # In Python, send a GET request to Spring Boot to retrieve the summary and display it.
 
+# Create a C# REST API that handles summarization.
+# POST requests return data so Python can make a POST request with the article url to Spring Boot and it will wait until the summary is returned.
+# Does C# need to be asynchronous or can it be synchronous.
+
 def send_post_request(endpoint_data):
     """Sends a POST request to upload endpoint data."""
-    requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
+    request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
+    print(request.text)
 
 def create_everything():
     """Returns a JSON string."""
@@ -20,8 +25,8 @@ def create_everything():
         "q": "iran",
         "searchIn": "title",
         "sources": "associated-press",
-        "domains": "null",
-        "excludeDomains": "null",
+        "domains": None,
+        "excludeDomains": None,
         "from": "2026-05-01",
         "to": "2026-05-22",
         "language": "en",
@@ -37,8 +42,8 @@ def create_top_headlines():
     query_params = {
         "endpoint": "top-headlines",
         "country": "us",
-        "category": "null",
-        # "sources": "associated-press",
+        "category": None,
+        "sources": None,
         "q": "trump",
         "pageSize": "100",
         "page": "1"
@@ -60,6 +65,8 @@ def create_sources():
 send_post_request(create_everything())
 send_post_request(create_top_headlines())    
 send_post_request(create_sources())
+
+
 
 
     
