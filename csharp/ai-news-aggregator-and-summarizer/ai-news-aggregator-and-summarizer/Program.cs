@@ -1,9 +1,9 @@
-﻿namespace ai_news_aggregator_and_summarizer;
-
-using OllamaSharp;
+﻿using OllamaSharp;
 // https://github.com/awaescher/OllamaSharp/tree/main
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace ai_news_aggregator_and_summarizer;
 
 public class Program
 {   
@@ -27,6 +27,8 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
+
+        
 
         // Create new csproj for asp net core.
         // Or have two csprojs in the csharp folder.
