@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using ai_news_aggregator_and_summarizer.Services;
 
-namespace ai_news_aggregator_and_summarizer;
+namespace ai_news_aggregator_and_summarizer.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -11,9 +12,9 @@ public class SummaryController : ControllerBase
     
     // }
 
-    public String GetSummary()
+    public string GetSummary(string articleText)
     {
-        return "This is a summary of a relevant and topical news article.";
+        return SummaryService.Get(articleText).Result.summaryText;
     }
     
     // GET by Id action
