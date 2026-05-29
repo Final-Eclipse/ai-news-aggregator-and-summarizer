@@ -1,6 +1,7 @@
 # General
 .vscode/
 *.lscache
+.vs/
 
 # C#
 bin/
