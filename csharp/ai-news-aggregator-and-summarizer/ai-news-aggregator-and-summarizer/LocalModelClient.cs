@@ -1,7 +1,7 @@
-namespace ai_news_aggregator_and_summarizer;
-
 using System.Text.Json;
 using OllamaSharp;
+
+namespace ai_news_aggregator_and_summarizer;
 
 public class LocalModelClient
 {
