@@ -11,7 +11,8 @@ public static class SummaryService
 
     static SummaryService()
     {    
-        ollama.SelectedModel = "huihui_ai/deepseek-r1-abliterated:8b";
+        // Throws AggregateException and HttpRequestException if selected model does not exist on the user's computer.
+        ollama.SelectedModel = "huihui_ai/deepseek-r1-abliterated:8b";  // Have selected model as query parameter?
     }
 
     // Contacts local ollama model and Initializes summaryText;
