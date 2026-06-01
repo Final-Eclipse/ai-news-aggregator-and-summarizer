@@ -1,5 +1,6 @@
 package scraper.news;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public abstract class Endpoint
         truncateUrl(1);
     }
 
-    // Returns a boolean after checking if the value parameter is null or empty.
+    // Returns a boolean after checking if the value parameter is null or empty (if it is a List).
     private boolean isQueryParameterNullOrEmpty(Object value)
     {
         if (value == null)
@@ -64,8 +65,7 @@ public abstract class Endpoint
         }
         else if (value instanceof List)
         {
-            List<String> searchInList = (List<String>) value;
-            return searchInList.isEmpty();
+            return ((List<?>) value).isEmpty();
         }
         else
         {
@@ -74,17 +74,32 @@ public abstract class Endpoint
     }
 
     // Only used and called from within appendQueryParameters().
-    private void appendCsvQueryParameters(Object value)
+    private void appendCsvQueryParameters(Object csvValues)
     {
-        List<String> searchInList = (List<String>) value;
-        apiEndpointUrl += getCsvString(searchInList);
+        List<String> csvList = getListOfStrings(csvValues);
+        apiEndpointUrl += getCsvString(csvList);
+    }
+
+    // Converts an Object parameter to a List and returns it.
+    private List<String> getListOfStrings(Object csvValues)
+    {
+        List<String> newList = new ArrayList<String>();
+        for (Object x : (List<?>) csvValues)
+        {
+            if (x instanceof String)
+            {
+                newList.add((String) x);
+            }
+        }
+
+        return newList;
     }
 
     // Only used and called from within appendCSVQueryParameters().
-    private String getCsvString(List<String> searchInList)
+    private String getCsvString(List<String> csvList)
     {
         String csvString = "";
-        for (String element : searchInList)
+        for (String element : csvList)
         {
             csvString = csvString + element + ",";   
         }
