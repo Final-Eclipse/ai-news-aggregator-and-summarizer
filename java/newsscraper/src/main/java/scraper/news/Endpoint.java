@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class Endpoint 
 {
     private String apiEndpointUrl;
-    private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
+    private HashMap<String, Object> parametersHashMap = new HashMap<>();
 
     public abstract void addParametersToHashMap();
 
@@ -83,12 +83,12 @@ public abstract class Endpoint
     // Converts an Object parameter to a List and returns it.
     private List<String> getListOfStrings(Object csvValues)
     {
-        List<String> newList = new ArrayList<String>();
+        List<String> newList = new ArrayList<>();
         for (Object x : (List<?>) csvValues)
         {
-            if (x instanceof String)
+            if (x instanceof String string)
             {
-                newList.add((String) x);
+                newList.add(string);
             }
         }
 
