@@ -15,7 +15,21 @@ import requests, json, time
 
 def send_post_request(endpoint_data):
     """Sends a POST request to upload endpoint data."""
-    request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
+    # request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
+    request = requests.post("http://localhost:8080/api/v1/news/summary", endpoint_data)
+
+    # headers = {
+    #     "Content-Type": "application/json"
+    # }
+    # request = requests.post("http://localhost:5172/summary", data=endpoint_data, headers=headers)
+    print(request.text)
+
+def set_selected_model(model):
+    """Updates the selected ollama model."""
+    headers = {
+        "Content-Type": "application/json"
+    }
+    request = requests.post("http://localhost:5172/SelectedModel", data=model)
     print(request.text)
 
 def send_summary(article_text):
@@ -104,10 +118,27 @@ def get_oldest_date():
 
 send_summary("What is an interesting fact about something in history?")
 
+def create_summary():
+    query_params = {
+        "articleText": "What is an interesting fact?"
+    }
 
+    return json.dumps(query_params)
 
+def create_selected_model():
+    query_params = {
+        "selectedModel": "huihui_ai/deepseek-r1-abliterated:8b"
+    }
 
+    return json.dumps(query_params)
 
+# send_post_request(create_everything())
+# send_post_request(create_top_headlines())    
+# send_post_request(create_sources())
+
+# set_selected_model("huihui_ai/deepseek-r1-abliterated:8b")
+send_post_request(create_summary())
+# send_post_request(json.dumps("hello how are you doing"))
 
 
     
