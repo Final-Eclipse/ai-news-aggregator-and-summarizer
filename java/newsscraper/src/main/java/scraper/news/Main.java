@@ -93,6 +93,7 @@ public class Main
         // mvn spring-boot:run
         // or
         // .\/mvnw.cmd spring-boot:run
+        // To run from terminal, use "mvn spring-boot:run" in the newsscraper directory.
         // Spring Boot
         SpringApplication.run(Main.class, args);
     }
