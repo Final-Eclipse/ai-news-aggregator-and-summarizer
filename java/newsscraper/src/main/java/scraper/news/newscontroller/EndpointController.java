@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import scraper.news.CreateEndpoint;
@@ -13,7 +12,6 @@ import scraper.news.EverythingEndpoint;
 import scraper.news.NewsScraper;
 import scraper.news.SourcesEndpoint;
 import scraper.news.TopHeadlinesEndpoint;
-
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -32,7 +30,7 @@ public class EndpointController
         apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap).getApiEndpointUrl();
      
         System.out.println(apiEndpointUrl);
-        return "Successful post! Make summary call to C# and return here eventually.";
+        return "Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl;
     }
 
     @GetMapping("/api/v1/news/everything")
