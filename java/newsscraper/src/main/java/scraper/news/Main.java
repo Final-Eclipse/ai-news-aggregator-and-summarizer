@@ -1,15 +1,7 @@
 package scraper.news;
 
-import static spark.Spark.*;
-// Make a class that deals with each endpoint of the API.
-// A class for /v2/everything, /v2/top-headlines, and /v2/top-headlines/sources.
-// Or have one class that determines what the endpoint is and decides which logic to apply.
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 // Have one class for every endpoint.
 // Have a HashMap for each endpoint that contains what the parameters of that endpoint is.
@@ -98,6 +90,9 @@ public class Main
         //     return "Successful Post";
         // });   
 
+        // mvn spring-boot:run
+        // or
+        // .\/mvnw.cmd spring-boot:run
         // Spring Boot
         SpringApplication.run(Main.class, args);
     }
