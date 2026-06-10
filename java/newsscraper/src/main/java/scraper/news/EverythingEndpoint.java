@@ -16,7 +16,7 @@ public class EverythingEndpoint extends Endpoint
     private List<String> domains = new ArrayList<>();
     private List<String> excludeDomains = new ArrayList<>();
 
-    // Optional.
+    // Optional
     private String from;
     private String to;
     private String language;
@@ -43,6 +43,7 @@ public class EverythingEndpoint extends Endpoint
         appendQueryParameters();
     }
 
+    @Override
     public void addParametersToHashMap()
     {
         HashMap<String, Object> parametersHashMap = getParametersHashMap();
