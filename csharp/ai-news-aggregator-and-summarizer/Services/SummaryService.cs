@@ -13,7 +13,7 @@ public static class SummaryService
     static SummaryService()
     {   
         // Throws AggregateException and HttpRequestException if selected model does not exist on the user's computer.
-        ollama.SelectedModel = "huihui_ai/deepseek-r1-abliterated:8b";  // Have selected model as query parameter?
+        ollama.SelectedModel = "llama3.1:8b";  // Have selected model as query parameter?
         // ollama.SelectedModel = selectedModel;
         // System.Console.WriteLine(ollama.SelectedModel);
     }
