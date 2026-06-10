@@ -13,15 +13,17 @@ import requests, json, time
 # POST requests return data so Python can make a POST request with the article url to Spring Boot and it will wait until the summary is returned.
 # Does C# need to be asynchronous or can it be synchronous.
 
-def send_post_request(endpoint_data):
+def send_article_text_to_summarize(article_text):
     """Sends a POST request to upload endpoint data."""
-    # request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", endpoint_data)
-    request = requests.post("http://localhost:8080/api/v1/news/summary", endpoint_data)
+    headers = {"Content-Type": "application/json"}
 
-    # headers = {
-    #     "Content-Type": "application/json"
-    # }
+    request = requests.post("http://localhost:8080/api/v1/news/summary", data=article_text, headers=headers)
     # request = requests.post("http://localhost:5172/summary", data=endpoint_data, headers=headers)
+    print(request.text)
+
+def send_endpoint_data(endpoint_data):
+    headers = {"Content-Type": "application/json"}
+    request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", data=endpoint_data, headers=headers)
     print(request.text)
 
 def set_selected_model(model):
@@ -41,7 +43,7 @@ def create_everything():
     query_params = {
         "endpoint": "everything",
         "q": "iran",
-        "searchIn": "title",
+        "searchIn": "title, content",
         "sources": "associated-press",
         "domains": None,
         "excludeDomains": None,
@@ -116,11 +118,11 @@ def get_oldest_date():
 # send_post_request(create_top_headlines())    
 # send_post_request(create_sources())
 
-send_summary("What is an interesting fact about something in history?")
+# send_summary("What is an interesting fact about something in history?")
 
 def create_summary():
     query_params = {
-        "articleText": "What is an interesting fact?"
+        "articleText": "Who is the most famous person currently?"
     }
 
     return json.dumps(query_params)
@@ -132,13 +134,16 @@ def create_selected_model():
 
     return json.dumps(query_params)
 
-# send_post_request(create_everything())
-# send_post_request(create_top_headlines())    
-# send_post_request(create_sources())
+send_endpoint_data(create_everything())
+send_endpoint_data(create_top_headlines())    
+send_endpoint_data(create_sources())
 
 # set_selected_model("huihui_ai/deepseek-r1-abliterated:8b")
-send_post_request(create_summary())
+# send_article_text_to_summarize(create_summary())
 # send_post_request(json.dumps("hello how are you doing"))
 
+# Send async calls eventually to prevent code execution blocking.
+# Don't do json.dumps then pass that in a request as json= because then it would be double serializing the json which doesn't work.
 
-    
+# Make a DTO for endpoints.
+# Host news app on localhost so it can be used across devices on the same network as well as its own standalone app executable.
