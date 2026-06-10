@@ -1,4 +1,4 @@
-package scraper.news;
+package scraper.news.services;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
