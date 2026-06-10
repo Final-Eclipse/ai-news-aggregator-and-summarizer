@@ -1,4 +1,4 @@
-package scraper.news.newscontroller;
+package scraper.news.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
