@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import scraper.news.Endpoint;
+import scraper.news.models.Endpoint;
 
 public class EverythingEndpoint extends Endpoint
 {

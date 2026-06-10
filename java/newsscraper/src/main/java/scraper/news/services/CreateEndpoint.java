@@ -1,7 +1,7 @@
 package scraper.news.services;
 
-import scraper.news.Endpoint;
-import scraper.news.dtos.EndpointDto;
+import scraper.news.models.Endpoint;
+import scraper.news.models.dtos.EndpointDto;
 import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
 import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
 import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;

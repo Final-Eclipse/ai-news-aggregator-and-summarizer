@@ -2,7 +2,7 @@ package scraper.news.services.newsapi_endpoints;
 
 import java.util.HashMap;
 
-import scraper.news.Endpoint;
+import scraper.news.models.Endpoint;
 
 public class SourcesEndpoint extends Endpoint
 {

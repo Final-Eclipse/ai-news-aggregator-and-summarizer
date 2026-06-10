@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-import scraper.news.Endpoint;
+import scraper.news.models.Endpoint;
 
 public class TopHeadlinesEndpoint extends Endpoint
 {
