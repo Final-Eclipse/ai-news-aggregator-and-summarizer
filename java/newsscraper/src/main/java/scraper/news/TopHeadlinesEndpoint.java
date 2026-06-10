@@ -1,4 +1,5 @@
 package scraper.news;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
@@ -6,8 +7,6 @@ import java.util.ArrayList;
 
 public class TopHeadlinesEndpoint extends Endpoint
 {
-    // what data type to hold parameters
-    // Add javadocs to all methods and builder methods.
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
     
     // At least one is required.
@@ -32,6 +31,7 @@ public class TopHeadlinesEndpoint extends Endpoint
         appendQueryParameters();
     }
 
+    @Override
     public void addParametersToHashMap()
     {
         HashMap<String, Object> parametersHashMap = getParametersHashMap();
