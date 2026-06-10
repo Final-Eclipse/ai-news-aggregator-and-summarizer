@@ -1,4 +1,4 @@
-package scraper.news.dtos;
+package scraper.news.models.dtos;
 
 public class ArticleTextDto 
 {
