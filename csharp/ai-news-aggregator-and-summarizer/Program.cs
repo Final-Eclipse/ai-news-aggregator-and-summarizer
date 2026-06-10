@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ai_news_aggregator_and_summarizer;
 
+// To run from terminal, use "dotnet run" from the ai-news-aggregator-and-summarizer directory.
 public class Program
 {   
     public static async Task Main(string[] args)
@@ -23,14 +24,9 @@ public class Program
         builder.Services.AddControllers();
 
         var app = builder.Build();
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
-
-        
-
-        // Create new csproj for asp net core.
-        // Or have two csprojs in the csharp folder.
     }
 }
