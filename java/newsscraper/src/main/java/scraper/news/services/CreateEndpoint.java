@@ -1,6 +1,10 @@
-package scraper.news;
+package scraper.news.services;
 
-import java.util.HashMap;
+import scraper.news.Endpoint;
+import scraper.news.dtos.EndpointDto;
+import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
+import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
+import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
 
 public class CreateEndpoint 
 {

@@ -1,9 +1,11 @@
-package scraper.news;
+package scraper.news.services.newsapi_endpoints;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
+
+import scraper.news.Endpoint;
 
 public class TopHeadlinesEndpoint extends Endpoint
 {

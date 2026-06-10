@@ -1,6 +1,8 @@
-package scraper.news;
+package scraper.news.services.newsapi_endpoints;
 
 import java.util.HashMap;
+
+import scraper.news.Endpoint;
 
 public class SourcesEndpoint extends Endpoint
 {
