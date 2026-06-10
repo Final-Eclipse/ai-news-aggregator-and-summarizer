@@ -1,9 +1,6 @@
 package scraper.news;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class SourcesEndpoint extends Endpoint
 {
@@ -24,6 +21,7 @@ public class SourcesEndpoint extends Endpoint
         appendQueryParameters();
     }
 
+    @Override
     public void addParametersToHashMap()
     {
         HashMap<String, Object> parametersHashMap = getParametersHashMap();
