@@ -24,7 +24,7 @@ public class LocalModelClient
       
         await foreach (var stream in ollama.GenerateAsync(message))
         {
-            response += stream.Response;
+            response += stream?.Response;
         }
     }
 
