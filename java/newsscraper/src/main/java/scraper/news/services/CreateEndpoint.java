@@ -1,6 +1,6 @@
 package scraper.news.services;
 
-import scraper.news.models.Endpoint;
+import scraper.news.models.EndpointModel;
 import scraper.news.models.dtos.EndpointDto;
 import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
 import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
@@ -8,7 +8,7 @@ import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
 
 public class CreateEndpoint 
 {
-    public static Endpoint create(EndpointDto endpointData)
+    public static EndpointModel create(EndpointDto endpointData)
     {
         switch (endpointData.getEndpoint())
         {

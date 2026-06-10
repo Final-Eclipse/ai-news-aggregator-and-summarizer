@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-import scraper.news.models.Endpoint;
+import scraper.news.models.EndpointModel;
 
-public class TopHeadlinesEndpoint extends Endpoint
+public class TopHeadlinesEndpoint extends EndpointModel
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
     

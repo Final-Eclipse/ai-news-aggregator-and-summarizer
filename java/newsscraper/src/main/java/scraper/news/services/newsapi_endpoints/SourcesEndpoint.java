@@ -2,9 +2,9 @@ package scraper.news.services.newsapi_endpoints;
 
 import java.util.HashMap;
 
-import scraper.news.models.Endpoint;
+import scraper.news.models.EndpointModel;
 
-public class SourcesEndpoint extends Endpoint
+public class SourcesEndpoint extends EndpointModel
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines/sources";
     
