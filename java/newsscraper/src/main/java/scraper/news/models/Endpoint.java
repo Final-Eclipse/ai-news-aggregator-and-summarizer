@@ -1,4 +1,4 @@
-package scraper.news;
+package scraper.news.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
