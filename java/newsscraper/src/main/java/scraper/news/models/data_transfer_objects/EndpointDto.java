@@ -1,4 +1,4 @@
-package scraper.news.models.dtos;
+package scraper.news.models.data_transfer_objects;
 
 public class EndpointDto
 {

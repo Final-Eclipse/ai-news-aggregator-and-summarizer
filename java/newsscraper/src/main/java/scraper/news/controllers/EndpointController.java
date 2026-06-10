@@ -12,8 +12,8 @@ import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
 import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
 import scraper.news.services.NewsScraper;
 import scraper.news.models.EndpointModel;
-import scraper.news.models.dtos.ArticleTextDto;
-import scraper.news.models.dtos.EndpointDto;
+import scraper.news.models.data_transfer_objects.ArticleTextDto;
+import scraper.news.models.data_transfer_objects.EndpointDto;
 
 @RestController
 public class EndpointController 
