@@ -24,7 +24,7 @@ public class Program
         builder.Services.AddControllers();
 
         var app = builder.Build();
-        // app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();   // Disabled for testing, look into and reintroduce later.
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
