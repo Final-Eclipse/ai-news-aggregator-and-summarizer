@@ -6,42 +6,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import scraper.news.CreateEndpoint;
-import scraper.news.Endpoint;
-import scraper.news.EverythingEndpoint;
-import scraper.news.NewsScraper;
-import scraper.news.SourcesEndpoint;
-import scraper.news.TopHeadlinesEndpoint;
-import scraper.news.dtos.ArticleTextDto;
-import scraper.news.dtos.EndpointDto;
+import scraper.news.services.CreateEndpoint;
+import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
+import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
+import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
+import scraper.news.services.NewsScraper;
+import scraper.news.models.Endpoint;
+import scraper.news.models.dtos.ArticleTextDto;
+import scraper.news.models.dtos.EndpointDto;
 
 @RestController
 public class EndpointController 
 {
-    // private final ObjectMapper objectMapper = new ObjectMapper();
     private String apiEndpointUrl;
 
     @PostMapping("/api/v1/news/post-endpoint-data")
     public ResponseEntity<String> postEndpointData(@RequestBody EndpointDto endpointData)
-    // public String postEndpointData(@RequestBody String endpointData)
     { 
-        // HashMap<String, String> endpointDataHashMap = objectMapper.readValue(endpointData, new TypeReference<>() {});
-        // apiEndpointUrl = CreateEndpoint.create(endpointDataHashMap).getApiEndpointUrl();
-        // System.out.println(apiEndpointUrl);
-        // return "Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl;
-
-        // Use data transfer object?
-        // https://www.appsdeveloperblog.com/read-json-request-body-in-spring-web-mvc/
-        // endpointData.initalizeEndpoint();
-        // System.out.println(endpointData.getApiEndpointUrl());
-        // System.out.println(endpointData.getQ());
-
         Endpoint endpoint = CreateEndpoint.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
-        // System.out.println(endpointData.getSearchIn());
         System.out.println(apiEndpointUrl);
-
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);
     }
 
     @GetMapping("/api/v1/news/everything")
