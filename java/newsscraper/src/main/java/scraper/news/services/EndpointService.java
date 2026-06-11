@@ -2,58 +2,61 @@ package scraper.news.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.List;
 
+// Use StringBuilder for more efficiency versus String concatenation?
 public abstract class EndpointService
 {
     private String apiEndpointUrl;
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
+    private final Set<String> specialQueryParameters = Set.of("searchIn", "sources", "domains", "excludeDomains");
 
+    /**
+     * Abstract method that must be implemented by children classes.
+     * It must use the methods getParametersHashMap() and setParametersHashMap()
+     * in order to update the parametersHashMap in this file.
+     */
     public abstract void addParametersToHashMap();
 
-    // Appends each query parameter to the API URL.
-    // Uses appendCSVQueryParameters() as a helper method.
+    /**
+     * Appends each query parameter in parametersHashMap to the apiEndpointUrl.
+     */
     public void appendQueryParameters()
     {
-        apiEndpointUrl = apiEndpointUrl + "?";
+        apiEndpointUrl += "?";
 
         for (String queryParameter : parametersHashMap.keySet())
         {
             Object value = parametersHashMap.get(queryParameter);
-            if (isQueryParameterNullOrEmpty(value) == true)
+            if (isValueNullOrEmpty(value) == true)
             {
                 continue;
             }
-            else
+            
+            apiEndpointUrl += queryParameter + "=";
+            if (specialQueryParameters.contains(queryParameter))
             {
-                apiEndpointUrl += queryParameter + "=";
+                value = getCsvQueryParameters(value);
+            }
+            else if (((String) value).contains(" "))
+            {
+                value = encodeQueryParameterSpaces((String) value);
             }
 
-            if (queryParameter.equals("searchIn") || queryParameter.equals("sources") || queryParameter.equals("domains") || queryParameter.equals("excludeDomains"))
-            {
-                appendCsvQueryParameters(value);
-                truncateUrl(1);
-                apiEndpointUrl = apiEndpointUrl + "&";
-            }
-            else
-            {  
-                if (((String) value).contains(" "))
-                {
-                    value = encodeQueryParameterSpaces((String) value);
-                    apiEndpointUrl += value + "&";
-                }
-                else
-                {
-                    apiEndpointUrl += value + "&";
-                }
-            }
+            apiEndpointUrl += value + "&";
         }
 
         truncateUrl(1);
     }
 
-    // Returns a boolean after checking if the value parameter is null or empty (if it is a List).
-    private boolean isQueryParameterNullOrEmpty(Object value)
+    /**
+     * Returns a boolean based on whether or not the parameter is null or empty.
+     * 
+     * @param value An Object that corresponds with its query parameter key.
+     * @return boolean true if value is null or empty; false otherwise.
+     */
+    private boolean isValueNullOrEmpty(Object value)
     {
         if (value == null)
         {
@@ -73,14 +76,24 @@ public abstract class EndpointService
         }
     }
 
-    // Only used and called from within appendQueryParameters().
-    private void appendCsvQueryParameters(Object csvValues)
+    /**
+     * Converts the parameter to a List<String>, 
+     * then to a single String and appends it to the apiEndpointUrl.
+     * 
+     * @param csvValues An Object of csvValues.
+     */
+    private String getCsvQueryParameters(Object csvValues)
     {
         List<String> csvList = getListOfStrings(csvValues);
-        apiEndpointUrl += getCsvString(csvList);
+        return getCsvString(csvList);
     }
 
-    // Converts an Object parameter to a List and returns it.
+    /**
+     * Converts an Object parameter to a List and returns it.
+     * 
+     * @param csvValues An Object that is mapped to a List<String>.
+     * @return List<String> made up of csvValues' elements.
+     */
     private List<String> getListOfStrings(Object csvValues)
     {
         List<String> newList = new ArrayList<String>();
@@ -95,7 +108,13 @@ public abstract class EndpointService
         return newList;
     }
 
-    // Only used and called from within appendCSVQueryParameters().
+    /**
+     * Takes a List<String> and combines its elements into one String
+     * separated by commas and returns it.
+     * 
+     * @param csvList A List<String> whose elements are to be separated by commas.
+     * @return String of each element of csvList separated by commas with no spaces.
+     */
     private String getCsvString(List<String> csvList)
     {
         String csvString = "";
@@ -104,52 +123,70 @@ public abstract class EndpointService
             csvString = csvString + element + ",";   
         }
 
+        csvString = csvString.substring(0, csvString.length() - 1);
         return csvString;
     }
 
+    /**
+     * Encodes spaces as "%20" for the given queryParameter.
+     * 
+     * @param queryParameter The query parameter to encode spaces in.
+     * @return String of the query parameters but with encoded spaces.
+     */
     private String encodeQueryParameterSpaces(String queryParameter)
     {
         String[] splitArray = queryParameter.split(" ");
-        String newString = "";
+        String encodedQueryParameter = "";
 
         for (String x : splitArray)
         {
-            newString += x + "%20";
+            encodedQueryParameter += x + "%20";
         }
 
-        newString = newString.substring(0, newString.length() - 3);
-        newString = encodeDoubleQuotes(newString);
-        return newString;
+        encodedQueryParameter = encodedQueryParameter.substring(0, encodedQueryParameter.length() - 3);
+        encodedQueryParameter = encodeDoubleQuotes(encodedQueryParameter);
+        return encodedQueryParameter;
     }
 
-    // Encodes the API URL with double quotes.
-    // This will cause the News API to look for that exact phrase instead of any of those words.
-    private String encodeDoubleQuotes(String newString)
+    /**
+     * Encodes the given queryParameter with double quotes.
+     * Mainly used for the query parameter "q" in order to search for exact phrases instead of a single word.
+     * 
+     * @param queryParameter The query parameter to encode in surrounding double quotes.
+     * @return String of the double quote encoded queryParameter.
+     */
+    private String encodeDoubleQuotes(String queryParameter)
     {
-        return "%22" + newString + "%22";
+        return "%22" + queryParameter + "%22";
     }
-
-    // Removes the last character of the apiEndpointUrl.
-    // This is useful in cases where there may be an "&" or "," at the end of the string,
-    // after appending query parameters.
+    
+    /**
+     * Removes the last character of the apiEndpointUrl.
+     * This is useful in cases where there may be an "&" or "," at the end of the string, 
+     * after appending query parameters.
+     *
+     * @param elementsToTruncate Number of characters to remove from the end of the apiEndpointUrl.
+     */
     private void truncateUrl(int elementsToTruncate)
     {
         apiEndpointUrl = apiEndpointUrl.substring(0, apiEndpointUrl.length() - elementsToTruncate);
     }
 
+    // Getters
     public HashMap<String, Object> getParametersHashMap()
     {
         return parametersHashMap;
     }
 
-    public void setParametersHashMap(HashMap<String, Object> parametersHashMap)
-    {
-        this.parametersHashMap = parametersHashMap;
-    }
-
     public String getApiEndpointUrl()
     {
         return apiEndpointUrl;
+    }
+
+    // Setters
+    public void setParametersHashMap(HashMap<String, Object> parametersHashMap)
+    {
+        this.parametersHashMap = parametersHashMap;
     }
 
     public void setApiEndpointUrl(String apiEndpointUrl)
