@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import scraper.news.models.EndpointModel;
+import scraper.news.services.EndpointService;
 
-public class EverythingEndpoint extends EndpointModel
+public class EverythingEndpoint extends EndpointService
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     

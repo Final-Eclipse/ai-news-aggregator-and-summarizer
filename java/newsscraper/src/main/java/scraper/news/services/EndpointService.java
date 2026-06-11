@@ -1,10 +1,10 @@
-package scraper.news.models;
+package scraper.news.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class EndpointModel
+public abstract class EndpointService
 {
     private String apiEndpointUrl;
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();
