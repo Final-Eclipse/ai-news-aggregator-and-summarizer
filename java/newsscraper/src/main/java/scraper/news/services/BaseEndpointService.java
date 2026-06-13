@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.List;
 
 // Use StringBuilder for more efficiency versus String concatenation?
-public abstract class EndpointService
+public abstract class BaseEndpointService
 {
     private String apiEndpointUrl;
     private HashMap<String, Object> parametersHashMap = new HashMap<String, Object>();

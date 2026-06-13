@@ -11,7 +11,7 @@ import scraper.news.services.newsapi_endpoints.EverythingEndpointService;
 import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
 import scraper.news.services.HttpService;
-import scraper.news.services.EndpointService;
+import scraper.news.services.BaseEndpointService;
 import scraper.news.models.data_transfer_objects.ArticleTextDto;
 import scraper.news.models.data_transfer_objects.EndpointDto;
 
@@ -23,7 +23,7 @@ public class EndpointController
     @PostMapping("/api/v1/news/post-endpoint-data")
     public ResponseEntity<String> postEndpointData(@RequestBody EndpointDto endpointData)
     { 
-        EndpointService endpoint = CreateEndpointService.create(endpointData);
+        BaseEndpointService endpoint = CreateEndpointService.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
         System.out.println(apiEndpointUrl);
         return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);

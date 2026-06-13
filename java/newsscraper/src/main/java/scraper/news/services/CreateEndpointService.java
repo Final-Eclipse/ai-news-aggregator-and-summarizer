@@ -13,7 +13,7 @@ public class CreateEndpointService
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
      * @return EndpointService, an abstract class containing the apiEndpointUrl and related methods. 
      */
-    public static EndpointService create(EndpointDto endpointData)
+    public static BaseEndpointService create(EndpointDto endpointData)
     {
         switch (endpointData.getEndpoint())
         {
