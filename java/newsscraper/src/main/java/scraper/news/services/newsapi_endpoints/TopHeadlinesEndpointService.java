@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import scraper.news.services.EndpointService;
 
-public class TopHeadlinesEndpoint extends EndpointService
+public class TopHeadlinesEndpointService extends EndpointService
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
     
@@ -19,7 +19,7 @@ public class TopHeadlinesEndpoint extends EndpointService
     private String pageSize;
     private String page; 
 
-    public TopHeadlinesEndpoint(Builder builder)
+    public TopHeadlinesEndpointService(Builder builder)
     {
         this.country = builder.country;
         this.category = builder.category;
@@ -74,7 +74,7 @@ public class TopHeadlinesEndpoint extends EndpointService
         public Builder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
         public Builder page(String page) { this.page = page; return this; }
         
-        public TopHeadlinesEndpoint build()
+        public TopHeadlinesEndpointService build()
         {
             if (country == null && category == null && sources == null && q == null && pageSize == null && page == null)
             {
@@ -93,7 +93,7 @@ public class TopHeadlinesEndpoint extends EndpointService
                 }
             }
             
-            return new TopHeadlinesEndpoint(this);
+            return new TopHeadlinesEndpointService(this);
         }
 
         // Returns an ArrayList containing the individual elements of a CSV input.
