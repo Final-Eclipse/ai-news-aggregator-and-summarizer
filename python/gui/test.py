@@ -117,6 +117,7 @@ def get_oldest_date():
 # send_post_request(create_everything())
 # send_post_request(create_top_headlines())    
 # send_post_request(create_sources())
+# print(requests.get("http://localhost:8080/api/v1/news/everything").text)
 
 # send_summary("What is an interesting fact about something in history?")
 
@@ -134,9 +135,9 @@ def create_selected_model():
 
     return json.dumps(query_params)
 
-send_endpoint_data(create_everything())
-send_endpoint_data(create_top_headlines())    
-send_endpoint_data(create_sources())
+# send_endpoint_data(create_everything())
+# send_endpoint_data(create_top_headlines())    
+# send_endpoint_data(create_sources())
 
 # set_selected_model("huihui_ai/deepseek-r1-abliterated:8b")
 # send_article_text_to_summarize(create_summary())
