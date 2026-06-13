@@ -26,9 +26,22 @@ public class EndpointController
         BaseEndpointService endpoint = CreateEndpointService.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
         System.out.println(apiEndpointUrl);
+        // ✓ Call method to get NewsAPI JSON.
+        // X Parse JSON for article urls, article thumbnails, etc.
+        // X Scrape each article (either parse the HTML to get the article body or send the entire HTML to C# to summarize the article based off of that).
+        String responseString = getEndpoint();
+        System.out.println(responseString);
         return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);
     }
 
+    // Gets NewsAPI endpoint JSON.
+    private String getEndpoint()
+    {
+        String responseString = HttpService.getResponse(apiEndpointUrl);
+        return responseString;
+    }
+
+    // Most likely remove these GET methods and replace with methods that take a url.
     @GetMapping("/api/v1/news/everything")
     public String everything()
     {
