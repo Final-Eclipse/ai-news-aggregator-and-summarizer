@@ -1,11 +1,11 @@
 package scraper.news.services;
 
 import scraper.news.models.data_transfer_objects.EndpointDto;
-import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
-import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
-import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
+import scraper.news.services.newsapi_endpoints.EverythingEndpointService;
+import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
+import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 
-public class CreateEndpoint 
+public class CreateEndpointService 
 {
     /**
      * Determines the endpoint type, calls its creation method, and returns the EndpointService result.
@@ -18,13 +18,13 @@ public class CreateEndpoint
         switch (endpointData.getEndpoint())
         {
             case "everything":
-                return createEverythingEndpoint(endpointData);
+                return createEverythingEndpointService(endpointData);
                 
             case "top-headlines":
-                return createTopHeadlinesEndpoint(endpointData);
+                return createTopHeadlinesEndpointService(endpointData);
                 
             case "top-headlines/sources":
-                return createSourcesEndpoint(endpointData);
+                return createSourcesEndpointService(endpointData);
 
             default:
                 throw new IllegalArgumentException("Invalid endpoint type.");
@@ -37,9 +37,9 @@ public class CreateEndpoint
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
      * @return EverythingEndpoint, a class that extends EndpointService.
      */
-    private static EverythingEndpoint createEverythingEndpoint(EndpointDto endpointData)
+    private static EverythingEndpointService createEverythingEndpointService(EndpointDto endpointData)
     {
-        return new EverythingEndpoint.Builder() 
+        return new EverythingEndpointService.Builder() 
             .q(endpointData.getQ())
             .searchIn(endpointData.getSearchIn())
             .sources(endpointData.getSources())
@@ -60,9 +60,9 @@ public class CreateEndpoint
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
      * @return TopHeadlinesEndpoint, a class that extends EndpointService.
      */
-    private static TopHeadlinesEndpoint createTopHeadlinesEndpoint(EndpointDto endpointData)
+    private static TopHeadlinesEndpointService createTopHeadlinesEndpointService(EndpointDto endpointData)
     {
-        return new TopHeadlinesEndpoint.Builder()
+        return new TopHeadlinesEndpointService.Builder()
             .country(endpointData.getCountry())
             .category(endpointData.getCategory())
             .sources(endpointData.getSources())
@@ -78,9 +78,9 @@ public class CreateEndpoint
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
      * @return SourcesEndpoint, a class that extends EndpointService.
      */
-    private static SourcesEndpoint createSourcesEndpoint(EndpointDto endpointData)
+    private static SourcesEndpointService createSourcesEndpointService(EndpointDto endpointData)
     {
-        return new SourcesEndpoint.Builder()
+        return new SourcesEndpointService.Builder()
             .category(endpointData.getCategory())
             .language(endpointData.getLanguage())
             .country(endpointData.getCountry())

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import scraper.news.services.CreateEndpointService;
-import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
-import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
-import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
+import scraper.news.services.newsapi_endpoints.EverythingEndpointService;
+import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
+import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
 import scraper.news.services.NewsScraper;
 import scraper.news.services.EndpointService;
 import scraper.news.models.data_transfer_objects.ArticleTextDto;
@@ -32,7 +32,7 @@ public class EndpointController
     @GetMapping("/api/v1/news/everything")
     public String everything()
     {
-        EverythingEndpoint x = new EverythingEndpoint.Builder()
+        EverythingEndpointService x = new EverythingEndpointService.Builder()
             // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
             // Wrap q in double quotes for exact phrase.
             // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
@@ -55,7 +55,7 @@ public class EndpointController
     @GetMapping("/api/v1/news/top-headlines")
     public String topHeadlines()
     {
-        TopHeadlinesEndpoint y = new TopHeadlinesEndpoint.Builder()
+        TopHeadlinesEndpointService y = new TopHeadlinesEndpointService.Builder()
             .country("US")
             .category("general")
             // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
@@ -70,7 +70,7 @@ public class EndpointController
     @GetMapping("/api/v1/news/top-headlines/sources")
     public String sources()
     {
-        SourcesEndpoint z = new SourcesEndpoint.Builder()
+        SourcesEndpointService z = new SourcesEndpointService.Builder()
             .category("sports")
             .language("en")
             .country("us")
