@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import scraper.news.services.EndpointService;
 
-public class SourcesEndpoint extends EndpointService
+public class SourcesEndpointService extends EndpointService
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines/sources";
     
@@ -12,7 +12,7 @@ public class SourcesEndpoint extends EndpointService
     private String language;
     private String country;    
 
-    public SourcesEndpoint(Builder builder)
+    public SourcesEndpointService(Builder builder)
     {
         this.category = builder.category;
         this.language = builder.language;
@@ -51,14 +51,14 @@ public class SourcesEndpoint extends EndpointService
         public Builder language(String language) { this.language = language; return this; }
         public Builder country(String country) { this.country = country; return this; }
         
-        public SourcesEndpoint build()
+        public SourcesEndpointService build()
         {
             if (category == null && language == null && country == null)
             {
                 throw new NullPointerException("At least one of these parameters must not be null (category, language, country).");
             }
             
-            return new SourcesEndpoint(this);
+            return new SourcesEndpointService(this);
         }
     }
 }
