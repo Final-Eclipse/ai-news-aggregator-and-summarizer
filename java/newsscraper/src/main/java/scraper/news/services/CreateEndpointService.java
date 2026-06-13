@@ -8,10 +8,10 @@ import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 public class CreateEndpointService 
 {
     /**
-     * Determines the endpoint type, calls its creation method, and returns the EndpointService result.
+     * Determines the endpoint type, calls its creation method, and returns the BaseEndpointService result.
      * 
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
-     * @return EndpointService, an abstract class containing the apiEndpointUrl and related methods. 
+     * @return BaseEndpointService, an abstract class containing the apiEndpointUrl and related methods. 
      */
     public static BaseEndpointService create(EndpointDto endpointData)
     {
@@ -32,10 +32,10 @@ public class CreateEndpointService
     }
 
     /**
-     * Constructs and returns an EverythingEndpoint.
+     * Constructs and returns an EverythingEndpointService.
      * 
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
-     * @return EverythingEndpoint, a class that extends EndpointService.
+     * @return EverythingEndpointService, a class that extends BaseEndpointService.
      */
     private static EverythingEndpointService createEverythingEndpointService(EndpointDto endpointData)
     {
@@ -55,10 +55,10 @@ public class CreateEndpointService
     }
 
     /**
-     * Constructs and returns a TopHeadlinesEndpoint.
+     * Constructs and returns a TopHeadlinesEndpointService.
      * 
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
-     * @return TopHeadlinesEndpoint, a class that extends EndpointService.
+     * @return TopHeadlinesEndpointService, a class that extends BaseEndpointService.
      */
     private static TopHeadlinesEndpointService createTopHeadlinesEndpointService(EndpointDto endpointData)
     {
@@ -73,10 +73,10 @@ public class CreateEndpointService
     }
 
     /**
-     * Constructs and returns a SourcesEndpoint.
+     * Constructs and returns a SourcesEndpointService.
      * 
      * @param endpointData EndpointDto that contains data describing the endpoint and its query parameters.
-     * @return SourcesEndpoint, a class that extends EndpointService.
+     * @return SourcesEndpointService, a class that extends BaseEndpointService.
      */
     private static SourcesEndpointService createSourcesEndpointService(EndpointDto endpointData)
     {
