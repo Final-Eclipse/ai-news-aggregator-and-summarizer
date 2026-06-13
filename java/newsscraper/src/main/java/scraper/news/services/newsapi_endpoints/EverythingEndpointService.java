@@ -7,7 +7,7 @@ import java.util.List;
 
 import scraper.news.services.EndpointService;
 
-public class EverythingEndpoint extends EndpointService
+public class EverythingEndpointService extends EndpointService
 {
     private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     
@@ -26,7 +26,7 @@ public class EverythingEndpoint extends EndpointService
     private String pageSize;
     private String page; 
 
-    public EverythingEndpoint(Builder builder)
+    public EverythingEndpointService(Builder builder)
     {
         this.q = builder.q;
         this.searchIn = builder.searchIn;
@@ -120,14 +120,14 @@ public class EverythingEndpoint extends EndpointService
         public Builder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
         public Builder page(String page) { this.page = page; return this; }
         
-        public EverythingEndpoint build()
+        public EverythingEndpointService build()
         {
             if (q == null && searchIn == null && sources == null && domains == null)
             {
                 throw new NullPointerException("At least one of these parameters must not be null (q, searchIn, sources, domains).");
             }
             
-            return new EverythingEndpoint(this);
+            return new EverythingEndpointService(this);
         }
 
         // Returns an ArrayList containing the individual elements of a CSV input.
