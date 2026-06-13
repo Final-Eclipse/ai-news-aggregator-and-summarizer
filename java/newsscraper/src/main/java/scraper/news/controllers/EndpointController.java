@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import scraper.news.services.CreateEndpoint;
+import scraper.news.services.CreateEndpointService;
 import scraper.news.services.newsapi_endpoints.EverythingEndpoint;
 import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpoint;
 import scraper.news.services.newsapi_endpoints.SourcesEndpoint;
@@ -23,7 +23,7 @@ public class EndpointController
     @PostMapping("/api/v1/news/post-endpoint-data")
     public ResponseEntity<String> postEndpointData(@RequestBody EndpointDto endpointData)
     { 
-        EndpointService endpoint = CreateEndpoint.create(endpointData);
+        EndpointService endpoint = CreateEndpointService.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
         System.out.println(apiEndpointUrl);
         return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);
