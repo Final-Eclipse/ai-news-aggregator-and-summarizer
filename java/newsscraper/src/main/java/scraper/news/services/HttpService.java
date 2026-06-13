@@ -9,7 +9,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 
-public class NewsScraper 
+public class HttpService 
 {
     private static HttpClient client = HttpClient.newHttpClient();
     private static String apiKey = System.getenv("NEWSAPI_API_KEY");

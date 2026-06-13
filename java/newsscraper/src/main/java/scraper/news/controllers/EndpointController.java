@@ -10,7 +10,7 @@ import scraper.news.services.CreateEndpointService;
 import scraper.news.services.newsapi_endpoints.EverythingEndpointService;
 import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
-import scraper.news.services.NewsScraper;
+import scraper.news.services.HttpService;
 import scraper.news.services.EndpointService;
 import scraper.news.models.data_transfer_objects.ArticleTextDto;
 import scraper.news.models.data_transfer_objects.EndpointDto;
@@ -49,7 +49,7 @@ public class EndpointController
             .page("1")
             .build();
 
-        return NewsScraper.getResponse(x.getApiEndpointUrl());
+        return HttpService.getResponse(x.getApiEndpointUrl());
     }
 
     @GetMapping("/api/v1/news/top-headlines")
@@ -64,7 +64,7 @@ public class EndpointController
             .page("1")
             .build();
 
-        return NewsScraper.getResponse(y.getApiEndpointUrl());
+        return HttpService.getResponse(y.getApiEndpointUrl());
     }
 
     @GetMapping("/api/v1/news/top-headlines/sources")
@@ -76,14 +76,14 @@ public class EndpointController
             .country("us")
             .build();
 
-        return NewsScraper.getResponse(z.getApiEndpointUrl());
+        return HttpService.getResponse(z.getApiEndpointUrl());
     }
 
     @PostMapping("/api/v1/news/summary")
     public ResponseEntity<String> summarization(@RequestBody ArticleTextDto articleText)
     {     
         String text = articleText.getArticleText();
-        String summary = NewsScraper.getSummarization(text);
+        String summary = HttpService.getSummarization(text);
         return ResponseEntity.ok(summary);
     }
 }
