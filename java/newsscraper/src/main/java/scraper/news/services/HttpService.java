@@ -15,7 +15,7 @@ import scraper.news.models.data_transfer_objects.TopHeadlinesDto;
 public class HttpService 
 {
     private final static HttpClient client = HttpClient.newHttpClient();
-    private static String apiKey = System.getenv("NEWSAPI_API_KEY");
+    private final static String apiKey = System.getenv("NEWSAPI_API_KEY");
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
