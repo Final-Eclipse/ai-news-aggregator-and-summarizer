@@ -6,7 +6,7 @@ import scraper.news.services.BaseEndpointService;
 
 public class SourcesEndpointService extends BaseEndpointService
 {
-    private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines/sources";
+    private final String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines/sources";
     
     private String category;
     private String language;
@@ -23,6 +23,9 @@ public class SourcesEndpointService extends BaseEndpointService
         appendQueryParameters();
     }
 
+    /**
+     * Updates the parent's parametersHashMap with new keys and values.
+     */
     @Override
     public void addParametersToHashMap()
     {

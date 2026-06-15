@@ -9,7 +9,7 @@ import scraper.news.services.BaseEndpointService;
 
 public class TopHeadlinesEndpointService extends BaseEndpointService
 {
-    private String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
+    private final String baseApiEndpointUrl = "https://newsapi.org/v2/top-headlines";
     
     // At least one is required.
     private String country; // Can't be mixed with the sources parameter.
@@ -33,6 +33,9 @@ public class TopHeadlinesEndpointService extends BaseEndpointService
         appendQueryParameters();
     }
 
+    /**
+     * Updates the parent's parametersHashMap with new keys and values.
+     */
     @Override
     public void addParametersToHashMap()
     {
@@ -96,16 +99,20 @@ public class TopHeadlinesEndpointService extends BaseEndpointService
             return new TopHeadlinesEndpointService(this);
         }
 
-        // Returns an ArrayList containing the individual elements of a CSV input.
-        // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
-        private ArrayList<String> splitCommaSeparatedString(String input)
+        /**
+         * Splits elements of a csvString into an ArrayList<String>.
+         * 
+         * @param csvString String of comma-separated values.
+         * @return ArrayList<String> containing elements of csvString.
+         */
+        private ArrayList<String> splitCommaSeparatedString(String csvString)
         {
-            if (input == null)
+            if (csvString == null)
             {
                 return null;
             }
 
-            String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
+            String[] splitArray = csvString.split("[,| ]+"); // Splits on commas and spaces.
             return new ArrayList<String>(Arrays.asList(splitArray));   
         }
     }

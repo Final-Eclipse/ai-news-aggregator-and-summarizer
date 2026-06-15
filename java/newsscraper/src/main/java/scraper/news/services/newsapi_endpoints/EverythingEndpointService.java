@@ -9,7 +9,7 @@ import scraper.news.services.BaseEndpointService;
 
 public class EverythingEndpointService extends BaseEndpointService
 {
-    private String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
+    private final String baseApiEndpointUrl = "https://newsapi.org/v2/everything";
     
     // At least one is required.
     private String q;
@@ -45,6 +45,9 @@ public class EverythingEndpointService extends BaseEndpointService
         appendQueryParameters();
     }
 
+    /**
+     * Updates the parent's parametersHashMap with new keys and values.
+     */
     @Override
     public void addParametersToHashMap()
     {
@@ -108,13 +111,8 @@ public class EverythingEndpointService extends BaseEndpointService
             this.excludeDomains = splitCommaSeparatedString(domains); 
             return this; 
         }
-        /**
-         * The starting date for which articles must be from.
-         * @param from A date in ISO 8601 format (2026-04-20T00:00:00).
-         * @return Builder
-         */
-        public Builder from(String from) { this.from = from; return this; }   // from
-        public Builder to(String to) { this.to = to; return this; }   // to=2026-04-20T00:00:00
+        public Builder from(String from) { this.from = from; return this; }   // Must be in ISO 8601 format (2026-04-20T00:00:00).
+        public Builder to(String to) { this.to = to; return this; }   // Must be in ISO 8601 format (2026-04-20T00:00:00).
         public Builder language(String language) { this.language = language; return this; }
         public Builder sortBy(String sortBy) { this.sortBy = sortBy; return this; }
         public Builder pageSize(String pageSize) { this.pageSize = pageSize; return this; }
@@ -130,16 +128,20 @@ public class EverythingEndpointService extends BaseEndpointService
             return new EverythingEndpointService(this);
         }
 
-        // Returns an ArrayList containing the individual elements of a CSV input.
-        // This is used for parameters that are able to be input as CSVs instead of just a single consistent string.
-        private ArrayList<String> splitCommaSeparatedString(String input)
+        /**
+         * Splits elements of a csvString into an ArrayList<String>.
+         * 
+         * @param csvString String of comma-separated values.
+         * @return ArrayList<String> containing elements of csvString.
+         */
+        private ArrayList<String> splitCommaSeparatedString(String csvString)
         {
-            if (input == null)
+            if (csvString == null)
             {
                 return null;
             }
 
-            String[] splitArray = input.split("[,| ]+"); // Splits on commas and spaces.
+            String[] splitArray = csvString.split("[,| ]+"); // Splits on commas and spaces.
             return new ArrayList<String>(Arrays.asList(splitArray));   
         }
     }
