@@ -24,7 +24,7 @@ public class HttpService
      * @param apiEndpointUrl String URL pointing to one of NewsAPI's endpoints.
      * @return String representation of the JSON result.
      */
-    public static String getNewsApiResponse(String apiEndpointUrl)
+    private static String getNewsApiResponse(String apiEndpointUrl)
     {   
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(apiEndpointUrl))
