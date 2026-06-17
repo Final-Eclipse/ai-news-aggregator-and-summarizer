@@ -66,7 +66,6 @@ public class HttpService
         HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
         handleErrorCodes(response);
         return response.body();
-        // return "\"" + response.body() + "\"";
     }
 
     // Have post articleText and getSummarization as different methods?
