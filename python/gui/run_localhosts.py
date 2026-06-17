@@ -28,6 +28,10 @@ def run_ollama():
         shell=True
     )
 
-run_dotnet()
-run_java()
-run_ollama()
+def main():
+    run_dotnet()
+    run_java()
+    run_ollama()
+
+if __name__ == "__main__":
+    main()
