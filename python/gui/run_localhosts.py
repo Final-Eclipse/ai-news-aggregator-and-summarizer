@@ -10,10 +10,6 @@ def run_dotnet():
         shell=True
     )
 
-    # print(x.stdout)
-    # print(x.stderr)
-    # print(x.returncode)
-
 def run_java():
     x = subprocess.Popen(
         ["mvnw.cmd", "spring-boot:run"],
@@ -24,9 +20,14 @@ def run_java():
         shell=True
     )
 
-    # print(x.stdout)
-    # print(x.stderr)
-    # print(x.returncode)
+def run_ollama():
+    x = subprocess.Popen(
+        ["ollama", "serve"],
+        stdout=subprocess.PIPE,
+        text=True,
+        shell=True
+    )
 
 run_dotnet()
 run_java()
+run_ollama()
