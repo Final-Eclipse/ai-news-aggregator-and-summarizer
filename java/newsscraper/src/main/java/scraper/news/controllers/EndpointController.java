@@ -1,5 +1,8 @@
 package scraper.news.controllers;
 
+// import java.io.IOException;
+
+// import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +14,11 @@ import scraper.news.services.CreateEndpointService;
 // import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 // import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
 import scraper.news.services.HttpService;
+// import scraper.news.services.parsers.AbcNews;
+// import scraper.news.services.parsers.ApNews;
+import scraper.news.services.parsers.Parser;
 import scraper.news.services.BaseEndpointService;
-import scraper.news.models.data_transfer_objects.ArticleTextDto;
+// import scraper.news.models.data_transfer_objects.ArticleTextDto;
 import scraper.news.models.data_transfer_objects.EndpointDto;
 import scraper.news.models.data_transfer_objects.EverythingDto;
 import scraper.news.models.data_transfer_objects.SourcesDto;
@@ -23,6 +29,7 @@ public class EndpointController
 {
     private String apiEndpointUrl;
     private EndpointDto endpointData;
+    // private Parser parser = new Parser();
 
     @PostMapping("/api/v1/news/post-endpoint-data")
     public ResponseEntity<String> postEndpointData(@RequestBody EndpointDto endpointData)   // Rename EndpointDto to EndpointDataDto? or something similar.
@@ -70,6 +77,30 @@ public class EndpointController
             throw new RuntimeException("Invalid endpoint type.");
         }
     }
+
+    private String getWebsiteHtml(String url)
+    {
+        return HttpService.getWebsiteResponse(url);
+    }
+
+    @PostMapping("/api/v1/news/summary")
+    public ResponseEntity<String> summarize(@RequestBody String url) 
+    {     
+        String websiteHtml = getWebsiteHtml(url);
+        String pageContent = Parser.parse(url, websiteHtml);
+        String summary = HttpService.getSummarization(pageContent);
+        return ResponseEntity.ok(summary);
+    }
+
+    
+
+    // @PostMapping("/api/v1/news/summary")
+    // public ResponseEntity<String> summarization(@RequestBody ArticleTextDto articleText)
+    // {     
+    //     String text = articleText.getArticleText();
+    //     String summary = HttpService.getSummarization(text);
+    //     return ResponseEntity.ok(summary);
+    // }
 
     // private ApiResponse getEndpointResponse(EndpointDto endpointData)
     // {
@@ -139,12 +170,4 @@ public class EndpointController
 
     //     return HttpService.getResponse(z.getApiEndpointUrl());
     // }
-
-    @PostMapping("/api/v1/news/summary")
-    public ResponseEntity<String> summarization(@RequestBody ArticleTextDto articleText)
-    {     
-        String text = articleText.getArticleText();
-        String summary = HttpService.getSummarization(text);
-        return ResponseEntity.ok(summary);
-    }
 }
