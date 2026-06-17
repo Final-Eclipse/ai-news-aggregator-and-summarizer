@@ -57,6 +57,19 @@ public class HttpService
         return sourcesResponse;
     }
 
+    public static String getWebsiteResponse(String url)
+    {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .build();
+
+        HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
+        handleErrorCodes(response);
+        return response.body();
+        // return "\"" + response.body() + "\"";
+    }
+
+    // Have post articleText and getSummarization as different methods?
     /**
      * Makes a HTTP POST request to localhost:5172 (ASP.NET Core) and returns a summary of the given article.
      * 
@@ -65,7 +78,6 @@ public class HttpService
      */
     public static String getSummarization(String articleText)
     {
-        // Serializes articleText as a JSON String.
         String jsonString = objectMapper.writeValueAsString(articleText);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -90,7 +102,7 @@ public class HttpService
     {
         if (response.statusCode() != 200)
         {
-            throw new RuntimeException("Error Code " + response.statusCode());
+            throw new RuntimeException("[HttpService.handleErrorCodes(HttpResponse<String> response)] Error Code " + response.statusCode());
         }
     }
 }
