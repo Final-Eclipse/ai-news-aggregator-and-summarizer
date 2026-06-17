@@ -1,13 +1,14 @@
-import json
-import time
-
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout
 from PyQt5.QtCore import QSize
-import requests
+import requests, json, time
+import run_localhosts
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        # run_localhosts.main()
 
         self.setWindowTitle("My App")
         
@@ -57,13 +58,12 @@ class MainWindow(QMainWindow):
 
     def send_endpoint_data(self):
         headers = {"Content-Type": "application/json"}
-        request = requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", data=MainWindow.create_everything(), headers=headers)
+        requests.post("http://localhost:8080/api/v1/news/post-endpoint-data", data=MainWindow.create_everything(), headers=headers)
     
     def update_result(self, text):
         self.result.setText(text)
 
     def get_endpoint_json(self):
-        # print(self.endpoint_types.currentText())
         request = requests.get(f"http://localhost:8080{self.endpoint_types.currentText()}")
         response = request.text
         self.update_result(response)
