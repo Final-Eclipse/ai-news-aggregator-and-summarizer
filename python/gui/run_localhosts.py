@@ -1,37 +1,46 @@
-import subprocess
+import asyncio
 from pathlib import Path
 
-def run_dotnet():
-    x = subprocess.Popen(
-        ["dotnet", "run"],
-        stdout=subprocess.PIPE,
-        text=True,
-        cwd=f"{Path.cwd().parent}/csharp/ai-news-aggregator-and-summarizer",
-        shell=True
-    )
+class Localhosts():
+    @staticmethod
+    async def __run_dotnet() -> None:
+        """Start the ASP.NET Core dotnet localhost."""
+        process = await asyncio.create_subprocess_shell(
+            cmd="dotnet run",
+            cwd=f"{Path.cwd().parent}/csharp/ai-news-aggregator-and-summarizer"
+        )
 
-def run_java():
-    x = subprocess.Popen(
-        ["mvnw.cmd", "spring-boot:run"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        cwd=str(f"{Path.cwd().parent}/java/newsscraper"),
-        shell=True
-    )
+        await process.communicate()
+    
+    @staticmethod
+    async def __run_java() -> None:
+        """Start the Java Spring Boot localhost."""
+        process = await asyncio.create_subprocess_shell(
+            cmd="mvnw.cmd spring-boot:run",
+            cwd=f"{Path.cwd().parent}/java/newsscraper"
+        )
 
-def run_ollama():
-    x = subprocess.Popen(
-        ["ollama", "serve"],
-        stdout=subprocess.PIPE,
-        text=True,
-        shell=True
-    )
+        await process.communicate()
 
-def main():
-    run_dotnet()
-    run_java()
-    run_ollama()
+    @staticmethod
+    async def __run_ollama() -> None:
+        """Start the Ollama localhost."""
+        process = await asyncio.create_subprocess_shell(
+            cmd="ollama serve"
+        )
+
+        await process.communicate()
+
+    @staticmethod
+    async def main() -> None:
+        """Call and start all localhosts."""
+        tasks = [
+            Localhosts.__run_dotnet(), 
+            Localhosts.__run_java(), 
+            Localhosts.__run_ollama()
+        ]
+        
+        await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(Localhosts.main())
