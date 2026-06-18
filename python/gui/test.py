@@ -42,8 +42,8 @@ def create_everything():
     """Returns a JSON string."""
     query_params = {
         "endpoint": "everything",
-        "q": "iran",
-        "searchIn": "title, content",
+        "q": "trump",
+        "searchIn": None,
         "sources": "associated-press",
         "domains": None,
         "excludeDomains": None,
@@ -137,7 +137,9 @@ def create_selected_model():
 send_endpoint_data(create_everything())
 # send_endpoint_data(create_top_headlines())    
 # send_endpoint_data(create_sources())
-print(requests.get("http://localhost:8080/api/v1/news/everything").text) # Must POST endpoint data first then send GET the endpoint response.
+# print(requests.get("http://localhost:8080/api/v1/news/everything").text) # Must POST endpoint data first then send GET the endpoint response.
+data = json.loads(requests.get("http://localhost:8080/api/v1/news/everything").text)
+print(data["articles"][0]["title"])
 
 # set_selected_model("huihui_ai/deepseek-r1-abliterated:8b")
 # send_article_text_to_summarize(create_summary())
@@ -146,5 +148,37 @@ print(requests.get("http://localhost:8080/api/v1/news/everything").text) # Must 
 # Send async calls eventually to prevent code execution blocking.
 # Don't do json.dumps then pass that in a request as json= because then it would be double serializing the json which doesn't work.
 
-# Make a DTO for endpoints.
 # Host news app on localhost so it can be used across devices on the same network as well as its own standalone app executable.
+
+import unidecode
+from pathlib import Path
+# x = requests.get("https://www.buzzfeed.com/kristenharris1/tell-us-about-the-worst-celebrity-memoir-youve-ever-read?origin=web-hf").text
+# x = unidecode.unidecode(x)
+# with open(f"{Path.cwd()}/gui/apnews_content.html", "w") as file:
+#     file.write(x)
+
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.nbcnews.com/news/us-news/deal-reached-united-states-iran-war-rcna350039").text)
+# https://www.textise.net
+# https://www.reddit.com/r/firefox/comments/pphbvg/how_can_i_make_a_webpage_load_only_links_and_text/
+# https://search.brave.com/search?q=is+there+a+website+that+i+can+give+a+link+and+it+will+just+show+only+the+text&summary=1&conversation=093501258e7e076996f2e25de3d370045a4a
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.textise.net/showText.aspx?strURL=https%253A//apnews.com/article/trump-80th-birthday-ufc-biden-e14d1bbccc1cbaaad42fd541b1fe833d").text)
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://apnews.com/article/trump-80th-birthday-ufc-biden-e14d1bbccc1cbaaad42fd541b1fe833d").text)
+# print(requests.get("https://apnews.com/article/trump-80th-birthday-ufc-biden-e14d1bbccc1cbaaad42fd541b1fe833d").text)
+
+# print(requests.get("https://www.textise.net/showText.aspx?strURL=https%253A//apnews.com/article/trump-80th-birthday-ufc-biden-e14d1bbccc1cbaaad42fd541b1fe833d").text)
+
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://abcnews.com/US/child-killed-after-officer-fires-car-reported-shoplifting/story?id=133891802").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.aljazeera.com/news/2026/6/16/g7-leaders-meet-in-france-with-iran-and-ukraine-high-on-agenda").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://arstechnica.com/gadgets/2026/06/20-years-of-intel-macs-why-apple-switched-and-why-it-switched-again/").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://apnews.com/article/g7-iran-ukraine-trump-macron-zelenskyy-e7fad4eabaae8181f70fa5a0b9e499b2").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.axios.com/2026/06/16/anthropic-fable-trump-white-house-cybersecurity").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://bleacherreport.com/articles/25441589-watch-lionel-messi-score-historic-hat-trick-argentina-video-2026-fifa-world-cup-opener").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.bloomberg.com/news/articles/2026-06-17/iran-to-gain-major-financial-relief-under-interim-deal-with-us?srnd=homepage-americas").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.breitbart.com/politics/2026/06/16/senate-shoots-down-resolution-to-limit-trumps-military-authority-over-iran/").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.businessinsider.com/spacex-cursor-spcx-stock-bill-ackman-elon-musk-ai-stocks-2026-6").text, end="\n\n")
+# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.buzzfeed.com/kristenharris1/tell-us-about-the-worst-celebrity-memoir-youve-ever-read?origin=web-hf").text, end="\n\n")
+
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+# }
+# print(requests.get("https://www.buzzfeed.com/kristenharris1/tell-us-about-the-worst-celebrity-memoir-youve-ever-read?origin=web-hf").text)
