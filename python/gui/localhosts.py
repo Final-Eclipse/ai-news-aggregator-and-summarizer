@@ -32,7 +32,7 @@ class Localhosts():
         await process.communicate()
 
     @staticmethod
-    async def main() -> None:
+    async def run_localhosts() -> None:
         """Call and start all localhosts."""
         tasks = [
             Localhosts.__run_dotnet(), 
@@ -43,4 +43,4 @@ class Localhosts():
         await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
-    asyncio.run(Localhosts.main())
+    asyncio.run(Localhosts.run_localhosts())
