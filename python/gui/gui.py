@@ -1,14 +1,15 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout
 from PyQt5.QtCore import QSize
 import requests, json, time
-import run_localhosts
-
+from localhosts import Localhosts
+from ollama_models import OllamaModels
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # run_localhosts.RunLocalhosts.main()
+        # Localhosts.run_localhosts()
+        # self.ollama_models = OllamaModels.fetch_ollama_models()
         
         self.setWindowTitle("My App")
         
