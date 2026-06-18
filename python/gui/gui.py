@@ -8,8 +8,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # run_localhosts.main()
-
+        # run_localhosts.RunLocalhosts.main()
+        
         self.setWindowTitle("My App")
         
         self.result = QLabel()
