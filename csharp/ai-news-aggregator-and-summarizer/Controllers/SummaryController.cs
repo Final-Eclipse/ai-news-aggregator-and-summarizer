@@ -7,10 +7,10 @@ namespace ai_news_aggregator_and_summarizer.Controllers;
 [Route("[controller]")]
 public class SummaryController : ControllerBase
 {
-    // Return ActionResult or IEnumerable?
+    // Return IActionResult, ActionResult, or IEnumerable?
     [HttpPost]
     public string PostArticleText([FromBody] string articleText)
     {
-        return SummaryService.Get(articleText).Result.summaryText;
+        return SummaryService.GetSummary(articleText).Result.summaryText;
     }
 }
