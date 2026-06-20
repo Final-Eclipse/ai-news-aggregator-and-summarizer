@@ -1,15 +1,23 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout
 from PyQt5.QtCore import QSize
-import requests, json, time
+import requests, json, time, asyncio, aiohttp
 from localhosts import Localhosts
 from ollama_models import OllamaModels
+from ollama_models_dto import OllamaModelsDto
+from http_service import HttpService
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # self.event_loop = asyncio.get_event_loop()
+
         # Localhosts.run_localhosts()
-        # self.ollama_models = OllamaModels.fetch_ollama_models()
+        # self.ollama_models = OllamaModels.fetch() # Not needed, use C# to fetch model names and other details?
+
+        self.refresh_button = QPushButton("Refresh local ollama models")
+        self.models_text_box = QLabel()
+        self.refresh_button.clicked.connect(self.update_models_text_box)
         
         self.setWindowTitle("My App")
         
@@ -25,6 +33,10 @@ class MainWindow(QMainWindow):
         
         self.setCentralWidget(self.create_layout())
 
+    def update_models_text_box(self):
+        local_models = str(HttpService.main()["localModels"])
+        self.models_text_box.setText(local_models)
+
     def create_layout(self):
         layout = QVBoxLayout()
         layout.addWidget(self.get_post_endpoint_data())
@@ -32,6 +44,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.get_endpoint_types())
         layout.addWidget(self.get_button)
         layout.addWidget(self.result)
+
+        layout.addWidget(self.refresh_button)
+        layout.addWidget(self.models_text_box)
 
         container = QWidget()
         container.setLayout(layout)
@@ -111,11 +126,15 @@ class MainWindow(QMainWindow):
 
         oldest_date = f"{year}-{month}-{day}"
         return oldest_date
+        
 
 
-        
-        
-app = QApplication([])
-window = MainWindow()
-window.show()
-app.exec()
+def main():  
+    app = QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec()
+
+if __name__ == "__main__":
+    main()
+    # asyncio.run(main())
