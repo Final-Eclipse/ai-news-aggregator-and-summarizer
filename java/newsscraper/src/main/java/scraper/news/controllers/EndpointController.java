@@ -14,13 +14,12 @@ import scraper.news.services.CreateEndpointService;
 // import scraper.news.services.newsapi_endpoints.TopHeadlinesEndpointService;
 // import scraper.news.services.newsapi_endpoints.SourcesEndpointService;
 import scraper.news.services.HttpService;
-// import scraper.news.services.parsers.AbcNews;
-// import scraper.news.services.parsers.ApNews;
 import scraper.news.services.parsers.Parser;
 import scraper.news.services.BaseEndpointService;
 // import scraper.news.models.data_transfer_objects.ArticleTextDto;
 import scraper.news.models.data_transfer_objects.EndpointDto;
 import scraper.news.models.data_transfer_objects.EverythingDto;
+import scraper.news.models.data_transfer_objects.OllamaModelsDto;
 import scraper.news.models.data_transfer_objects.SourcesDto;
 import scraper.news.models.data_transfer_objects.TopHeadlinesDto;
 
@@ -40,11 +39,6 @@ public class EndpointController
         this.endpointData = endpointData;
         BaseEndpointService endpoint = CreateEndpointService.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
-        
-        // ApiResponse responseString = getEndpointResponse(endpointData);
-        
-        // System.out.println(apiEndpointUrl);
-        // System.out.println(responseString);
         return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);
     }
 
@@ -90,6 +84,18 @@ public class EndpointController
         String pageContent = Parser.parse(url, websiteHtml);
         String summary = HttpService.getSummarization(pageContent);
         return ResponseEntity.ok(summary);
+    }
+
+    @GetMapping("/api/v1/models/ollama")
+    public ResponseEntity<OllamaModelsDto> getLocalOllamaModels()
+    {
+        return ResponseEntity.ok(HttpService.getLocalOllamaModels());
+    }
+
+    @PostMapping("/api/v1/models/ollama")
+    public ResponseEntity<String> changeOllamaModel()
+    {
+        return ResponseEntity.ok("");
     }
 
     
