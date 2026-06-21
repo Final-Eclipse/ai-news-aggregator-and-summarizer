@@ -9,6 +9,7 @@ import java.net.URI;
 import tools.jackson.databind.ObjectMapper;
 
 import scraper.news.models.data_transfer_objects.EverythingDto;
+import scraper.news.models.data_transfer_objects.OllamaModelsDto;
 import scraper.news.models.data_transfer_objects.SourcesDto;
 import scraper.news.models.data_transfer_objects.TopHeadlinesDto;
 
@@ -29,6 +30,7 @@ public class HttpService
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(apiEndpointUrl))
             .header("x-api-key", apiKey)
+            .GET()
             .build();
 
         HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
@@ -87,7 +89,37 @@ public class HttpService
         
         HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
         handleErrorCodes(response);
+        return response.body();
+    }
+
+    public static OllamaModelsDto getLocalOllamaModels()
+    {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:5172/selectedmodel"))
+            .header("Content-Type", "application/json")
+            .GET()
+            .build();
         
+        HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
+        handleErrorCodes(response);
+
+        OllamaModelsDto ollamaModelsDto = objectMapper.readValue(response.body(), OllamaModelsDto.class);
+        return ollamaModelsDto;
+    }
+
+
+    public static String changeOllamaModel(String newModel)
+    {
+        String jsonString = objectMapper.writeValueAsString(newModel);
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:5172/selectedmodel"))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(jsonString))
+            .build();
+        
+        HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
+        handleErrorCodes(response);
         return response.body();
     }
 
