@@ -1,23 +1,38 @@
-from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout
-from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
+from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
 from localhosts import Localhosts
 from ollama_models import OllamaModels
 from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService
+from http_service import HttpService    
+from worker import Worker
+from top_bar import TopBar
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # self.event_loop = asyncio.get_event_loop()
-
+        # self.run_refresh_models() # Initializes the models available.
         # Localhosts.run_localhosts()
-        # self.ollama_models = OllamaModels.fetch() # Not needed, use C# to fetch model names and other details?
 
-        self.refresh_button = QPushButton("Refresh local ollama models")
+        # Implement input fields to allow user to set query parameters and the type of endpoint.
+        # Have a reset to defaults button as well under these.
+
+        self.sidebar = TopBar()
+
+        self.summarize_button = QPushButton("Summarize article")
+        self.summary_text = QLabel("I haven't implemented the summary yet.")
+
+        self.api_key = QLineEdit()
+        self.api_key.setPlaceholderText("Enter News API key")
+
+        self.available_models = QComboBox()
+        self.button = QPushButton("Clear local Ollama models")
+        self.button.clicked.connect(lambda: self.available_models.clear())
+
+        self.refresh_button = QPushButton("Refresh local Ollama models")
         self.models_text_box = QLabel()
-        self.refresh_button.clicked.connect(self.update_models_text_box)
+        self.refresh_button.clicked.connect(self.run_refresh_models)
         
         self.setWindowTitle("My App")
         
@@ -32,21 +47,50 @@ class MainWindow(QMainWindow):
         self.get_button.clicked.connect(self.get_endpoint_json)
         
         self.setCentralWidget(self.create_layout())
+        # self.setCentralWidget(self.sidebar.get_sidebar())
 
-    def update_models_text_box(self):
-        local_models = str(HttpService.main()["localModels"])
-        self.models_text_box.setText(local_models)
+    def populate_available_models(self, models: OllamaModelsDto):
+        self.available_models.clear()
+        self.available_models.addItems(models.local_models["localModels"])
+
+    def run_refresh_models(self):
+        self.worker_thread = QThread()
+        self.worker = Worker()
+        self.worker.moveToThread(self.worker_thread)
+
+        self.worker_thread.started.connect(self.worker.get_models)
+
+        self.worker.finished.connect(self.worker_thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.worker_thread.finished.connect(self.worker_thread.deleteLater)
+        self.worker.local_models.connect(lambda models: self.models_text_box.setText(str(models.local_models)))
+        self.worker.local_models.connect(self.populate_available_models)
+
+        self.worker_thread.start()
+
+    def update_models_text_box(self, text):
+        self.models_text_box.setText(text)
 
     def create_layout(self):
         layout = QVBoxLayout()
+
+        # Add sidebar
+        layout.addWidget(self.sidebar.get_sidebar_container())
+
         layout.addWidget(self.get_post_endpoint_data())
         layout.addWidget(self.send_button)
         layout.addWidget(self.get_endpoint_types())
         layout.addWidget(self.get_button)
         layout.addWidget(self.result)
+        layout.addWidget(self.available_models)
+        layout.addWidget(self.button)
+        layout.addWidget(self.api_key)
 
         layout.addWidget(self.refresh_button)
         layout.addWidget(self.models_text_box)
+        
+        layout.addWidget(self.summarize_button)
+        layout.addWidget(self.summary_text)
 
         container = QWidget()
         container.setLayout(layout)
