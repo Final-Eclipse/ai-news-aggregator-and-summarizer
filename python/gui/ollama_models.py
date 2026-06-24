@@ -3,7 +3,7 @@ from asyncio.subprocess import Process
 
 class OllamaModels():
     @staticmethod
-    async def fetch_ollama_models() -> dict:
+    async def fetch() -> dict:
         """Get all downloaded Ollama models and their details."""
         process = await asyncio.create_subprocess_shell(
             cmd="ollama ls",
@@ -52,4 +52,4 @@ class OllamaModels():
         return model_info
     
 if __name__ == "__main__":
-    print(asyncio.run(OllamaModels.fetch_ollama_models()))
+    print(asyncio.run(OllamaModels.fetch()))
