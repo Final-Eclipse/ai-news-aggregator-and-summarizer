@@ -73,6 +73,7 @@ class MainWindow(QMainWindow):
 
     def create_layout(self):
         layout = QVBoxLayout()
+        # layout.setContentsMargins(0, 0, 0, 0)
 
         # Add sidebar
         layout.addWidget(self.sidebar.get_sidebar_container())
@@ -93,6 +94,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.summary_text)
 
         container = QWidget()
+        container.setStyleSheet("background-color: #c8c8c8")
         container.setLayout(layout)
         return container
     
@@ -171,8 +173,6 @@ class MainWindow(QMainWindow):
         oldest_date = f"{year}-{month}-{day}"
         return oldest_date
         
-
-
 def main():  
     app = QApplication([])
     window = MainWindow()

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QHBoxLayout, QMainWindow, QPushButton, QSizePolicy, QWidget, QLabel, QVBoxLayout, QLineEdit, QGridLayout
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
+from PyQt5.QtGui import QFontMetrics, QFont
 import requests, json, time, asyncio, aiohttp
 from localhosts import Localhosts
 from ollama_models import OllamaModels
@@ -8,20 +9,19 @@ from http_service import HttpService
 from worker import Worker
 
 class Everything():
-    parameters = {}
-    container: QWidget = None
+    def __init__(self) -> None:
+        self.parameters: dict = self._init_parameters()
 
-    @staticmethod
-    def init() -> None:
-        Everything.init_parameters()
-        layout = Everything.__create_layout()
-        Everything.__create_container(layout)
-        Everything.__init_fields() 
-        Everything.hide()
+        self.layout: QGridLayout = self._create_layout()
+        self.container: QWidget = self._create_container(self.layout)
 
-    @staticmethod
-    def init_parameters() -> None:
-        Everything.parameters = {
+        self._init_fields()
+        self._init_widget_sizes()
+
+        self.hide()
+
+    def _init_parameters(self) -> dict:
+        parameters = {
             "query": QLineEdit(),
             "searchIn": QComboBox(),  
             "sources": QComboBox(),
@@ -35,9 +35,33 @@ class Everything():
             "page": QLineEdit()
         }
 
-    @staticmethod
-    def __init_fields() -> None:
-        parameters = Everything.parameters
+        return parameters            
+
+    def _create_layout(self) -> QGridLayout: 
+        layout = QGridLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.setHorizontalSpacing(10)
+        
+        row = 0
+        col = 0
+        for key, widget in self.parameters.items():
+            label = QLabel(key)
+            label.setAlignment(Qt.AlignmentFlag.AlignBottom)
+            
+            layout.addWidget(label, row, col)
+            layout.addWidget(widget, row + 1, col)
+
+            col += 1
+
+        return layout
+    
+    def _create_container(self, layout) -> QWidget:
+        container = QWidget()
+        container.setLayout(layout)
+        return container
+    
+    def _init_fields(self) -> None:
+        parameters = self.parameters
 
         query: QLineEdit = parameters["query"]
         query.setPlaceholderText("Type query")
@@ -72,35 +96,14 @@ class Everything():
         page: QLineEdit = parameters["page"]
         page.setPlaceholderText("Type page number")
 
-    @staticmethod
-    def __create_layout() -> QGridLayout: 
-        layout = QGridLayout()
-        
-        row = 0
-        col = 0
-        for key, widget in Everything.parameters.items():
-            label = QLabel(key)
-            label.setAlignment(Qt.AlignmentFlag.AlignBottom)
-            
-            layout.addWidget(label, row, col)
-            layout.addWidget(widget, row + 1, col)
+    def _init_widget_sizes(self) -> None:
+        for key, widget in self.parameters.items():
+            widget: QWidget
+            max_width = widget.sizeHint().width()
+            widget.setMaximumWidth(max_width)
 
-            col += 1
+    def hide(self) -> None:
+        self.container.hide()
 
-        return layout
-
-    @staticmethod
-    def __create_container(layout):
-        container: QWidget = QWidget()
-        container.setLayout(layout)
-        Everything.container = container
-
-    @staticmethod
-    def hide() -> None:
-        container: QWidget = Everything.container
-        container.hide()
-
-    @staticmethod
-    def show() -> None:
-        container: QWidget = Everything.container
-        container.show()
+    def show(self) -> None:
+        self.container.show()

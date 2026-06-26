@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
+from PyQt5.QtGui import QFontMetrics, QFont
 import requests, json, time, asyncio, aiohttp
 from localhosts import Localhosts
 from ollama_models import OllamaModels
@@ -8,20 +9,19 @@ from http_service import HttpService
 from worker import Worker
 
 class TopHeadlines():
-    parameters = {}
-    container: QWidget = None
+    def __init__(self):
+        self.parameters: dict = self.init_parameters()
 
-    @staticmethod
-    def init() -> None:
-        TopHeadlines.init_parameters()
-        layout = TopHeadlines.__create_layout()
-        TopHeadlines.__create_container(layout)
-        TopHeadlines.__init_fields()
-        TopHeadlines.hide()
+        layout: QGridLayout = self._create_layout()
+        self.container: QWidget = self._create_container(layout)
 
-    @staticmethod
-    def init_parameters() -> None:
-        TopHeadlines.parameters = {
+        self._init_fields()
+        self._init_widget_sizes()
+
+        self.hide()
+
+    def init_parameters(self) -> dict:
+        parameters = {
             "country": QComboBox(),
             "category": QComboBox(),
             "sources": QComboBox(),
@@ -30,9 +30,33 @@ class TopHeadlines():
             "page": QLineEdit()
         }
 
-    @staticmethod
-    def __init_fields() -> None:
-        parameters = TopHeadlines.parameters
+        return parameters
+    
+    def _create_layout(self) -> QGridLayout:
+        layout = QGridLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.setHorizontalSpacing(10)
+
+        row = 0
+        col = 0
+        for key, widget in self.parameters.items():
+            label = QLabel(key)
+            label.setAlignment(Qt.AlignmentFlag.AlignBottom)
+
+            layout.addWidget(label, row, col)
+            layout.addWidget(widget, row + 1, col)
+
+            col += 1
+        
+        return layout
+
+    def _create_container(self, layout) -> QWidget:
+        container = QWidget()
+        container.setLayout(layout)
+        return container
+    
+    def _init_fields(self) -> None:
+        parameters = self.parameters
 
         country: QComboBox = parameters["country"]
         country.addItems(["Select country", "United States", "Canada", "Mexico"])
@@ -51,36 +75,15 @@ class TopHeadlines():
 
         page: QLineEdit = parameters["page"]
         page.setPlaceholderText("Type page number")
-
-    @staticmethod
-    def __create_layout() -> QGridLayout:
-        layout = QGridLayout()
-
-        row = 0
-        col = 0
-        for key, widget in TopHeadlines.parameters.items():
-            label = QLabel(key)
-            label.setAlignment(Qt.AlignmentFlag.AlignBottom)
-
-            layout.addWidget(label, row, col)
-            layout.addWidget(widget, row + 1, col)
-
-            col += 1
-        
-        return layout
-
-    @staticmethod
-    def __create_container(layout):
-        container: QWidget = QWidget()
-        container.setLayout(layout)
-        TopHeadlines.container = container
     
-    @staticmethod
-    def hide() -> None:
-        container: QWidget = TopHeadlines.container
-        container.hide()
+    def _init_widget_sizes(self) -> None:
+        for key, widget in self.parameters.items():
+            widget: QWidget
+            max_width = widget.sizeHint().width()
+            widget.setMaximumWidth(max_width)
+    
+    def hide(self) -> None:
+        self.container.hide()
 
-    @staticmethod
-    def show() -> None:
-        container: QWidget = TopHeadlines.container
-        container.show()
+    def show(self) -> None:
+        self.container.show()

@@ -10,26 +10,27 @@ from worker import Worker
 from everything import Everything
 from top_headlines import TopHeadlines
 from sources import Sources
+from random import randint
 
 class TopBar(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        Everything.init()
-        TopHeadlines.init()
-        Sources.init()
+        self.everything = Everything()
+        self.top_headlines = TopHeadlines()
+        self.sources = Sources()
 
         self.endpoints = {
-            "everything": Everything.parameters,
-            "top headlines": TopHeadlines.parameters,
-            "sources": Sources.parameters
+            "everything": self.everything.parameters,
+            "top headlines": self.top_headlines.parameters,
+            "sources": self.sources.parameters
         }
 
         self.endpoint_selector: QComboBox = self.__create_endpoint_selector()
         self.endpoint_selector.currentIndexChanged.connect(self.__update_sidebar)
 
         self.setWindowTitle("")
-        self.setCentralWidget(self.__create_layout())
+        self.setCentralWidget(self._create_layout())
 
     def get_sidebar_container(self):
         return self.container
@@ -37,41 +38,42 @@ class TopBar(QMainWindow):
     def __update_sidebar(self):   
         match self.endpoint_selector.currentText():
             case "Everything":
-                Everything.show()
-                TopHeadlines.hide()
-                Sources.hide()
+                self.everything.show()
+                self.top_headlines.hide()
+                self.sources.hide()
                 self.placeholder.hide()
 
             case "Top headlines":
-                Everything.hide()
-                TopHeadlines.show()
-                Sources.hide()
+                self.everything.hide()
+                self.top_headlines.show()
+                self.sources.hide()
                 self.placeholder.hide()
 
             case "Sources":
-                Everything.hide()
-                TopHeadlines.hide()
-                Sources.show()
+                self.everything.hide()
+                self.top_headlines.hide()
+                self.sources.show()
                 self.placeholder.hide()
 
             case _:
-                Everything.hide()
-                TopHeadlines.hide()
-                Sources.hide()
+                self.everything.hide()
+                self.top_headlines.hide()
+                self.sources.hide()
                 self.placeholder.show()
 
-    def __create_layout(self):
+    def _create_layout(self):
         layout = QVBoxLayout()
         layout.setSpacing(0)
 
         layout.addWidget(self.__create_endpoint_selector_container())
 
-        layout.addWidget(Everything.container)
-        layout.addWidget(TopHeadlines.container)
-        layout.addWidget(Sources.container)
+        layout.addWidget(self.everything.container)
+        layout.addWidget(self.top_headlines.container)
+        layout.addWidget(self.sources.container)
         layout.addWidget(self.__create_placeholder())
 
         self.container = QWidget()
+        # self.container.setStyleSheet(f"background-color: #eeeeee")
         self.container.setLayout(layout)
         self.container.setFixedHeight(130)
         
@@ -82,9 +84,12 @@ class TopBar(QMainWindow):
         return self.placeholder
     
     def __create_endpoint_selector(self):
-        endpoint_selector = QComboBox()
-        endpoint_selector.setFixedWidth(200)
+        endpoint_selector = QComboBox()        
         endpoint_selector.addItems(["Select an endpoint type", "Everything", "Top headlines", "Sources"])
+
+        max_width = endpoint_selector.sizeHint().width()
+        endpoint_selector.setMaximumWidth(max_width)
+
         return endpoint_selector
     
     def __create_endpoint_selector_container(self):
