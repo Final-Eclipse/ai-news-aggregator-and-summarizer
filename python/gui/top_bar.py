@@ -75,7 +75,9 @@ class TopBar(QMainWindow):
         self.container = QWidget()
         # self.container.setStyleSheet(f"background-color: #eeeeee")
         self.container.setLayout(layout)
-        self.container.setFixedHeight(130)
+        # fixed_height = int(self.screen().size().height() * 0.12)
+        fixed_height = int(self.container.sizeHint().height() * 1.65)   # Works differently on different devices. 
+        self.container.setFixedHeight(fixed_height)
         
         return self.container
     
