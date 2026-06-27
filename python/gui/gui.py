@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         # Implement input fields to allow user to set query parameters and the type of endpoint.
         # Have a reset to defaults button as well under these.
 
-        self.sidebar = TopBar()
+        self.top_bar = TopBar()
 
         self.summarize_button = QPushButton("Summarize article")
         self.summary_text = QLabel("I haven't implemented the summary yet.")
@@ -47,7 +47,6 @@ class MainWindow(QMainWindow):
         self.get_button.clicked.connect(self.get_endpoint_json)
         
         self.setCentralWidget(self.create_layout())
-        # self.setCentralWidget(self.sidebar.get_sidebar())
 
     def populate_available_models(self, models: OllamaModelsDto):
         self.available_models.clear()
@@ -75,8 +74,8 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         # layout.setContentsMargins(0, 0, 0, 0)
 
-        # Add sidebar
-        layout.addWidget(self.sidebar.get_sidebar_container())
+        # Add top bar
+        layout.addWidget(self.top_bar.get_top_bar_container())
 
         layout.addWidget(self.get_post_endpoint_data())
         layout.addWidget(self.send_button)

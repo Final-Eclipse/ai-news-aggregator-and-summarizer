@@ -27,15 +27,15 @@ class TopBar(QMainWindow):
         }
 
         self.endpoint_selector: QComboBox = self.__create_endpoint_selector()
-        self.endpoint_selector.currentIndexChanged.connect(self.__update_sidebar)
+        self.endpoint_selector.currentIndexChanged.connect(self.__update_top_bar)
 
         self.setWindowTitle("")
         self.setCentralWidget(self._create_layout())
 
-    def get_sidebar_container(self):
+    def get_top_bar_container(self):
         return self.container
 
-    def __update_sidebar(self):   
+    def __update_top_bar(self):   
         match self.endpoint_selector.currentText():
             case "Everything":
                 self.everything.show()
