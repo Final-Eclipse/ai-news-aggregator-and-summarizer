@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from endpoint import Endpoint
+import json
+from helpers import Language
 
 class Everything(Endpoint):
     def __init__(self) -> None:
@@ -15,7 +17,7 @@ class Everything(Endpoint):
 
     def _init_parameters(self) -> dict:
         parameters = {
-            "query": QLineEdit(),
+            "q": QLineEdit(),
             "searchIn": QComboBox(),  
             "sources": QComboBox(),
             "domains": QComboBox(),
@@ -33,8 +35,8 @@ class Everything(Endpoint):
     def _init_fields(self) -> None:
         parameters = self.parameters
 
-        query: QLineEdit = parameters["query"]
-        query.setPlaceholderText("Type query")
+        q: QLineEdit = parameters["q"]
+        q.setPlaceholderText("Type query")
 
         searchIn: QComboBox = parameters["searchIn"]
         searchIn.addItems(["Select search type(s)", "Title", "Description", "Content"])
@@ -55,7 +57,7 @@ class Everything(Endpoint):
         to.setPlaceholderText("Type end date")
 
         language: QComboBox = parameters["language"]
-        language.addItems(["Select language", "English", "Spanish", "German"])
+        language.addItems(Language.qcombobox_options)
 
         sortBy: QComboBox = parameters["sortBy"]
         sortBy.addItems(["Select sort option", "Relevancy", "Popularity", "Date published"])
