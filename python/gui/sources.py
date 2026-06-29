@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QGridLayout, QWidget
 from endpoint import Endpoint
+from helpers import Language, Category, Country
 
 class Sources(Endpoint):
     def __init__(self) -> None:
@@ -24,10 +25,10 @@ class Sources(Endpoint):
         parameters = self.parameters
     
         category: QComboBox = parameters["category"]
-        category.addItems(["Select category", "Business", "Entertainment", "General", "Health", "Science", "Sports", "Technology"])
+        category.addItems(Category.qcombobox_options)
         
         language: QComboBox = parameters["language"]
-        language.addItems(["Select language", "English", "Spanish", "German"])
+        language.addItems(Language.qcombobox_options)
 
         country: QComboBox = parameters["country"]
-        country.addItems(["Select country", "United States", "Canada", "Mexico"])
+        country.addItems(Country.qcombobox_options)

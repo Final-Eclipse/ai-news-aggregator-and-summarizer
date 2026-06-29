@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from endpoint import Endpoint
+from helpers import Category, Country
 
 class TopHeadlines(Endpoint):
     def __init__(self) -> None:
@@ -18,7 +19,7 @@ class TopHeadlines(Endpoint):
             "country": QComboBox(),
             "category": QComboBox(),
             "sources": QComboBox(),
-            "query": QLineEdit(),
+            "q": QLineEdit(),
             "pageSize": QLineEdit(),
             "page": QLineEdit()
         }
@@ -29,16 +30,16 @@ class TopHeadlines(Endpoint):
         parameters = self.parameters
 
         country: QComboBox = parameters["country"]
-        country.addItems(["Select country", "United States", "Canada", "Mexico"])
+        country.addItems(Country.qcombobox_options)
 
         category: QComboBox = parameters["category"]
-        category.addItems(["Select category", "Business", "Entertainment", "General", "Health", "Science", "Sports", "Technology"])
+        category.addItems(Category.qcombobox_options)
 
         sources: QComboBox = parameters["sources"]
         sources.addItems(["Select source(s)", "ABC News", "Associated Press"])
 
-        query: QLineEdit = parameters["query"]
-        query.setPlaceholderText("Type query")
+        q: QLineEdit = parameters["q"]
+        q.setPlaceholderText("Type query")
 
         pageSize: QLineEdit = parameters["pageSize"]
         pageSize.setPlaceholderText("Type page size")
