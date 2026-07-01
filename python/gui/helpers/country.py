@@ -1,11 +1,59 @@
 class Country():
     codes = {
-        "United States": "us"
+        "United Arab Emirates": "ae",
+        "Argentina": "ar",
+        "Austria": "at",
+        "Australia": "au",
+        "Belgium": "be",
+        "Bulgaria": "bg",
+        "Brazil": "br",
+        "Canada": "ca",
+        "Switzerland": "ch",
+        "China": "cn",
+        "Colombia": "co",
+        "Cuba": "cu",
+        "Czech Republic": "cz",
+        "Germany": "de",
+        "Egypt": "eg",
+        "France": "fr",
+        "United Kingdom": "gb",
+        "Greece": "gr",
+        "Hong Kong": "hk",
+        "Hungary": "hu",
+        "Indonesia": "id",
+        "Ireland": "ie",
+        "Israel": "il",
+        "India": "in",
+        "Italy": "it",
+        "Japan": "jp",
+        "South Korea": "kr",
+        "Lithuania": "lt",
+        "Latvia": "lv",
+        "Morocco": "ma",
+        "Mexico": "mx",
+        "Malaysia": "my",
+        "Nigeria": "ng",
+        "Netherlands": "nl",
+        "Norway": "no",
+        "New Zealand": "nz",
+        "Philippines": "ph",
+        "Poland": "pl",
+        "Portugal": "pt",
+        "Romania": "ro",
+        "Serbia": "rs",
+        "Russia": "ru",
+        "Saudi Arabia": "sa",
+        "Sweden": "se",
+        "Singapore": "sg",
+        "Slovenia": "si",
+        "Slovakia": "sk",
+        "Thailand": "th",
+        "Turkey": "tr",
+        "Taiwan": "tw",
+        "Ukraine": "ua",
+        "United States": "us",
+        "Venezuela": "ve",
+        "South Africa": "za"
     }
 
-    qcombobox_options = ["Select country", "United States"]
-
-"""
-ae ar at au be bg br ca ch cn co cu cz de eg fr gb gr hk hu id ie il in it jp kr lt lv ma mx my ng nl no nz ph pl pt ro rs ru sa se sg si sk th tr tw ua us ve za.
-https://newsapi.org/docs/endpoints/sources
-"""
+    qcombobox_options = ["Select country"] + [country for country in codes.keys()]
