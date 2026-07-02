@@ -71,7 +71,7 @@ class TopBar(QMainWindow):
         # json_str = self.everything.get_json(endpoint_type)   # Ensure to have name as json_str or query_parameters and enforce everywhere for consistency.
         return endpoint_type, json_str
 
-    def get_top_bar_container(self) -> QWidget:
+    def get_container(self) -> QWidget:
         return self.container
 
     def _update_top_bar(self) -> None:   
