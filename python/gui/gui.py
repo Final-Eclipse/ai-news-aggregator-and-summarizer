@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
-from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, pyqtSignal, QRunnable
+from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
 from localhosts import Localhosts
 from ollama_models import OllamaModels
@@ -7,6 +7,7 @@ from ollama_models_dto import OllamaModelsDto
 from http_service import HttpService    
 from worker import Worker
 from top_bar import TopBar
+from main_display import MainDisplay
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -19,6 +20,7 @@ class MainWindow(QMainWindow):
         # Have a reset to defaults button as well under these.
 
         self.top_bar = TopBar()
+        self.main_display = MainDisplay()
 
         self.summarize_button = QPushButton("Summarize article")
         self.summary_text = QLabel("I haven't implemented the summary yet.")
@@ -72,25 +74,32 @@ class MainWindow(QMainWindow):
 
     def create_layout(self):
         layout = QVBoxLayout()
+        # layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         # layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
         # Add top bar
-        layout.addWidget(self.top_bar.get_top_bar_container())
+        top_bar_container: QWidget = self.top_bar.get_container()
+        layout.addWidget(top_bar_container)
 
-        layout.addWidget(self.get_post_endpoint_data())
-        layout.addWidget(self.send_button)
-        layout.addWidget(self.get_endpoint_types())
-        layout.addWidget(self.get_button)
-        layout.addWidget(self.result)
-        layout.addWidget(self.available_models)
-        layout.addWidget(self.button)
-        layout.addWidget(self.api_key)
+        # Add main display
+        main_display_container: QWidget = self.main_display.get_container()
+        layout.addWidget(main_display_container)
 
-        layout.addWidget(self.refresh_button)
-        layout.addWidget(self.models_text_box)
+        # layout.addWidget(self.get_post_endpoint_data())
+        # layout.addWidget(self.send_button)
+        # layout.addWidget(self.get_endpoint_types())
+        # layout.addWidget(self.get_button)
+        # layout.addWidget(self.result)
+        # layout.addWidget(self.available_models)
+        # layout.addWidget(self.button)
+        # layout.addWidget(self.api_key)
+
+        # layout.addWidget(self.refresh_button)
+        # layout.addWidget(self.models_text_box)
         
-        layout.addWidget(self.summarize_button)
-        layout.addWidget(self.summary_text)
+        # layout.addWidget(self.summarize_button)
+        # layout.addWidget(self.summary_text)
 
         container = QWidget()
         container.setStyleSheet("background-color: #c8c8c8")
@@ -161,8 +170,7 @@ class MainWindow(QMainWindow):
         if month <= 0:
             month = 12
             year -= 1
-        
-
+    
         # Prefixes a 0 to the month and day if needed.
         if month < 10:
             month = f"0{month}"
