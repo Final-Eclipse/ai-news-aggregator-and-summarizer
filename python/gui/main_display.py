@@ -12,6 +12,7 @@ from top_headlines import TopHeadlines
 from sources import Sources
 from random import randint
 
+# Rename file and class from MainDisplay to NewsCard?
 class MainDisplay(QMainWindow):
     def __init__(self):
         super().__init__()
