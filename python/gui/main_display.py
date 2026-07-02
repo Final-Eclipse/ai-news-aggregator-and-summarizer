@@ -14,38 +14,38 @@ from random import randint
 
 # Rename file and class from MainDisplay to NewsCard?
 class MainDisplay(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         
         self.setWindowTitle("Main Display")
 
-        # self.setCentralWidget(self.create_container())
         self.setCentralWidget(self.create_news_container())
 
-    def get_container(self):
+    def get_container(self) -> QWidget:
         return self.create_news_container()
-    #     return self.create_container()
     
-    def create_desc_container(self):
+    def _create_label(self, text: str) -> QLabel:
+        label = QLabel(text)
+        label.setMaximumSize(label.sizeHint().width(), label.sizeHint().height())
+        return label
+    
+    def _create_desc_container(self) -> QWidget:
         container = QWidget()
-        # container.setStyleSheet("background-color: red")
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        news_outlet = QLabel("Associated Press")
-        news_outlet.setMaximumSize(news_outlet.sizeHint().width(), news_outlet.sizeHint().height())
-        # news_outlet.setStyleSheet(f"background-color: rgba({randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)})")
-        layout.addWidget(news_outlet, 0, 0, alignment=Qt.AlignmentFlag.AlignLeft)
+        row = 0
+        col = 0
+        news_outlet = self._create_label("Associated Press")
+        layout.addWidget(news_outlet, row, col, alignment=Qt.AlignmentFlag.AlignLeft)
 
-        brief_desc = QLabel("A Trump order asked national park visitors to flag 'negative' historical info. They had other ideas")
-        brief_desc.setMaximumSize(brief_desc.sizeHint().width(), brief_desc.sizeHint().height())
-        # brief_desc.setStyleSheet(f"background-color: rgba({randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)})")
-        layout.addWidget(brief_desc, 1, 0)
+        row += 1
+        brief_desc = self._create_label("A Trump order asked national park visitors to flag 'negative' historical info. They had other ideas")
+        layout.addWidget(brief_desc, row, col)
 
-        author = QLabel("AP")
-        author.setMaximumSize(author.sizeHint().width(), author.sizeHint().height())
-        # author.setStyleSheet(f"background-color: rgba({randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)})")
-        layout.addWidget(author, 2, 0, alignment=Qt.AlignmentFlag.AlignRight)
+        row += 1
+        author = self._create_label("AP")
+        layout.addWidget(author, row, col, alignment=Qt.AlignmentFlag.AlignRight)
 
         container.setLayout(layout)
 
@@ -56,16 +56,28 @@ class MainDisplay(QMainWindow):
         
         return container
     
-    def create_news_container(self):
+    def create_news_container(self) -> QWidget:
         container = QWidget()
-        # container.setStyleSheet("background-color: blue")
+        layout = QGridLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        num_of_cards = 4
+
+        for x in range(0, num_of_cards):
+            layout.addWidget(self._create_news_card())
+
+        container.setLayout(layout)
+        return container
+
+    def _create_news_card(self) -> QWidget:
+        container = QWidget()
 
         layout = QHBoxLayout()
-
-        thumbnail = self.create_thumbnail()
+        
+        thumbnail = self._create_thumbnail()
         layout.addWidget(thumbnail)
 
-        desc_container = self.create_desc_container()
+        desc_container = self._create_desc_container()
         layout.addWidget(desc_container, alignment=Qt.AlignmentFlag.AlignLeft)
 
         width = int(thumbnail.width() + desc_container.width())
@@ -75,30 +87,9 @@ class MainDisplay(QMainWindow):
         container.setMaximumSize(width, height)
 
         return container
-
-    # def create_layout(self) -> QGridLayout:
-    #     layout = QGridLayout()
-
-    #     # Add thumbnails
-    #     thumbnails = self.create_thumbnails()
-    #     for thumbnail, row_col in thumbnails.items():
-    #         layout.addWidget(thumbnail, row_col[0], row_col[1])
-        
-    #     return layout
-
-    # def create_container(self) -> QWidget:
-    #     layout = self.create_layout()
-    #     # layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-
-    #     container = QWidget()
-    #     container.setLayout(layout)
-
-    #     return container
     
-    def create_thumbnail(self) -> QLabel:
+    def _create_thumbnail(self) -> QLabel:
         pixmap_data = requests.get(f"https://bloximages.chicago2.vip.townnews.com/thesunchronicle.com/content/tncms/assets/v3/editorial/8/63/8633a847-b25a-5cac-9261-cd9a433fb5e2/6a298f4a043f2.image.jpg?crop=1763%2C926%2C0%2C124&resize=1200%2C630&order=crop%2Cresize").content
-        # pixmap_data = requests.get(f"https://dims.apnews.com/dims4/default/35479c0/2147483647/strip/true/crop/7600x5064+0+1/resize/980x653!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F7c%2Fee%2F4bc97788cc5df7272e46e010bafd%2Fd8d320f7eb794693bdfa131323a9b476").content
-        # pixmap_data = requests.get(f"https://dims.apnews.com/dims4/default/7af89c8/2147483647/strip/true/crop/5048x3364+0+1/resize/980x653!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Ff4%2Ff3%2F659d9e3f601ca643b5c07b9142e0%2F51bbebdb10f74e82bea3dbf556b64607").content
 
         thumbnail = QLabel()
         thumbnail.setScaledContents(True)
@@ -108,7 +99,6 @@ class MainDisplay(QMainWindow):
         
         thumbnail.setMaximumSize(150, 150)
         thumbnail.setPixmap(pixmap)
-        # thumbnail.setStyleSheet(f"background-color: rgba({randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)})")
 
         return thumbnail
 

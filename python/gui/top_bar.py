@@ -13,7 +13,7 @@ from sources import Sources
 from random import randint
 
 class TopBar(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.everything = Everything()
