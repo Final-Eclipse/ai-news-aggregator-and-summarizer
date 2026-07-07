@@ -26,7 +26,15 @@ class MainDisplay(QMainWindow):
     
     def _create_label(self, text: str) -> QLabel:
         label = QLabel(text)
-        label.setMaximumSize(label.sizeHint().width(), label.sizeHint().height())
+        
+        # font = label.font()
+        # font.setPointSize(16)
+        # label.setFont(font)
+
+        # print(label.width(), label.height())
+        # label.setMaximumSize(label.sizeHint().width(), label.sizeHint().height())
+        # print(label.sizeHint().width(), label.sizeHint().height())
+        # print()
         return label
     
     def _create_desc_container(self) -> QWidget:
@@ -41,6 +49,8 @@ class MainDisplay(QMainWindow):
 
         row += 1
         brief_desc = self._create_label("A Trump order asked national park visitors to flag 'negative' historical info. They had other ideas")
+        # Add "..." for long text.
+        # brief_desc = self._create_label("afijpoaeijpofwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww john apple today tomorrow cookie ipad food hi")
         layout.addWidget(brief_desc, row, col)
 
         row += 1
@@ -48,16 +58,21 @@ class MainDisplay(QMainWindow):
         layout.addWidget(author, row, col, alignment=Qt.AlignmentFlag.AlignRight)
 
         container.setLayout(layout)
+        # container.setStyleSheet("background-color: blue")
 
         offset = 1.2
         width = int(layout.sizeHint().width() * offset)
         height = int(layout.sizeHint().height() * offset)
-        container.setMaximumSize(width, height)
+
+        # container.setMaximumSize(2000, 2000)
+        # container.setMaximumSize(width, height)
+        container.setMaximumSize(container.sizeHint().width(), container.sizeHint().height())
         
         return container
     
     def create_news_container(self) -> QWidget:
         container = QWidget()
+        # container.setStyleSheet("background-color: red")
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -84,7 +99,9 @@ class MainDisplay(QMainWindow):
         height = int(thumbnail.height() + desc_container.height())
         
         container.setLayout(layout)
-        container.setMaximumSize(width, height)
+        # container.setMaximumSize(width, height)
+        container.setMaximumSize(container.sizeHint().width(), container.sizeHint().height())
+        # container.setStyleSheet("background-color: pink")
 
         return container
     
