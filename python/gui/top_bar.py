@@ -36,7 +36,7 @@ class TopBar(QMainWindow):
 
     def _receive_endpoint_url(self, url):
         url = url
-        print(url)
+        print("hello " + url)
         
     def _send_post_request(self) -> str:
         endpoint_type, json_str = self._get_endpoint_data()
