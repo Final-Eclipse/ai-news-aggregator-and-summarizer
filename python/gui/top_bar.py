@@ -2,14 +2,14 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, Q
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont
 import requests, json, time, asyncio, aiohttp
-from localhosts import Localhosts
-from ollama_models import OllamaModels
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService    
-from worker import Worker
-from everything import Everything
-from top_headlines import TopHeadlines
-from sources import Sources
+from request_api.localhosts import Localhosts
+from request_api.ollama_models import OllamaModels
+from models.ollama_models_dto import OllamaModelsDto
+from request_api.http_service import HttpService    
+from request_api.worker import Worker
+from news_api_endpoints.everything import Everything
+from news_api_endpoints.top_headlines import TopHeadlines
+from news_api_endpoints.sources import Sources
 from random import randint
 
 class TopBar(QMainWindow):

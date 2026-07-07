@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
-from localhosts import Localhosts
-from ollama_models import OllamaModels
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService    
-from worker import Worker
+from request_api.localhosts import Localhosts
+from request_api.ollama_models import OllamaModels
+from models.ollama_models_dto import OllamaModelsDto
+from request_api.http_service import HttpService    
+from request_api.worker import Worker
 from top_bar import TopBar
 from main_display import MainDisplay
 
