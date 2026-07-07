@@ -3,7 +3,7 @@ from pathlib import Path
 
 class Localhosts():
     @staticmethod
-    async def __run_dotnet() -> None:
+    async def _run_dotnet() -> None:
         """Start the ASP.NET Core dotnet localhost."""
         process = await asyncio.create_subprocess_shell(
             cmd="dotnet run",
@@ -13,7 +13,7 @@ class Localhosts():
         await process.communicate()
     
     @staticmethod
-    async def __run_java() -> None:
+    async def _run_java() -> None:
         """Start the Java Spring Boot localhost."""
         process = await asyncio.create_subprocess_shell(
             cmd="mvnw.cmd spring-boot:run",
@@ -23,7 +23,7 @@ class Localhosts():
         await process.communicate()
 
     @staticmethod
-    async def __run_ollama() -> None:
+    async def _run_ollama() -> None:
         """Start the Ollama localhost."""
         process = await asyncio.create_subprocess_shell(
             cmd="ollama serve"
@@ -35,9 +35,9 @@ class Localhosts():
     async def run_localhosts() -> None:
         """Call and start all localhosts."""
         tasks = [
-            Localhosts.__run_dotnet(), 
-            Localhosts.__run_java(), 
-            Localhosts.__run_ollama()
+            Localhosts._run_dotnet(), 
+            Localhosts._run_java(), 
+            Localhosts._run_ollama()
         ]
         
         await asyncio.gather(*tasks)
