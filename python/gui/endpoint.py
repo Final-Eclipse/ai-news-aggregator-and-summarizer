@@ -79,6 +79,11 @@ class Endpoint():
     def _create_container(self, layout) -> QWidget:
         container = QWidget()
         container.setLayout(layout)
+        
+        # font = container.font()
+        # font.setPointSize(16)
+        # container.setFont(font)
+        
         return container
     
     def _init_widget_sizes(self) -> None:
