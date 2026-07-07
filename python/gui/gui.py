@@ -84,7 +84,8 @@ class MainWindow(QMainWindow):
 
         # Add main display
         main_display_container: QWidget = self.main_display.get_container()
-        layout.addWidget(main_display_container)
+        layout.addWidget(main_display_container, alignment=Qt.AlignmentFlag.AlignCenter)
+        # layout.addWidget(main_display_container)
 
         # layout.addWidget(self.get_post_endpoint_data())
         # layout.addWidget(self.send_button)
