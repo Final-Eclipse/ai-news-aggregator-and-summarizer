@@ -1,3 +1,3 @@
-from helpers.language import Language
-from helpers.category import Category
-from helpers.country import Country
+from endpoints.helpers.language import Language
+from endpoints.helpers.category import Category
+from endpoints.helpers.country import Country
