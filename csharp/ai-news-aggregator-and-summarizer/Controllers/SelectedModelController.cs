@@ -19,12 +19,13 @@ public class SelectedModelController : ControllerBase
     [HttpPost]
     public string PostSelectedModel([FromBody] string newModel)
     {
-        int offset = 3;
-        int start = newModel.IndexOf(": ") + offset;
-        int end = newModel.IndexOf("\"}");
+        System.Console.WriteLine(newModel);
+        // int offset = 3;
+        // int start = newModel.IndexOf(": ") + offset;
+        // int end = newModel.IndexOf("\"}");
 
-        newModel = newModel.Substring(0, end);
-        newModel = newModel.Substring(start);
+        // newModel = newModel.Substring(0, end);
+        // newModel = newModel.Substring(start);
 
         if (SummaryService.IsModelValid(newModel) == false)
         {
