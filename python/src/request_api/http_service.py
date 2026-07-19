@@ -1,5 +1,8 @@
+import sys, pathlib
+sys.path.append(f"{pathlib.Path.cwd()}")
+
 import requests, asyncio, aiohttp
-from ollama_models_dto import OllamaModelsDto
+from src.models.ollama_models_dto import OllamaModelsDto
 
 class HttpService():
     # @staticmethod
@@ -21,3 +24,7 @@ class HttpService():
     @staticmethod
     def get_local_ollama_models():
         return OllamaModelsDto(requests.get("http://localhost:8080/api/v1/models/ollama").json())
+    
+    @staticmethod
+    def test():
+        return "Successful test!"

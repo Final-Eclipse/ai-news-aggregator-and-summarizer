@@ -1,7 +1,10 @@
+import sys, pathlib
+sys.path.append(f"{pathlib.Path.cwd()}")
+
 from PyQt5.QtWidgets import QComboBox, QLineEdit, QWidget, QLabel, QGridLayout
 from PyQt5.QtCore import Qt
 import json
-from helpers import Language, Country
+from src.gui.helpers import Language, Country
 
 class Endpoint():
     def __init__(self):

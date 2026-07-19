@@ -1,11 +1,15 @@
+import sys, pathlib
+sys.path.append(f"{pathlib.Path.cwd()}")
+
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
-from request_api.localhosts import Localhosts
-from request_api.ollama_models import OllamaModels
-from models.ollama_models_dto import OllamaModelsDto
-from request_api.http_service import HttpService    
-from request_api.worker import Worker
+from src.request_api.localhosts import Localhosts
+from src.request_api.ollama_models import OllamaModels
+from src.models.ollama_models_dto import OllamaModelsDto
+from src.request_api.http_service import HttpService    
+from src.request_api.worker import Worker
+from src.request_api import Worker
 from top_bar import TopBar
 from main_display import MainDisplay
 

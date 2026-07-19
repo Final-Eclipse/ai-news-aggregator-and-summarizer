@@ -1,6 +1,11 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService
+
+import sys, pathlib
+sys.path.append(f"{pathlib.Path.cwd()}")
+
+from src.models.ollama_models_dto import OllamaModelsDto
+# from http_service import HttpService
+from src.request_api import HttpService
 import requests
 
 
@@ -26,4 +31,7 @@ class Worker(QObject):
         
         self.finished.emit()
         self.post_request_finished.emit(request.text)
+
+if __name__ == "__main__":
+    print(HttpService.test())
         
