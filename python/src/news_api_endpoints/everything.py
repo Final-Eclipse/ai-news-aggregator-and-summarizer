@@ -4,7 +4,7 @@ sys.path.append(f"{pathlib.Path.cwd()}")
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from src.news_api_endpoints.endpoint import Endpoint
 import json
-from src.gui.helpers import Language
+from src.gui.helpers import Language     # type: ignore
 
 class Everything(Endpoint):
     def __init__(self) -> None:
