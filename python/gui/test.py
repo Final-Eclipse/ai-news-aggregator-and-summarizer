@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from ollama_models_dto import OllamaModelsDto
 import requests, json, time
 
 # Create a GUI to display the article titles that follow the descriptions the user has set.
@@ -31,8 +32,11 @@ def set_selected_model(model):
     headers = {
         "Content-Type": "application/json"
     }
-    request = requests.post("http://localhost:5172/SelectedModel", data=model)
+
+    request = requests.post("http://localhost:5172/SelectedModel", json=model, headers=headers)
     print(request.text)
+    print(requests.get("http://localhost:5172/SelectedModel").text)
+
 
 def send_summary(article_text):
     request = requests.post("http://localhost:8080/api/v1/news/summary", article_text)  # Article text should be in JSON format.
@@ -114,12 +118,6 @@ def get_oldest_date():
     oldest_date = f"{year}-{month}-{day}"
     return oldest_date
 
-# send_post_request(create_everything())
-# send_post_request(create_top_headlines())    
-# send_post_request(create_sources())
-
-# send_summary("What is an interesting fact about something in history?")
-
 def create_summary():
     query_params = {
         "articleText": "Who is the most famous person currently?"
@@ -129,19 +127,29 @@ def create_summary():
 
 def create_selected_model():
     query_params = {
-        "selectedModel": "huihui_ai/deepseek-r1-abliterated:8b"
+        # "selectedModel": "llama"
+        "selectedModel": "llama3.1:8b"
+        # "selectedModel": "huihui_ai/deepseek-r1-abliterated:8b"
     }
 
     return json.dumps(query_params)
 
-send_endpoint_data(create_everything())
+# set_selected_model(create_selected_model())
+
+response = requests.get("http://localhost:8080/api/v1/models/ollama").json()
+x = OllamaModelsDto(response)
+print(x.local_models["localModels"][0])
+
+
+# send_endpoint_data(create_everything())
 # send_endpoint_data(create_top_headlines())    
 # send_endpoint_data(create_sources())
 # print(requests.get("http://localhost:8080/api/v1/news/everything").text) # Must POST endpoint data first then send GET the endpoint response.
-data = json.loads(requests.get("http://localhost:8080/api/v1/news/everything").text)
-print(data["articles"][0]["title"])
+# data = json.loads(requests.get("http://localhost:8080/api/v1/news/everything").text)
+# print(data["articles"][0]["title"])
 
 # set_selected_model("huihui_ai/deepseek-r1-abliterated:8b")
+# set_selected_model()
 # send_article_text_to_summarize(create_summary())
 # send_post_request(json.dumps("hello how are you doing"))
 
