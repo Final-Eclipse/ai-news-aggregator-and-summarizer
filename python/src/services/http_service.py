@@ -1,5 +1,4 @@
 import requests, asyncio, aiohttp
-from ollama_models_dto import OllamaModelsDto
 
 class HttpService():
     # @staticmethod
@@ -19,5 +18,5 @@ class HttpService():
     #     return local_models
     
     @staticmethod
-    def get_local_ollama_models():
-        return OllamaModelsDto(requests.get("http://localhost:8080/api/v1/models/ollama").json())
+    def get_local_ollama_models() -> dict:
+        return requests.get("http://localhost:8080/api/v1/models/ollama").json()

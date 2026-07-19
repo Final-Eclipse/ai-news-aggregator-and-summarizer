@@ -1,11 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
-from localhosts import Localhosts
-from ollama_models import OllamaModels
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService    
-from worker import Worker
+from services.worker import Worker
 from top_bar import TopBar
 from main_display import MainDisplay
 
@@ -50,9 +46,9 @@ class MainWindow(QMainWindow):
         
         self.setCentralWidget(self.create_layout())
 
-    def populate_available_models(self, models: OllamaModelsDto):
+    def populate_available_models(self, models: dict):
         self.available_models.clear()
-        self.available_models.addItems(models.local_models["localModels"])
+        self.available_models.addItems(models["localModels"])
 
     def run_refresh_models(self):
         self.worker_thread = QThread()

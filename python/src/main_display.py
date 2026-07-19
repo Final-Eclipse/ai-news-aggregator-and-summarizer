@@ -1,16 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QPushButton, QSizePolicy, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont, QPixmap
-import requests, json, time, asyncio, aiohttp
-from localhosts import Localhosts
-from ollama_models import OllamaModels
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService    
-from worker import Worker
-from everything import Everything
-from top_headlines import TopHeadlines
-from sources import Sources
-from random import randint
+import requests
 
 # Rename file and class from MainDisplay to NewsCard?
 class MainDisplay(QMainWindow):
@@ -89,7 +80,7 @@ class MainDisplay(QMainWindow):
         return container
     
     def _create_thumbnail(self) -> QLabel:
-        pixmap_data = requests.get(f"https://bloximages.chicago2.vip.townnews.com/thesunchronicle.com/content/tncms/assets/v3/editorial/8/63/8633a847-b25a-5cac-9261-cd9a433fb5e2/6a298f4a043f2.image.jpg?crop=1763%2C926%2C0%2C124&resize=1200%2C630&order=crop%2Cresize").content
+        pixmap_data = requests.get(f"https://dims.apnews.com/dims4/default/c922f70/2147483647/strip/true/crop/4032x2687+0+1/resize/980x653!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2Fb5%2F7a%2Ff984fedcb9c5272fd78048480f94%2F465bab7e3f944edeab2dd60412faf0db").content
 
         thumbnail = QLabel()
         thumbnail.setScaledContents(True)

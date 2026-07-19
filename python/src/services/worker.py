@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService
+from services.http_service import HttpService
 import requests
 
 
@@ -9,7 +8,7 @@ class Worker(QObject):
     finished = pyqtSignal()
 
     # Local models
-    local_models = pyqtSignal(OllamaModelsDto)
+    local_models = pyqtSignal(dict)
 
     # Send post request
     post_request_finished = pyqtSignal(str)

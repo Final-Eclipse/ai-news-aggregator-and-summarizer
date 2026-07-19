@@ -1,16 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QPushButton, QSizePolicy, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont
-import requests, json, time, asyncio, aiohttp
-from localhosts import Localhosts
-from ollama_models import OllamaModels
-from ollama_models_dto import OllamaModelsDto
-from http_service import HttpService    
-from worker import Worker
-from everything import Everything
-from top_headlines import TopHeadlines
-from sources import Sources
-from random import randint
+from services.worker import Worker
+from endpoints import Everything, TopHeadlines, Sources
 
 class TopBar(QMainWindow):
     def __init__(self) -> None:

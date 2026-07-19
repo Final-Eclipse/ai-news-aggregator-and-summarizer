@@ -1,5 +1,4 @@
 from PyQt5 import QtCore
-from ollama_models_dto import OllamaModelsDto
 import requests, json, time
 
 # Create a GUI to display the article titles that follow the descriptions the user has set.
@@ -35,7 +34,7 @@ def set_selected_model(model):
 
     request = requests.post("http://localhost:5172/SelectedModel", json=model, headers=headers)
     print(request.text)
-    print(requests.get("http://localhost:5172/SelectedModel").text)
+    # print(requests.get("http://localhost:5172/SelectedModel").text)
 
 
 def send_summary(article_text):
@@ -136,9 +135,8 @@ def create_selected_model():
 
 # set_selected_model(create_selected_model())
 
-response = requests.get("http://localhost:8080/api/v1/models/ollama").json()
-x = OllamaModelsDto(response)
-print(x.local_models["localModels"][0])
+# response = requests.get("http://localhost:8080/api/v1/models/ollama").json()
+# print(response["localModels"][0])
 
 
 # send_endpoint_data(create_everything())
@@ -175,8 +173,9 @@ from pathlib import Path
 
 # print(requests.get("https://www.textise.net/showText.aspx?strURL=https%253A//apnews.com/article/trump-80th-birthday-ufc-biden-e14d1bbccc1cbaaad42fd541b1fe833d").text)
 
+set_selected_model("llama3.1:8b")
 # print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://abcnews.com/US/child-killed-after-officer-fires-car-reported-shoplifting/story?id=133891802").text, end="\n\n")
-# print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.aljazeera.com/news/2026/6/16/g7-leaders-meet-in-france-with-iran-and-ukraine-high-on-agenda").text, end="\n\n")
+print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.aljazeera.com/news/2026/6/16/g7-leaders-meet-in-france-with-iran-and-ukraine-high-on-agenda").text, end="\n\n")
 # print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://arstechnica.com/gadgets/2026/06/20-years-of-intel-macs-why-apple-switched-and-why-it-switched-again/").text, end="\n\n")
 # print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://apnews.com/article/g7-iran-ukraine-trump-macron-zelenskyy-e7fad4eabaae8181f70fa5a0b9e499b2").text, end="\n\n")
 # print(requests.post("http://localhost:8080/api/v1/news/summary", data="https://www.axios.com/2026/06/16/anthropic-fable-trump-white-house-cybersecurity").text, end="\n\n")
