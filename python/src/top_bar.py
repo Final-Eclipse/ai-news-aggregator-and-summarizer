@@ -36,12 +36,6 @@ class TopBar(QMainWindow):
 
         self.response: dict # Endpoint response
 
-        # self.endpoints = {
-        #     "everything": self.everything.parameters,
-        #     "top headlines": self.top_headlines.parameters,
-        #     "sources": self.sources.parameters
-        # }
-
         self.endpoint_selector: QComboBox = self._create_endpoint_selector()
         self.endpoint_selector.currentIndexChanged.connect(self._update_top_bar)
 
@@ -154,14 +148,12 @@ class TopBar(QMainWindow):
     def _create_search_button(self) -> QPushButton:
         search_button = QPushButton("Search")
         search_button.clicked.connect(self._post_endpoint_data)
-        # search_button.clicked.connect(self.get_endpoint_data)
 
         max_width = search_button.sizeHint().width()
         search_button.setMaximumWidth(max_width)
         return search_button
     
     def _create_endpoint_selector_container(self) -> QWidget:
-        # layout = QVBoxLayout()
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
