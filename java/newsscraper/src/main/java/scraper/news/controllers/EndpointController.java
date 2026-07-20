@@ -40,15 +40,28 @@ public class EndpointController
         BaseEndpointService endpoint = CreateEndpointService.create(endpointData);
         apiEndpointUrl = endpoint.getApiEndpointUrl();
         return ResponseEntity.ok("Successful post! Make summary call to C# and return here eventually. " + apiEndpointUrl);
+        // No need to return apiEndpointUrl?
     }
 
+    /**
+     * Returns a JSON response from the News API.
+     * @return
+     */
     @GetMapping("/api/v1/news/everything")
     public ResponseEntity<EverythingDto> getEverythingResponse()
     {
+        // hashmap <string of endpoint type, method to call in HttpService>
+        // Have one central getXResponse method that takes the apiEndpointUrl and gets its value in the hashmap
+        // and calls the corresponding method and returns the result.
+        // The result would be the JSON associated with the apiEndpointUrl.
         isValidEndpoint("everything");
         return ResponseEntity.ok(HttpService.getEverythingResponse(apiEndpointUrl));
     }
 
+    /**
+     * Returns a JSON response from the News API.
+     * @return
+     */
     @GetMapping("/api/v1/news/top-headlines")
     public ResponseEntity<TopHeadlinesDto> getTopHeadlinesResponse()
     {
@@ -56,6 +69,10 @@ public class EndpointController
         return ResponseEntity.ok(HttpService.getTopHeadlinesResponse(apiEndpointUrl));
     }
 
+    /**
+     * Returns a JSON response from the News API.
+     * @return
+     */
     @GetMapping("/api/v1/news/top-headlines/sources")
     public ResponseEntity<SourcesDto> getSourcesResponse()
     {
