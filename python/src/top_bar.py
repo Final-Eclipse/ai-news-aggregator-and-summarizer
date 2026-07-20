@@ -1,8 +1,30 @@
 from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, QMainWindow, QPushButton, QSizePolicy, QWidget, QLabel, QVBoxLayout, QLineEdit
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont
-from services.worker import Worker
+from services.worker import *
 from endpoints import Everything, TopHeadlines, Sources
+
+"""
+# Make post request to Java using the URL.
+# Or have Java make the post request as well without doing it in Python and just return the JSON.
+
+# Make request to URL in Python or Java and save the JSON.
+# For every entry in the JSON, display it on the app.
+
+# Most likely use Python because the JSON will be needed to store the articles in the database.
+# Also, what would Java be doing? Python needs to iterate over each article to get the image, url, etc.
+# Java wouldn't really be doing anything.
+
+# Use URL to send to Java getEverythingResponse() and get the JSON result.
+# Save the JSON to the database.
+# Display articles in the app based on details and information provided in the JSON.
+# getEverythingResponse() unnecessary? Just use Python to make a GET request instead of doing it in Java.
+# Probably should just do it in Java since I already have the URL so I can just do everything in Java first without needed Python to do extra stuff.
+
+# When an article is clicked on, perhaps display the original full article.
+# Have a summarize button to summarize the article.
+# Display the summary.
+"""
 
 class TopBar(QMainWindow):
     def __init__(self) -> None:
@@ -11,6 +33,8 @@ class TopBar(QMainWindow):
         self.everything = Everything()
         self.top_headlines = TopHeadlines()
         self.sources = Sources()
+
+        self.response: dict # Endpoint response
 
         # self.endpoints = {
         #     "everything": self.everything.parameters,
@@ -26,25 +50,24 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
-    def _receive_endpoint_url(self, url):
-        url = url
-        print(url)
+    def set_endpoint_response(self, response) -> None:
+        self.response = response
+
+    def _get_endpoint_response(self) -> None:
+        threadpool = QThreadPool()
+        worker = EndpointResponseWorker()
+        worker.signal.finished.connect(lambda response: self.set_endpoint_response(response))
+        threadpool.start(worker)
         
-    def _send_post_request(self) -> str:
+    def _post_endpoint_data(self) -> str:
         endpoint_type, json_str = self._get_endpoint_data()
 
-        self.worker_thread = QThread()
-        self.worker = Worker()
-        self.worker.moveToThread(self.worker_thread)
-        
-        self.worker_thread.started.connect(lambda: self.worker.send_post_request(json_str))
+        threadpool = QThreadPool()
+        worker = EndpointDataWorker()
+        worker.set_query_parameters(json_str)
+        threadpool.start(worker)
 
-        self.worker.finished.connect(self.worker_thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.worker_thread.finished.connect(self.worker_thread.deleteLater)
-        
-        self.worker.post_request_finished.connect(self._receive_endpoint_url)
-        self.worker_thread.start()
+        self._get_endpoint_response()
     
     def _get_endpoint_data(self) -> str:
         endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
@@ -130,7 +153,7 @@ class TopBar(QMainWindow):
 
     def _create_search_button(self) -> QPushButton:
         search_button = QPushButton("Search")
-        search_button.clicked.connect(self._send_post_request)
+        search_button.clicked.connect(self._post_endpoint_data)
         # search_button.clicked.connect(self.get_endpoint_data)
 
         max_width = search_button.sizeHint().width()
