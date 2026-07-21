@@ -34,10 +34,15 @@ import requests
 #         self.json_response_finished.emit(request)
 
 class EndpointDataWorker(QRunnable):
+    def __init__(self):
+        super().__init__()
+        self.signal = Signals()
+
     @pyqtSlot()
     def run(self):
         headers = {"Content-Type": "application/json"}
         request = requests.post(f"http://localhost:8080/api/v1/news/post-endpoint-data", data=self.query_parameters, headers=headers)
+        self.signal.upload_finished.emit()
 
     def set_query_parameters(self, query_parameters):
         self.query_parameters = query_parameters
@@ -52,7 +57,11 @@ class EndpointResponseWorker(QRunnable):
         request = requests.get("http://localhost:8080/api/v1/news/everything")  # Change endpoint depending on endpoint data.
         response = request.json()
 
-        self.signal.finished.emit(response)
+        self.signal.response_finished.emit(response)
 
 class Signals(QObject):
-    finished = pyqtSignal(dict)
+    # EndpointDataWorker
+    upload_finished = pyqtSignal()
+    
+    # EndpointResponseWorker
+    response_finished = pyqtSignal(dict)

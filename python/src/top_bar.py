@@ -44,28 +44,34 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
-    def set_endpoint_response(self, response) -> None:
+    def set_endpoint_response(self, response: dict) -> None:
         self.response = response
+
+        for article in response["articles"]:
+            print(article["title"])
+            print()
+
+        # Emit signal to main_display.py to notify it to update the screen with articles.
 
     def _get_endpoint_response(self) -> None:
         threadpool = QThreadPool()
         worker = EndpointResponseWorker()
-        worker.signal.finished.connect(lambda response: self.set_endpoint_response(response))
+        worker.signal.response_finished.connect(lambda response: self.set_endpoint_response(response))
         threadpool.start(worker)
         
     def _post_endpoint_data(self) -> str:
-        endpoint_type, json_str = self._get_endpoint_data()
-
+        json_str = self._get_endpoint_data()
         threadpool = QThreadPool()
+
         worker = EndpointDataWorker()
         worker.set_query_parameters(json_str)
-        threadpool.start(worker)
+        worker.signal.upload_finished.connect(self._get_endpoint_response)
 
-        self._get_endpoint_response()
+        threadpool.start(worker)
     
     def _get_endpoint_data(self) -> str:
         endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
-
+        
         match endpoint_type:
             case "everything":
                 json_str = self.everything.get_json(endpoint_type)
@@ -77,8 +83,7 @@ class TopBar(QMainWindow):
             case _:
                 raise Exception("[_get_endpoint_data in top_bar.py] Endpoint type not selected.")
 
-        # json_str = self.everything.get_json(endpoint_type)   # Ensure to have name as json_str or query_parameters and enforce everywhere for consistency.
-        return endpoint_type, json_str
+        return json_str
 
     def get_container(self) -> QWidget:
         return self.container
