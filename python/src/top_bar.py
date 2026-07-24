@@ -34,8 +34,6 @@ class TopBar(QMainWindow):
         self.top_headlines = TopHeadlines()
         self.sources = Sources()
 
-        self.response: dict # Endpoint response
-
         self.endpoint_selector: QComboBox = self._create_endpoint_selector()
         self.endpoint_selector.currentIndexChanged.connect(self._update_top_bar)
 
@@ -44,24 +42,29 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
-    def set_endpoint_response(self, response: dict) -> None:
-        self.response = response
+    def save_articles_to_database(self, response: dict) -> None:
+        endpoint_type, json_str = self._get_endpoint_data()
 
-        for article in response["articles"]:
-            print(article["title"])
-            print()
+        threadpool = QThreadPool().globalInstance()
+        worker = DatabaseWorker(endpoint_type, response)
+        threadpool.start(worker)
+        # Make sure to grab all results when fetching calling News API.
+        # Grab each page of the JSON result, not just the first page.
+        # page=1, page=2, page=3, etc.
 
         # Emit signal to main_display.py to notify it to update the screen with articles.
 
     def _get_endpoint_response(self) -> None:
-        threadpool = QThreadPool()
-        worker = EndpointResponseWorker()
-        worker.signal.response_finished.connect(lambda response: self.set_endpoint_response(response))
+        endpoint_type, json_str = self._get_endpoint_data()
+
+        threadpool = QThreadPool().globalInstance()
+        worker = EndpointResponseWorker(endpoint_type)
+        worker.signal.response_finished.connect(lambda response: self.save_articles_to_database(response))
         threadpool.start(worker)
         
     def _post_endpoint_data(self) -> str:
-        json_str = self._get_endpoint_data()
-        threadpool = QThreadPool()
+        endpoint_type, json_str = self._get_endpoint_data()
+        threadpool = QThreadPool().globalInstance()
 
         worker = EndpointDataWorker()
         worker.set_query_parameters(json_str)
@@ -81,9 +84,9 @@ class TopBar(QMainWindow):
                 endpoint_type = "top-headlines/sources"
                 json_str = self.sources.get_json(endpoint_type)
             case _:
-                raise Exception("[_get_endpoint_data in top_bar.py] Endpoint type not selected.")
+                raise Exception("[_get_endpoint_data() in top_bar.py] Endpoint type not selected.")
 
-        return json_str
+        return endpoint_type, json_str
 
     def get_container(self) -> QWidget:
         return self.container

@@ -40,7 +40,7 @@ def add_to_table_everything(response: dict) -> None:
     """
     Adds each article object from the response into the database's everything table.
 
-    @param response: dictionary object converted from JSON receieved from News API
+    @param response: Dictionary object converted from JSON receieved from News API.
     """
     connection = get_connection()
     cursor = get_cursor(connection)
@@ -92,7 +92,7 @@ def add_to_table_top_headlines(response: dict) -> None:
     """
     Adds each article object from the response into the database's top_headlines table.
 
-    @param response: dictionary object converted from JSON receieved from News API
+    @param response: Dictionary object converted from JSON receieved from News API.
     """
     connection = get_connection()
     cursor = get_cursor(connection)
@@ -142,7 +142,7 @@ def add_to_table_sources(response: dict) -> None:
     """
     Adds each source object from the response into the database's sources table.
 
-    @param response: dictionary object converted from JSON receieved from News API
+    @param response: Dictionary object converted from JSON receieved from News API.
     """
     connection = get_connection()
     cursor = get_cursor(connection)
