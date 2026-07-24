@@ -2,7 +2,7 @@
 .vscode/
 *.lscache
 .vs/
-*.db/
+*.db
 
 # C#
 bin/
