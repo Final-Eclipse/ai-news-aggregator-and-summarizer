@@ -42,8 +42,30 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
+    def receive_articles(self, result) -> None:
+        print(result)
+
+    def get_articles(self) -> None:
+        endpoint_type, json_str = self._get_endpoint_data()
+
+        import json
+        query: dict = json.loads(json_str)
+
+        query.pop("sources")
+        query["id"] = "the-verge"
+        query["name"] = "The Verge"
+
+        # print(type(query))
+
+        threadpool = QThreadPool().globalInstance()
+        worker = DatabaseQueryWorker(endpoint_type, query)
+        worker.signal.query_finished.connect(lambda result: self.receive_articles(result))
+        threadpool.start(worker)
+
     def save_articles_to_database(self, response: dict) -> None:
         endpoint_type, json_str = self._get_endpoint_data()
+        self.get_articles()
+        # self.get_database_query()
 
         threadpool = QThreadPool().globalInstance()
         worker = DatabaseWorker(endpoint_type, response)
@@ -51,6 +73,8 @@ class TopBar(QMainWindow):
         # Make sure to grab all results when fetching calling News API.
         # Grab each page of the JSON result, not just the first page.
         # page=1, page=2, page=3, etc.
+        # Uses too many API calls to do this.
+        # Instead, when the user clicks to the next page, call the same endpoint URL with News API, but page = next page.
 
         # Emit signal to main_display.py to notify it to update the screen with articles.
 

@@ -62,6 +62,106 @@ def add_to_table_everything(response: dict) -> None:
     connection.commit()
     connection.close()
 
+def query_table_everything() -> dict:
+    connection = get_connection()
+    cursor = get_cursor(connection)
+
+    # query = ("Trump",)
+    query = ("wired",)
+    x = {"title": "%trump%"}
+
+    # Database columns
+    y = {
+        "id": "the-verge",
+        "name": "The Verge",
+        "author": "Dominic Preston",
+        "title": "I finally got my Trump Phone",
+        "description": "",
+        "url": "",
+        "urlToImage": "",
+        "publishedAt": "",
+        "content": "",
+        
+        # "title": "%trump%"
+    }
+
+    # Endpoint query parameters
+    z = {
+        "q": "",
+        "searchIn": "", # Search in title, description, content.
+        "sources": "",  # ID, name
+        "domains": "",  # Look at URL if it is in the same domain as the one chosen.
+        "excludeDomains": "",   # Look at URL if it is the same domain as the one chosen.
+        "from": "", # publishedAt
+        "to": "",   # publishedAt
+        "language": "", # Nothing
+        "sortBy": "",   # Nothing
+        "pageSize": "", # Nothing
+        "page": ""  # Nothing
+    }
+
+    test = {
+        "q": "trump",
+        # "searchIn": "", # Search in title, description, content.
+        "sources": "wired",  # ID, name
+        "domains": "wired",  # Look at URL if it is in the same domain as the one chosen.
+        # "excludeDomains": "foxnews.com",   # Look at URL if it is the same domain as the one chosen.
+        "from": "2026-07-03", # publishedAt
+        "to": "2026-07-04",   # publishedAt
+        # "language": "es", # Nothing
+        # "sortBy": "",   # Nothing
+        # "pageSize": "", # Nothing
+        # "page": ""  # Nothing
+    }
+
+    for key, item in test.items():
+        test[key] = "%" + item + "%"
+    # print(test)
+
+    # Domains and sources not working correctly.
+    results = cursor.execute(f"""
+        SELECT * FROM everything WHERE
+            id LIKE :q OR
+            name LIKE :q OR
+            author LIKE :q OR
+            title LIKE :q OR
+            description LIKE :q OR
+            url LIKE :q OR
+            urlToImage LIKE :q OR
+            publishedAt LIKE :q OR
+            content LIKE :q AND
+
+            id LIKE :sources AND
+            name LIKE :sources AND
+
+            url LIKE :domains AND
+            urlToImage LIKE :domains AND
+            author LIKE :domains AND
+
+            publishedAt > :from AND
+            publishedAt < :to
+    """, test).fetchall()
+
+    # test_from = {"from": "2026-07-11", "to": "2026-07-11"}
+    # test_from = {"id": "the-verge", "name": "The Verge"}
+    test_from = {"domains": "%wired%"}  # Need %?% for checking if column value contains X value and not equals exactly.
+    # results = cursor.execute("SELECT * FROM everything WHERE url LIKE :domains", test_from).fetchall()
+
+    for result in results:
+        for a in result:
+            print(a)
+
+        # print()
+        # print()
+        break
+    
+    
+    # print(cursor.execute(f"SELECT * FROM everything WHERE title LIKE :title", x).fetchall())
+    # print(cursor.execute(f"SELECT * FROM everything WHERE title LIKE ?").fetchall())
+    # print(cursor.execute(f"SELECT * FROM everything WHERE id = ?", query).fetchall())
+
+    connection.close()
+
 def create_table_top_headlines() -> None:
     """Create a table in the database named top_headlines."""
     connection = get_connection()
@@ -161,3 +261,6 @@ def add_to_table_sources(response: dict) -> None:
 
     connection.commit()
     connection.close()
+
+if __name__ == "__main__":
+    query_table_everything()

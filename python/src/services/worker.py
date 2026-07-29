@@ -72,9 +72,34 @@ class DatabaseWorker(QRunnable):
             case _:
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
 
+class DatabaseQueryWorker(QRunnable):
+    def __init__(self, endpoint_type: str, query: dict) -> None:
+        """
+        Initialize instance.
+
+        @param endpoint_type: String value of the current endpoint type.
+        @param response: Dictionary object converted from JSON receieved from News API.
+        """
+        super().__init__()
+        self.endpoint_type = endpoint_type
+        self.query = query
+        self.signal = Signals()
+
+    @pyqtSlot()
+    def run(self) -> None:
+        match self.endpoint_type:
+            case "everything":
+                result = database.query_table_everything(self.query)
+                self.signal.query_finished.emit(result)
+            case _:
+                raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
+
 class Signals(QObject):
     # EndpointDataWorker
     upload_finished = pyqtSignal()
     
     # EndpointResponseWorker
     response_finished = pyqtSignal(dict)
+
+    # DatabaseQueryWorker
+    query_finished = pyqtSignal(list)

@@ -20,8 +20,8 @@ class TopHeadlines(Endpoint):
             "category": QComboBox(),
             "sources": QComboBox(),
             "q": QLineEdit(),
-            "pageSize": QLineEdit(),
-            "page": QLineEdit()
+            # "pageSize": QLineEdit(),
+            # "page": QLineEdit()
         }
 
         return parameters
@@ -41,8 +41,8 @@ class TopHeadlines(Endpoint):
         q: QLineEdit = parameters["q"]
         q.setPlaceholderText("Type query")
 
-        pageSize: QLineEdit = parameters["pageSize"]
-        pageSize.setPlaceholderText("Type page size")
+        # pageSize: QLineEdit = parameters["pageSize"]
+        # pageSize.setPlaceholderText("Type page size")
 
-        page: QLineEdit = parameters["page"]
-        page.setPlaceholderText("Type page number")
+        # page: QLineEdit = parameters["page"]
+        # page.setPlaceholderText("Type page number")

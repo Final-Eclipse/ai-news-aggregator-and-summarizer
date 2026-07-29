@@ -24,9 +24,9 @@ class Everything(Endpoint):
             "from": QLineEdit(),
             "to": QLineEdit(),
             "language": QComboBox(),
-            "sortBy": QComboBox(),
-            "pageSize": QLineEdit(),
-            "page": QLineEdit()
+            # "sortBy": QComboBox(),
+            # "pageSize": QLineEdit(),
+            # "page": QLineEdit()
         }
 
         return parameters            
@@ -58,11 +58,11 @@ class Everything(Endpoint):
         language: QComboBox = parameters["language"]
         language.addItems(Language.qcombobox_options)
 
-        sortBy: QComboBox = parameters["sortBy"]
-        sortBy.addItems(["Select sort option", "Relevancy", "Popularity", "Date published"])
+        # sortBy: QComboBox = parameters["sortBy"]
+        # sortBy.addItems(["Select sort option", "Relevancy", "Popularity", "Date published"])
 
-        pageSize: QLineEdit = parameters["pageSize"]
-        pageSize.setPlaceholderText("Type page size")
+        # pageSize: QLineEdit = parameters["pageSize"]
+        # pageSize.setPlaceholderText("Type page size")
 
-        page: QLineEdit = parameters["page"]
-        page.setPlaceholderText("Type page number")
+        # page: QLineEdit = parameters["page"]
+        # page.setPlaceholderText("Type page number")
