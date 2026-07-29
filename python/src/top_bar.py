@@ -42,29 +42,34 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
-    def receive_articles(self, result) -> None:
-        print(result)
+    # def receive_articles(self, result) -> None:
+    #     print(result)
 
-    def get_articles(self) -> None:
-        endpoint_type, json_str = self._get_endpoint_data()
+    # def get_articles(self) -> None:
+    #     endpoint_type, json_str = self._get_endpoint_data()
 
-        import json
-        query: dict = json.loads(json_str)
+    #     import json
+    #     query: dict = json.loads(json_str)
 
-        query.pop("sources")
-        query["id"] = "the-verge"
-        query["name"] = "The Verge"
+    #     query.pop("sources")
+    #     query["id"] = "the-verge"
+    #     query["name"] = "The Verge"
 
-        # print(type(query))
+    #     # print(type(query))
 
-        threadpool = QThreadPool().globalInstance()
-        worker = DatabaseQueryWorker(endpoint_type, query)
-        worker.signal.query_finished.connect(lambda result: self.receive_articles(result))
-        threadpool.start(worker)
+    #     threadpool = QThreadPool().globalInstance()
+    #     worker = DatabaseQueryWorker(endpoint_type, query)
+    #     worker.signal.query_finished.connect(lambda result: self.receive_articles(result))
+    #     threadpool.start(worker)
 
     def save_articles_to_database(self, response: dict) -> None:
+        """
+        Save articles to database after the endpoint response is received.
+        
+        @param response: Dictionary object of the endpoint response received in _get_endpoint_response().
+        """
         endpoint_type, json_str = self._get_endpoint_data()
-        self.get_articles()
+        # self.get_articles()
         # self.get_database_query()
 
         threadpool = QThreadPool().globalInstance()
@@ -79,6 +84,7 @@ class TopBar(QMainWindow):
         # Emit signal to main_display.py to notify it to update the screen with articles.
 
     def _get_endpoint_response(self) -> None:
+        """Get the response of the endpoint URL posted earlier in _post_endpoint_data."""
         endpoint_type, json_str = self._get_endpoint_data()
 
         threadpool = QThreadPool().globalInstance()
@@ -87,7 +93,9 @@ class TopBar(QMainWindow):
         threadpool.start(worker)
         
     def _post_endpoint_data(self) -> str:
+        """Post endpoint data from which the endpoint URL is able to be constructed."""
         endpoint_type, json_str = self._get_endpoint_data()
+
         threadpool = QThreadPool().globalInstance()
 
         worker = EndpointDataWorker()
@@ -178,14 +186,40 @@ class TopBar(QMainWindow):
         return endpoint_selector
 
     def _create_search_button(self) -> QPushButton:
+        """
+        Creates a search button.
+        
+        @return: QPushButton.
+        """
         search_button = QPushButton("Search")
-        search_button.clicked.connect(self._post_endpoint_data)
+        search_button.clicked.connect(self._search_button_clicked)
 
         max_width = search_button.sizeHint().width()
         search_button.setMaximumWidth(max_width)
         return search_button
+
+    def _search_button_clicked(self) -> None:
+        """Methods and actions to occur after the search button is clicked."""
+        self._post_endpoint_data()
+
+        # Get database bindings.
+        current_endpoint = endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
+        match current_endpoint:
+            case "everything":
+                print(self.everything.get_database_bindings(current_endpoint))
+            case "top-headlines":
+                self.top_headlines.get_database_bindings(current_endpoint)
+            case "sources":
+                self.sources.get_database_bindings(current_endpoint)
+            case _:
+                pass
     
     def _create_endpoint_selector_container(self) -> QWidget:
+        """
+        Creates a container made up of the endpoint selector and search button.
+        
+        @return: QWidget container.
+        """
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
