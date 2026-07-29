@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from endpoints.endpoint import Endpoint
-from endpoints.helpers import Category, Country
+from endpoints.helpers import Category, Country, Sources
 
 class TopHeadlines(Endpoint):
     def __init__(self) -> None:
@@ -36,7 +36,7 @@ class TopHeadlines(Endpoint):
         category.addItems(Category.qcombobox_options)
 
         sources: QComboBox = parameters["sources"]
-        sources.addItems(["Select source(s)", "ABC News", "Associated Press"])
+        sources.addItems(Sources.qcombobox_options)
 
         q: QLineEdit = parameters["q"]
         q.setPlaceholderText("Type query")
