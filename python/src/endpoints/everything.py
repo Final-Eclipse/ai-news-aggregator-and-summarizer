@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from endpoints.endpoint import Endpoint
-from endpoints.helpers import Language
+from endpoints.helpers import Language, Domains, Sources
 
 class Everything(Endpoint):
     def __init__(self) -> None:
@@ -41,13 +41,13 @@ class Everything(Endpoint):
         searchIn.addItems(["Select search type(s)", "Title", "Description", "Content"])
 
         sources: QComboBox = parameters["sources"]
-        sources.addItems(["Select source(s)", "ABC News", "Associated Press"])
+        sources.addItems(Sources.qcombobox_options)
 
         domains: QComboBox = parameters["domains"]
-        domains.addItems(["Select domain(s)", "BBC", "TechCrunch", "Engadget"])
+        domains.addItems(Domains.qcombobox_options)
 
         excludeDomains: QComboBox = parameters["excludeDomains"]
-        excludeDomains.addItems(["Select domain(s) to exclude", "Fox News"])
+        excludeDomains.addItems(Domains.qcombobox_options)
 
         from_: QLineEdit = parameters["from"]
         from_.setPlaceholderText("Type start date")
