@@ -72,7 +72,8 @@ class Endpoint():
             name: str = query["sources"].replace("-", " ")
             query["name"] = name
         except AttributeError:
-            pass
+            query["id"] = None
+            query["name"] = None
 
         # Remove unnecessary keys.
         query.pop("endpoint")
