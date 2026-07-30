@@ -201,19 +201,28 @@ class TopBar(QMainWindow):
     def _search_button_clicked(self) -> None:
         """Methods and actions to occur after the search button is clicked."""
         self._post_endpoint_data()
+        self._get_database_results()
+        
 
+    def _get_database_results(self) -> None:
         # Get database bindings.
+        bindings: dict
         current_endpoint = endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
         match current_endpoint:
             case "everything":
-                print(self.everything.get_database_bindings(current_endpoint))
+                bindings = self.everything.get_database_bindings(current_endpoint)
             case "top-headlines":
-                self.top_headlines.get_database_bindings(current_endpoint)
+                bindings = self.top_headlines.get_database_bindings(current_endpoint)
             case "sources":
-                self.sources.get_database_bindings(current_endpoint)
+                bindings = self.sources.get_database_bindings(current_endpoint)
             case _:
                 pass
-    
+
+        # Query database.
+        threadpool = QThreadPool().globalInstance()
+        worker = DatabaseQueryWorker(endpoint_type, bindings)
+        threadpool.start(worker)
+                
     def _create_endpoint_selector_container(self) -> QWidget:
         """
         Creates a container made up of the endpoint selector and search button.
