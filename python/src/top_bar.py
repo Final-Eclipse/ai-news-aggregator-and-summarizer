@@ -84,6 +84,11 @@ class TopBar(QMainWindow):
         threadpool.start(worker)
     
     def _get_endpoint_data(self) -> tuple:
+        """
+        Get the current endpoint and the information to assemble its endpoint URL.
+        
+        @return: Tuple of the current endpoint and its JSON string.
+        """
         endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
         
         match endpoint_type:
@@ -100,9 +105,15 @@ class TopBar(QMainWindow):
         return endpoint_type, json_str
 
     def get_container(self) -> QWidget:
+        """
+        Return the container for the top bar.
+
+        @return: QWidget.
+        """
         return self.container
 
     def _update_top_bar(self) -> None:   
+        """Update the top bar by showing and hiding elements."""
         match self.endpoint_selector.currentText():
             case "Everything":
                 self.everything.show()
@@ -129,6 +140,11 @@ class TopBar(QMainWindow):
                 self.placeholder.show()
 
     def _create_layout(self) -> QWidget:
+        """
+        Create the layout for the top bar.
+
+        @return: QWidget container for the top bar.
+        """
         layout = QVBoxLayout()
         layout.setSpacing(0)
 
@@ -151,11 +167,23 @@ class TopBar(QMainWindow):
         return self.container
     
     def _create_placeholder(self) -> QWidget:
-        """Blocks the second row in the container when the default dropdown option is selected."""
+        """
+        Create a placeholder widget that is shown when no endpoint is chosen in the endpoint selector.
+        
+        Blocks the second row in the container when the default dropdown option is selected.
+        Prevents the lower rows from moving upwards.
+        
+        @return: QWidget placeholder.
+        """
         self.placeholder = QWidget()
         return self.placeholder
     
     def _create_endpoint_selector(self) -> QComboBox:
+        """
+        Create endpoint selector that allows the user to switch between various endpoints.
+
+        @return: QComboBox of endpoints.
+        """
         endpoint_selector = QComboBox()        
         endpoint_selector.addItems(["Select an endpoint type", "Everything", "Top headlines", "Sources"])
 
@@ -178,6 +206,7 @@ class TopBar(QMainWindow):
         return search_button
 
     def _get_database_results(self) -> None:
+        """Get database results based off of bindings/user input from the endpoint selector."""
         # Get database bindings.
         bindings: dict
         current_endpoint = endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
