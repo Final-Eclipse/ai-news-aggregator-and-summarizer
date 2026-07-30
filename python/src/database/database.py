@@ -66,98 +66,27 @@ def query_table_everything(bindings: dict) -> dict:
     connection = get_connection()
     cursor = get_cursor(connection)
 
-    # query = ("Trump",)
-    query = ("wired",)
-    x = {"title": "%trump%"}
+    # Get database columns
+    database_columns: list = []
+    database_column_info: list = cursor.execute("""PRAGMA table_info(everything)""").fetchall()
+    for column_info in database_column_info:
+        database_columns.append(column_info[1])
 
-    # Database columns
-    y = {
-        "id": "the-verge",
-        "name": "The Verge",
-        "author": "Dominic Preston",
-        "title": "I finally got my Trump Phone",
-        "description": "",
-        "url": "",
-        "urlToImage": "",
-        "publishedAt": "",
-        "content": "",
-        
-        # "title": "%trump%"
-    }
+    # Assemble queries.
+    q: str = "(\n  " + " LIKE :q OR\n  ".join(database_columns) + " LIKE :q\n)"
+    sources: str = "(\n  id LIKE :id AND\n  name LIKE :name\n)"
+    domains: str = "(\n  url LIKE :domains\n)"
 
-    # Endpoint query parameters
-    z = {
-        "q": "",
-        "searchIn": "", # Search in title, description, content.
-        "sources": "",  # ID, name
-        "domains": "",  # Look at URL if it is in the same domain as the one chosen.
-        "excludeDomains": "",   # Look at URL if it is the same domain as the one chosen.
-        "from": "", # publishedAt
-        "to": "",   # publishedAt
-        "language": "", # Nothing
-        "sortBy": "",   # Nothing
-        "pageSize": "", # Nothing
-        "page": ""  # Nothing
-    }
+    if bindings["from"] != "" and bindings["to"] != "":
+        time: str = "(\n  publishedAt > :from AND\n  publishedAt < :to\n)"
+    else:
+        time: str = ""
 
-    test = {
-        "q": "trump",
-        # "searchIn": "", # Search in title, description, content.
-        "id": "wired",
-        "name": "wired",
-        "domains": "wired.com",  # Look at URL if it is in the same domain as the one chosen.
-        # "excludeDomains": "foxnews.com",   # Look at URL if it is the same domain as the one chosen.
-        "from": "2026-07-03", # publishedAt
-        "to": "2026-07-25",   # publishedAt
-        # "language": "es", # Nothing
-        # "sortBy": "",   # Nothing
-        # "pageSize": "", # Nothing
-        # "page": ""  # Nothing
-    }
+    queries = (q, sources, domains, time)
+    query = "\nAND\n".join([x for x in queries if x != ""]) # Adds each query as long as it is not an empty string (mainly for time query).
 
-    for key, item in test.items():
-        if key == "from" or key == "to":
-            continue
-        test[key] = "%" + item + "%"
-    # print(test)
-
-    # Domains and sources not working correctly.
-    results = cursor.execute(f"""
-        SELECT * FROM everything WHERE
-        (
-            id LIKE :q OR
-            name LIKE :q OR
-            author LIKE :q OR
-            title LIKE :q OR
-            description LIKE :q OR
-            url LIKE :q OR
-            urlToImage LIKE :q OR
-            publishedAt LIKE :q OR
-            content LIKE :q
-        )
-        AND
-        (
-            id LIKE :id AND
-            name LIKE :name
-        )
-        AND
-        (
-            url LIKE :domains
-        )
-        AND
-        (
-            publishedAt > :from AND
-            publishedAt < :to
-        )
-    """, bindings).fetchall()
-
-    # test_from = {"from": "2026-07-11", "to": "2026-07-11"}
-    # test_from = {"id": "the-verge", "name": "The Verge"}
-    # test_from = {"domains": "%wired%"}  # Need %?% for checking if column value contains X value and not equals exactly.
-    # results = cursor.execute("SELECT * FROM everything WHERE url LIKE :domains", test_from).fetchall()
-
-    # results = cursor.execute("SELECT * FROM everything WHERE id LIKE :id AND name LIKE :name", test).fetchall()
-    # results = cursor.execute("SELECT * FROM everything WHERE publishedAt > :from AND publishedAt < :to", test).fetchall()
+    # Execute query selection.
+    results = cursor.execute(f"""SELECT * FROM everything WHERE {query}""", bindings).fetchall()
 
     for result in results:
         for a in result:
@@ -167,11 +96,6 @@ def query_table_everything(bindings: dict) -> dict:
         print()
         # break
     print(len(results))
-    
-    
-    # print(cursor.execute(f"SELECT * FROM everything WHERE title LIKE :title", x).fetchall())
-    # print(cursor.execute(f"SELECT * FROM everything WHERE title LIKE ?").fetchall())
-    # print(cursor.execute(f"SELECT * FROM everything WHERE id = ?", query).fetchall())
 
     connection.close()
     return results
@@ -277,4 +201,13 @@ def add_to_table_sources(response: dict) -> None:
     connection.close()
 
 if __name__ == "__main__":
-    query_table_everything()
+    # query_table_everything()
+    connection = get_connection()
+    cursor = get_cursor(connection)
+
+    columns = cursor.execute("""PRAGMA table_info(everything)""").fetchall()
+    print(*columns)
+    # for column in columns:
+    #     print(column[1])
+
+    connection.close()
