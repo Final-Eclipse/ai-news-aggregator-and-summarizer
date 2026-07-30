@@ -42,26 +42,6 @@ class TopBar(QMainWindow):
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
-    # def receive_articles(self, result) -> None:
-    #     print(result)
-
-    # def get_articles(self) -> None:
-    #     endpoint_type, json_str = self._get_endpoint_data()
-
-    #     import json
-    #     query: dict = json.loads(json_str)
-
-    #     query.pop("sources")
-    #     query["id"] = "the-verge"
-    #     query["name"] = "The Verge"
-
-    #     # print(type(query))
-
-    #     threadpool = QThreadPool().globalInstance()
-    #     worker = DatabaseQueryWorker(endpoint_type, query)
-    #     worker.signal.query_finished.connect(lambda result: self.receive_articles(result))
-    #     threadpool.start(worker)
-
     def save_articles_to_database(self, response: dict) -> None:
         """
         Save articles to database after the endpoint response is received.
@@ -69,11 +49,10 @@ class TopBar(QMainWindow):
         @param response: Dictionary object of the endpoint response received in _get_endpoint_response().
         """
         endpoint_type, json_str = self._get_endpoint_data()
-        # self.get_articles()
-        # self.get_database_query()
 
         threadpool = QThreadPool().globalInstance()
         worker = DatabaseWorker(endpoint_type, response)
+        worker.signal.articles_saved.connect(self._get_database_results)
         threadpool.start(worker)
         # Make sure to grab all results when fetching calling News API.
         # Grab each page of the JSON result, not just the first page.
@@ -92,7 +71,7 @@ class TopBar(QMainWindow):
         worker.signal.response_finished.connect(lambda response: self.save_articles_to_database(response))
         threadpool.start(worker)
         
-    def _post_endpoint_data(self) -> str:
+    def _post_endpoint_data(self) -> None:
         """Post endpoint data from which the endpoint URL is able to be constructed."""
         endpoint_type, json_str = self._get_endpoint_data()
 
@@ -104,7 +83,7 @@ class TopBar(QMainWindow):
 
         threadpool.start(worker)
     
-    def _get_endpoint_data(self) -> str:
+    def _get_endpoint_data(self) -> tuple:
         endpoint_type = self.endpoint_selector.currentText().lower().replace(" ", "-")
         
         match endpoint_type:
@@ -192,22 +171,11 @@ class TopBar(QMainWindow):
         @return: QPushButton.
         """
         search_button = QPushButton("Search")
-        search_button.clicked.connect(self._search_button_clicked)
+        search_button.clicked.connect(self._post_endpoint_data)
 
         max_width = search_button.sizeHint().width()
         search_button.setMaximumWidth(max_width)
         return search_button
-
-    def _search_button_clicked(self) -> None:
-        """Methods and actions to occur after the search button is clicked."""
-        self._post_endpoint_data()
-        # When signal is emitted from _post_endpoint_data, do self._get_endpoint_response().
-        # When signal is emitted from _get_endpoint_response, do self.save_articles_to_database().
-        self._get_database_results()    
-        # Trying to get database results causes it to get less results because it is trying to fetch before all articles have been saved.
-        # Need to wait for all articles to be uploaded to database before trying to fetch results.
-        # Maybe add a signal and slot for each method (_post_endpoint_data(), _get_endpoint_response(), save_articles_to_database())
-        # So instead of these methods calling the next one, they run in _search_button_clicked() only when the signal in that method is emitted.
 
     def _get_database_results(self) -> None:
         # Get database bindings.
