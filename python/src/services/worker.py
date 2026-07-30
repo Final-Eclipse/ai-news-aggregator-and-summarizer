@@ -52,6 +52,7 @@ class DatabaseWorker(QRunnable):
         super().__init__()
         self.endpoint_type = endpoint_type
         self.response = response
+        self.signal = Signals()
 
     @pyqtSlot()
     def run(self) -> None:
@@ -71,6 +72,8 @@ class DatabaseWorker(QRunnable):
 
             case _:
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
+
+        self.signal.articles_saved.emit()
 
 class DatabaseQueryWorker(QRunnable):
     def __init__(self, endpoint_type: str, bindings: dict) -> None:
@@ -100,6 +103,9 @@ class Signals(QObject):
     
     # EndpointResponseWorker
     response_finished = pyqtSignal(dict)
+
+    # DatabaseWorker
+    articles_saved = pyqtSignal()
 
     # DatabaseQueryWorker
     query_finished = pyqtSignal(list)
