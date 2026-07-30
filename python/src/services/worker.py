@@ -73,7 +73,7 @@ class DatabaseWorker(QRunnable):
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
 
 class DatabaseQueryWorker(QRunnable):
-    def __init__(self, endpoint_type: str, query: dict) -> None:
+    def __init__(self, endpoint_type: str, bindings: dict) -> None:
         """
         Initialize instance.
 
@@ -82,14 +82,14 @@ class DatabaseQueryWorker(QRunnable):
         """
         super().__init__()
         self.endpoint_type = endpoint_type
-        self.query = query
+        self.bindings = bindings
         self.signal = Signals()
 
     @pyqtSlot()
     def run(self) -> None:
         match self.endpoint_type:
             case "everything":
-                result = database.query_table_everything(self.query)
+                result = database.query_table_everything(self.bindings)
                 self.signal.query_finished.emit(result)
             case _:
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
