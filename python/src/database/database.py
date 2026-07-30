@@ -62,7 +62,7 @@ def add_to_table_everything(response: dict) -> None:
     connection.commit()
     connection.close()
 
-def query_table_everything() -> dict:
+def query_table_everything(bindings: dict) -> dict:
     connection = get_connection()
     cursor = get_cursor(connection)
 
@@ -103,11 +103,12 @@ def query_table_everything() -> dict:
     test = {
         "q": "trump",
         # "searchIn": "", # Search in title, description, content.
-        "sources": "wired",  # ID, name
-        "domains": "wired",  # Look at URL if it is in the same domain as the one chosen.
+        "id": "wired",
+        "name": "wired",
+        "domains": "wired.com",  # Look at URL if it is in the same domain as the one chosen.
         # "excludeDomains": "foxnews.com",   # Look at URL if it is the same domain as the one chosen.
         "from": "2026-07-03", # publishedAt
-        "to": "2026-07-04",   # publishedAt
+        "to": "2026-07-25",   # publishedAt
         # "language": "es", # Nothing
         # "sortBy": "",   # Nothing
         # "pageSize": "", # Nothing
@@ -115,12 +116,15 @@ def query_table_everything() -> dict:
     }
 
     for key, item in test.items():
+        if key == "from" or key == "to":
+            continue
         test[key] = "%" + item + "%"
     # print(test)
 
     # Domains and sources not working correctly.
     results = cursor.execute(f"""
         SELECT * FROM everything WHERE
+        (
             id LIKE :q OR
             name LIKE :q OR
             author LIKE :q OR
@@ -129,31 +133,40 @@ def query_table_everything() -> dict:
             url LIKE :q OR
             urlToImage LIKE :q OR
             publishedAt LIKE :q OR
-            content LIKE :q AND
-
-            id LIKE :sources AND
-            name LIKE :sources AND
-
-            url LIKE :domains AND
-            urlToImage LIKE :domains AND
-            author LIKE :domains AND
-
+            content LIKE :q
+        )
+        AND
+        (
+            id LIKE :id AND
+            name LIKE :name
+        )
+        AND
+        (
+            url LIKE :domains
+        )
+        AND
+        (
             publishedAt > :from AND
             publishedAt < :to
-    """, test).fetchall()
+        )
+    """, bindings).fetchall()
 
     # test_from = {"from": "2026-07-11", "to": "2026-07-11"}
     # test_from = {"id": "the-verge", "name": "The Verge"}
-    test_from = {"domains": "%wired%"}  # Need %?% for checking if column value contains X value and not equals exactly.
+    # test_from = {"domains": "%wired%"}  # Need %?% for checking if column value contains X value and not equals exactly.
     # results = cursor.execute("SELECT * FROM everything WHERE url LIKE :domains", test_from).fetchall()
+
+    # results = cursor.execute("SELECT * FROM everything WHERE id LIKE :id AND name LIKE :name", test).fetchall()
+    # results = cursor.execute("SELECT * FROM everything WHERE publishedAt > :from AND publishedAt < :to", test).fetchall()
 
     for result in results:
         for a in result:
             print(a)
 
-        # print()
-        # print()
-        break
+        print()
+        print()
+        # break
+    print(len(results))
     
     
     # print(cursor.execute(f"SELECT * FROM everything WHERE title LIKE :title", x).fetchall())
@@ -161,6 +174,7 @@ def query_table_everything() -> dict:
     # print(cursor.execute(f"SELECT * FROM everything WHERE id = ?", query).fetchall())
 
     connection.close()
+    return results
 
 def create_table_top_headlines() -> None:
     """Create a table in the database named top_headlines."""
