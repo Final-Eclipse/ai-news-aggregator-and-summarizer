@@ -201,8 +201,13 @@ class TopBar(QMainWindow):
     def _search_button_clicked(self) -> None:
         """Methods and actions to occur after the search button is clicked."""
         self._post_endpoint_data()
-        self._get_database_results()
-        
+        # When signal is emitted from _post_endpoint_data, do self._get_endpoint_response().
+        # When signal is emitted from _get_endpoint_response, do self.save_articles_to_database().
+        self._get_database_results()    
+        # Trying to get database results causes it to get less results because it is trying to fetch before all articles have been saved.
+        # Need to wait for all articles to be uploaded to database before trying to fetch results.
+        # Maybe add a signal and slot for each method (_post_endpoint_data(), _get_endpoint_response(), save_articles_to_database())
+        # So instead of these methods calling the next one, they run in _search_button_clicked() only when the signal in that method is emitted.
 
     def _get_database_results(self) -> None:
         # Get database bindings.
