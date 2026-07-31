@@ -40,17 +40,21 @@ class Endpoint():
         for key, widget in self.parameters.items():
             text = self._get_widget_text(widget)
 
+            # Convert language name to its ISO code.
             language_code = self._convert_language_to_iso_code(text)
             if language_code != None:
                 text = language_code
-            
+
+            # Convert country name to its ISO code.
             country_code = self._convert_country_to_iso_code(text)
             if country_code != None:
                 text = country_code
 
+            # Convert empty strings to None, which are converted to null in JSON.
             if text == "":
                 text = None
 
+            # Adds a hyphen to any news source that has a space.
             if text != None:
                 text = text.replace(" ", "-")
 
