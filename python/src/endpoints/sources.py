@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QComboBox, QGridLayout, QWidget
 from endpoints.endpoint import Endpoint
 from endpoints.helpers import Language, Category, Country
+import json
 
 class Sources(Endpoint):
     def __init__(self) -> None:
@@ -32,3 +33,25 @@ class Sources(Endpoint):
 
         country: QComboBox = parameters["country"]
         country.addItems(Country.qcombobox_options)
+
+    def get_database_bindings(self, endpoint_type) -> dict:
+        """Return a dictionary of values to use as bindings for database querying."""
+        json_str = self.get_json(endpoint_type)
+        query: dict = json.loads(json_str)
+
+        # Remove unnecessary keys.
+        query.pop("endpoint")
+
+        # Format values.
+        for key, value in query.items():
+            if key == "from" or key == "to":
+                if value is None:
+                    query[key] = ""
+                continue
+
+            if value is None:
+                value = ""
+
+            query[key] = f"%{value}%"
+        
+        return query
