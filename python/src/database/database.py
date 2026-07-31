@@ -143,32 +143,6 @@ def add_to_table_top_headlines(response: dict) -> None:
     connection.commit()
     connection.close()
 
-def query_table_top_headlines(bindings: dict) -> dict:
-    connection = get_connection()
-    cursor = get_cursor(connection)
-
-    # Get database columns
-    database_columns: list = []
-    database_column_info: list = cursor.execute("""PRAGMA table_info(top_headlines)""").fetchall()
-    for column_info in database_column_info:
-        database_columns.append(column_info[1])
-
-    # Assemble queries.
-    q: str = "(\n  " + " LIKE :q OR\n  ".join(database_columns) + " LIKE :q\n)"
-    sources: str = "(\n  id LIKE :id AND\n  name LIKE :name\n)"
-    # category: str = "(\n  category LIKE :category\n)" 
-    # country: str = "(\n  country LIKE :country\n)"
-
-    queries = (q, sources)
-    # queries = (q, sources, category, country)
-    query = "\nAND\n".join((q, sources))
-
-    # Execute query selection.
-    results = cursor.execute(f"""SELECT * FROM top_headlines WHERE {query}""", bindings).fetchall()
-
-    connection.close()
-    return results
-
 def create_table_sources() -> None:
     """Create a table in the database named sources."""
     connection = get_connection()
@@ -216,6 +190,24 @@ def add_to_table_sources(response: dict) -> None:
 
     connection.commit()
     connection.close()
+
+def query_table_sources(bindings: dict) -> dict:
+    connection = get_connection()
+    cursor = get_cursor(connection)
+
+    # Assemble queries.
+    category: str = "(\n  category LIKE :category\n)"
+    language: str = "(\n  language LIKE :language\n)"
+    country: str = "(\n  country LIKE :country\n)"
+
+    queries = (category, language, country)
+    query = "\nAND\n".join(queries)
+
+    # Execute query selection.
+    results = cursor.execute(f"""SELECT * FROM sources WHERE {query}""", bindings).fetchall()
+
+    connection.close()
+    return results
 
 if __name__ == "__main__":
     # query_table_everything()
