@@ -62,10 +62,6 @@ class DatabaseWorker(QRunnable):
                 database.create_table_everything()  # Creates table if it does not exist already.
                 database.add_to_table_everything(self.response)
 
-            case "top-headlines":
-                database.create_table_top_headlines()
-                database.add_to_table_top_headlines(self.response)
-
             case "top-headlines/sources":
                 database.create_table_sources()
                 database.add_to_table_sources(self.response)
@@ -93,10 +89,8 @@ class DatabaseQueryWorker(QRunnable):
         match self.endpoint_type:
             case "everything":
                 result = database.query_table_everything(self.bindings)
-            case "top-headlines":
-                result = database.query_table_top_headlines(self.bindings)
-            # case "sources":
-            #     result = database.query_table_sources(self.bindings)
+            case "sources":
+                result = database.query_table_sources(self.bindings)
             case _:
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
 
