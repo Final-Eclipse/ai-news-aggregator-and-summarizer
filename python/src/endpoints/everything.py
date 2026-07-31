@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
 from endpoints.endpoint import Endpoint
 from endpoints.helpers import Language, Domains, Sources
+import json
 
 class Everything(Endpoint):
     def __init__(self) -> None:
@@ -66,3 +67,38 @@ class Everything(Endpoint):
 
         # page: QLineEdit = parameters["page"]
         # page.setPlaceholderText("Type page number")
+
+    def get_database_bindings(self, endpoint_type) -> dict:
+        """Return a dictionary of values to use as bindings for database querying."""
+        json_str = self.get_json(endpoint_type)
+        query: dict = json.loads(json_str)
+
+        # Convert "sources" key to "id" and "name".
+        try:
+            id: str = query["sources"].lower()
+            id = id.replace(" ", "-")
+            query["id"] = id
+
+            name: str = query["sources"].replace("-", " ")
+            query["name"] = name
+        except AttributeError:
+            query["id"] = None
+            query["name"] = None
+
+        # Remove unnecessary keys.
+        query.pop("endpoint")
+        query.pop("sources")
+
+        # Format values.
+        for key, value in query.items():
+            if key == "from" or key == "to":
+                if value is None:
+                    query[key] = ""
+                continue
+
+            if value is None:
+                value = ""
+
+            query[key] = f"%{value}%"
+
+        return query
