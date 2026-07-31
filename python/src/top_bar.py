@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, Q
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont
 from services.worker import *
-from endpoints import Everything, TopHeadlines, Sources
+from endpoints import Everything, Sources
 
 """
 # Make post request to Java using the URL.
@@ -31,7 +31,6 @@ class TopBar(QMainWindow):
         super().__init__()
 
         self.everything = Everything()
-        self.top_headlines = TopHeadlines()
         self.sources = Sources()
 
         self.endpoint_selector: QComboBox = self._create_endpoint_selector()
@@ -100,8 +99,6 @@ class TopBar(QMainWindow):
         match endpoint_type:
             case "everything":
                 json_str = self.everything.get_json(endpoint_type)
-            case "top-headlines":
-                json_str = self.top_headlines.get_json(endpoint_type)
             case "sources":
                 endpoint_type = "top-headlines/sources"
                 json_str = self.sources.get_json(endpoint_type)
@@ -123,25 +120,16 @@ class TopBar(QMainWindow):
         match self.endpoint_selector.currentText():
             case "Everything":
                 self.everything.show()
-                self.top_headlines.hide()
-                self.sources.hide()
-                self.placeholder.hide()
-
-            case "Top headlines":
-                self.everything.hide()
-                self.top_headlines.show()
                 self.sources.hide()
                 self.placeholder.hide()
 
             case "Sources":
                 self.everything.hide()
-                self.top_headlines.hide()
                 self.sources.show()
                 self.placeholder.hide()
 
             case _:
                 self.everything.hide()
-                self.top_headlines.hide()
                 self.sources.hide()
                 self.placeholder.show()
 
@@ -157,7 +145,6 @@ class TopBar(QMainWindow):
         layout.addWidget(self._create_endpoint_selector_container())
         
         layout.addWidget(self.everything.container)
-        layout.addWidget(self.top_headlines.container)
         layout.addWidget(self.sources.container)
         layout.addWidget(self._create_placeholder())
 
@@ -191,7 +178,7 @@ class TopBar(QMainWindow):
         @return: QComboBox of endpoints.
         """
         endpoint_selector = QComboBox()        
-        endpoint_selector.addItems(["Select an endpoint type", "Everything", "Top headlines", "Sources"])
+        endpoint_selector.addItems(["Select an endpoint type", "Everything", "Sources"])
 
         max_width = endpoint_selector.sizeHint().width()
         endpoint_selector.setMaximumWidth(max_width)
@@ -220,8 +207,6 @@ class TopBar(QMainWindow):
         match current_endpoint:
             case "everything":
                 bindings = self.everything.get_database_bindings(current_endpoint)
-            case "top-headlines":
-                bindings = self.top_headlines.get_database_bindings(current_endpoint)
             case "sources":
                 bindings = self.sources.get_database_bindings(current_endpoint)
             case _:
