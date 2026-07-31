@@ -39,9 +39,13 @@ class TopBar(QMainWindow):
 
         self.container: QWidget = self._create_layout()
 
+        # Initialized in self._store_database_results().
+        self.database_results: list
+
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
+    @pyqtSlot(dict)
     def save_articles_to_database(self, response: dict) -> None:
         """
         Save articles to database after the endpoint response is received.
@@ -62,6 +66,7 @@ class TopBar(QMainWindow):
 
         # Emit signal to main_display.py to notify it to update the screen with articles.
 
+    @pyqtSlot()
     def _get_endpoint_response(self) -> None:
         """Get the response of the endpoint URL posted earlier in _post_endpoint_data."""
         endpoint_type, json_str = self._get_endpoint_data()
@@ -70,7 +75,8 @@ class TopBar(QMainWindow):
         worker = EndpointResponseWorker(endpoint_type)
         worker.signal.response_finished.connect(lambda response: self.save_articles_to_database(response))
         threadpool.start(worker)
-        
+
+    @pyqtSlot()
     def _post_endpoint_data(self) -> None:
         """Post endpoint data from which the endpoint URL is able to be constructed."""
         endpoint_type, json_str = self._get_endpoint_data()
@@ -205,6 +211,7 @@ class TopBar(QMainWindow):
         search_button.setMaximumWidth(max_width)
         return search_button
 
+    @pyqtSlot()
     def _get_database_results(self) -> None:
         """Get database results based off of bindings/user input from the endpoint selector."""
         # Get database bindings.
@@ -223,7 +230,14 @@ class TopBar(QMainWindow):
         # Query database.
         threadpool = QThreadPool().globalInstance()
         worker = DatabaseQueryWorker(endpoint_type, bindings)
+        worker.signal.query_finished.connect(self._store_database_results)
         threadpool.start(worker)
+
+    @pyqtSlot(list)
+    def _store_database_results(self, results: list) -> None:
+        self.database_results = results
+        print(self.database_results)
+        print(len(self.database_results))
                 
     def _create_endpoint_selector_container(self) -> QWidget:
         """
