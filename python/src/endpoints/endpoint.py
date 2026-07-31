@@ -58,41 +58,6 @@ class Endpoint():
 
         return json.dumps(json_dict)
 
-    def get_database_bindings(self, endpoint_type) -> dict:
-        """Return a dictionary of values to use as bindings for database querying."""
-        json_str = self.get_json(endpoint_type)
-        query: dict = json.loads(json_str)
-
-        # Convert "sources" key to "id" and "name".
-        try:
-            id: str = query["sources"].lower()
-            id = id.replace(" ", "-")
-            query["id"] = id
-
-            name: str = query["sources"].replace("-", " ")
-            query["name"] = name
-        except AttributeError:
-            query["id"] = None
-            query["name"] = None
-
-        # Remove unnecessary keys.
-        query.pop("endpoint")
-        query.pop("sources")
-
-        # Format values.
-        for key, value in query.items():
-            if key == "from" or key == "to":
-                if value is None:
-                    query[key] = ""
-                continue
-
-            if value is None:
-                value = ""
-   
-            query[key] = f"%{value}%"
-
-        return query
-
     def _create_layout(self) -> QGridLayout: 
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
