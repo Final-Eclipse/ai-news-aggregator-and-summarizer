@@ -77,17 +77,23 @@ def query_table_everything(bindings: dict) -> dict:
     sources: str = "(\n  id LIKE :id AND\n  name LIKE :name\n)"
     domains: str = "(\n  url LIKE :domains\n)"
 
+    if bindings["excludeDomains"] != "%%":
+        excludeDomains: str = "(\n  url NOT LIKE :excludeDomains\n)"
+    else:
+        excludeDomains = ""
+
     if bindings["from"] != "" and bindings["to"] != "":
         time: str = "(\n  publishedAt > :from AND\n  publishedAt < :to\n)"
     else:
         time: str = ""
 
-    queries = (q, sources, domains, time)
+    queries = (q, sources, domains, excludeDomains, time)
     query = "\nAND\n".join([x for x in queries if x != ""]) # Adds each query as long as it is not an empty string (mainly for time query).
 
     # Execute query selection.
     results = cursor.execute(f"""SELECT * FROM everything WHERE {query}""", bindings).fetchall()
-
+    # print(query)
+    # print(bindings)
     connection.close()
     return results
 
@@ -214,9 +220,8 @@ if __name__ == "__main__":
     connection = get_connection()
     cursor = get_cursor(connection)
 
-    columns = cursor.execute("""PRAGMA table_info(everything)""").fetchall()
-    print(*columns)
-    # for column in columns:
-    #     print(column[1])
+    test = {"excludeDomains": "%apnews.com%"}
+    columns = cursor.execute("""SELECT * FROM everything WHERE url NOT LIKE :excludeDomains""", test).fetchall()
+    print(len(columns))
 
     connection.close()
