@@ -93,9 +93,14 @@ class DatabaseQueryWorker(QRunnable):
         match self.endpoint_type:
             case "everything":
                 result = database.query_table_everything(self.bindings)
-                self.signal.query_finished.emit(result)
+            case "top-headlines":
+                result = database.query_table_top_headlines(self.bindings)
+            # case "sources":
+            #     result = database.query_table_sources(self.bindings)
             case _:
                 raise Exception("[run() in worker.py] Endpoint type does not match any valid ones.")
+
+        self.signal.query_finished.emit(result)
 
 class Signals(QObject):
     # EndpointDataWorker
