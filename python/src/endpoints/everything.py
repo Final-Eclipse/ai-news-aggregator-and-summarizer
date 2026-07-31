@@ -72,7 +72,7 @@ class Everything(Endpoint):
         """Return a dictionary of values to use as bindings for database querying."""
         json_str = self.get_json(endpoint_type)
         query: dict = json.loads(json_str)
-
+        
         # Convert "sources" key to "id" and "name".
         try:
             id: str = query["sources"].lower()
@@ -84,6 +84,9 @@ class Everything(Endpoint):
         except AttributeError:
             query["id"] = None
             query["name"] = None
+
+        # Remove hyphens from main query.
+        query["q"] = query["q"].replace("-", " ")
 
         # Remove unnecessary keys.
         query.pop("endpoint")
@@ -100,5 +103,5 @@ class Everything(Endpoint):
                 value = ""
 
             query[key] = f"%{value}%"
-
+        
         return query
