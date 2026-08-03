@@ -24,7 +24,7 @@ class Everything(Endpoint):
             "excludeDomains": QComboBox(),
             "from": QLineEdit(),
             "to": QLineEdit(),
-            "language": QComboBox(),
+            # "language": QComboBox(),
             # "sortBy": QComboBox(),
             # "pageSize": QLineEdit(),
             # "page": QLineEdit()
@@ -56,8 +56,8 @@ class Everything(Endpoint):
         to: QLineEdit = parameters["to"]
         to.setPlaceholderText("Type end date")
 
-        language: QComboBox = parameters["language"]
-        language.addItems(Language.qcombobox_options)
+        # language: QComboBox = parameters["language"]
+        # language.addItems(Language.qcombobox_options)
 
         # sortBy: QComboBox = parameters["sortBy"]
         # sortBy.addItems(["Select sort option", "Relevancy", "Popularity", "Date published"])
