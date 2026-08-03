@@ -66,17 +66,30 @@ def query_table_everything(bindings: dict) -> dict:
     connection = get_connection()
     cursor = get_cursor(connection)
 
-    # Get database columns
-    database_columns: list = []
-    database_column_info: list = cursor.execute("""PRAGMA table_info(everything)""").fetchall()
-    for column_info in database_column_info:
-        database_columns.append(column_info[1])
+    database_columns: list = ["id", "name", "author", "title", "description", "url", "urlToImage", "publishedAt", "content"]
+
+    searchIn: str = bindings["searchIn"]
+    if "Title" in searchIn:
+        database_columns.remove("description")
+        database_columns.remove("content")
+    if "Description" in searchIn:
+        database_columns.remove("title")
+        database_columns.remove("content")
+    if "Content" in searchIn:
+        database_columns.remove("title")
+        database_columns.remove("description")
+
+    # For language, add all sources to the database first.
+    # Then, when adding new articles, check its source and compare it with the one in the sources table and set its language to what is in the sources table.
+    # Drop current everything table and make new one with language column or add new language column and replace its value for every article while also checking what language it is
+    # based off of the sources table. 
 
     # Assemble queries.
     q: str = "(\n  " + " LIKE :q OR\n  ".join(database_columns) + " LIKE :q\n)"
     sources: str = "(\n  id LIKE :id AND\n  name LIKE :name\n)"
     domains: str = "(\n  url LIKE :domains\n)"
-
+    # language: str # Use sources database table to determine, make sure sources table exists, if not, create one and populate it.
+    
     if bindings["excludeDomains"] != "%%":
         excludeDomains: str = "(\n  url NOT LIKE :excludeDomains\n)"
     else:
@@ -92,8 +105,7 @@ def query_table_everything(bindings: dict) -> dict:
 
     # Execute query selection.
     results = cursor.execute(f"""SELECT * FROM everything WHERE {query}""", bindings).fetchall()
-    # print(query)
-    # print(bindings)
+    
     connection.close()
     return results
 
@@ -219,9 +231,10 @@ if __name__ == "__main__":
     # query_table_everything()
     connection = get_connection()
     cursor = get_cursor(connection)
+    
 
-    test = {"excludeDomains": "%apnews.com%"}
-    columns = cursor.execute("""SELECT * FROM everything WHERE url NOT LIKE :excludeDomains""", test).fetchall()
-    print(len(columns))
+    # test = {"excludeDomains": "%apnews.com%"}
+    # columns = cursor.execute("""SELECT * FROM everything WHERE url NOT LIKE :excludeDomains""", test).fetchall()
+    # print(len(columns))
 
     connection.close()
