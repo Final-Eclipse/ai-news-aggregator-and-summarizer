@@ -41,6 +41,8 @@ class TopBar(QMainWindow):
         # Initialized in self._store_database_results().
         self.database_results: list
 
+        self.signals = Signals()
+
         self.setWindowTitle("")
         self.setCentralWidget(self.container)
 
@@ -55,7 +57,7 @@ class TopBar(QMainWindow):
 
         threadpool = QThreadPool().globalInstance()
         worker = DatabaseWorker(endpoint_type, response)
-        worker.signal.articles_saved.connect(self._get_database_results)
+        worker.signal.articles_saved.connect(self._query_database)
         threadpool.start(worker)
         # Make sure to grab all results when fetching calling News API.
         # Grab each page of the JSON result, not just the first page.
@@ -199,7 +201,7 @@ class TopBar(QMainWindow):
         return search_button
 
     @pyqtSlot()
-    def _get_database_results(self) -> None:
+    def _query_database(self) -> None:
         """Get database results based off of bindings/user input from the endpoint selector."""
         # Get database bindings.
         bindings: dict
@@ -220,9 +222,18 @@ class TopBar(QMainWindow):
 
     @pyqtSlot(list)
     def _store_database_results(self, results: list) -> None:
+        """
+        Stores database results as an instance variable.
+        
+        @param results: List of articles that were queried from the database.
+        """
         self.database_results = results
-        print(self.database_results)
-        print(len(self.database_results))
+        self.signals.database_results_stored.emit()
+
+    @pyqtSlot()
+    def get_database_results(self) -> list:
+        """Return a list of database results."""
+        return self.database_results
                 
     def _create_endpoint_selector_container(self) -> QWidget:
         """
@@ -244,6 +255,10 @@ class TopBar(QMainWindow):
         container.setLayout(layout)
         
         return container
+
+class Signals(QObject):
+    # _store_database_results()
+    database_results_stored = pyqtSignal()
     
 def main() -> None:  
     app = QApplication([])
