@@ -52,7 +52,7 @@ def add_to_table_everything(response: dict) -> None:
         title = article["title"]
         description = article["description"]
         url = article["url"]
-        urlToImage = article["url"]
+        urlToImage = article["urlToImage"]
         publishedAt = article["publishedAt"]
         content = article["content"]
 
@@ -228,13 +228,8 @@ def query_table_sources(bindings: dict) -> dict:
     return results
 
 if __name__ == "__main__":
+    pass
     # query_table_everything()
-    connection = get_connection()
-    cursor = get_cursor(connection)
-    
-
-    # test = {"excludeDomains": "%apnews.com%"}
-    # columns = cursor.execute("""SELECT * FROM everything WHERE url NOT LIKE :excludeDomains""", test).fetchall()
-    # print(len(columns))
-
-    connection.close()
+    # connection = get_connection()
+    # cursor = get_cursor(connection)
+    # connection.close()
