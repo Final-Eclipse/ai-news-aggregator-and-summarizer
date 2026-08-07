@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QGridLayout, QHBoxLayout, Q
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 from PyQt5.QtGui import QFontMetrics, QFont, QPixmap
 import requests
+from pathlib import Path
 
 # Queries like "spider man" do not work because there it looks for exact matches.
 # Using "spider-man" doesn't work either because the hyphen is removed.
@@ -198,17 +199,21 @@ class MainDisplay(QMainWindow):
         @param url: Url to convert to bytes.
         @return: QLabel thumbnail image.
         """
-        pixmap_data = requests.get(url).content
+        placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
+        pixmap = QPixmap()
 
+        if url == "N/A":
+            pixmap.load(placeholder_thumbnail_path)
+        else:
+            pixmap_data = requests.get(url).content
+            if pixmap.loadFromData(pixmap_data) == False:
+                pixmap.load(placeholder_thumbnail_path)
+        
         thumbnail = QLabel()
         thumbnail.setScaledContents(True)
-
-        pixmap = QPixmap()
-        pixmap.loadFromData(pixmap_data)
-        
         thumbnail.setMaximumSize(150, 150)
         thumbnail.setPixmap(pixmap)
-
+        
         return thumbnail
 
     def _create_label(self, text: str) -> QLabel:
