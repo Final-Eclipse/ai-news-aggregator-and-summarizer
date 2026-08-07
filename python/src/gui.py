@@ -2,10 +2,10 @@ from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, Q
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
 from top_bar import TopBar
-from main_display3 import MainDisplay
+from main_display import MainDisplay
 from pagination import Pagination
 
-class MainWindow(QMainWindow):
+class Gui(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
         
 def main():  
     app = QApplication([])
-    window = MainWindow()
+    window = Gui()
     window.show()
     app.exec()
 
