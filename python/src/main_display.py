@@ -3,6 +3,7 @@ from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, Q
 from PyQt5.QtGui import QFontMetrics, QFont, QPixmap
 import requests
 from pathlib import Path
+from PyQt5.QtCore import QLoggingCategory
 
 # Queries like "spider man" do not work because there it looks for exact matches.
 # Using "spider-man" doesn't work either because the hyphen is removed.
@@ -25,7 +26,8 @@ class MainDisplay(QMainWindow):
 
         # The current page number the user is on.
         self.current_page_number: int
-
+        
+        self._disable_icc_warning()
         self.setCentralWidget(self.container)
 
     def _init_first_page(self) -> None:
@@ -196,6 +198,9 @@ class MainDisplay(QMainWindow):
         """
         Creates a thumbnail from a URL.
 
+        Some images can produce a warning in the terminal from PyQt5 stating "qt.gui.icc: fromIccProfile: failed minimal tag size sanity."
+        This warning is disabled in _disable_icc_warning().
+
         @param url: Url to convert to bytes.
         @return: QLabel thumbnail image.
         """
@@ -208,7 +213,7 @@ class MainDisplay(QMainWindow):
             pixmap_data = requests.get(url).content
             if pixmap.loadFromData(pixmap_data) == False:
                 pixmap.load(placeholder_thumbnail_path)
-        
+
         thumbnail = QLabel()
         thumbnail.setScaledContents(True)
         thumbnail.setMaximumSize(150, 150)
@@ -226,6 +231,10 @@ class MainDisplay(QMainWindow):
         label = QLabel(text)
         label.setMaximumSize(label.sizeHint().width(), label.sizeHint().height())
         return label
+
+    def _disable_icc_warning(self) -> None:
+        """Disable warning when loading image with an incorrect ICC color profile."""
+        QLoggingCategory.setFilterRules("qt.gui.icc.warning=false\n")
 
 def main() -> None:  
     app = QApplication([])
