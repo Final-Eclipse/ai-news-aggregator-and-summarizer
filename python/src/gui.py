@@ -25,7 +25,7 @@ class Gui(QMainWindow):
         self.pagination = Pagination()
 
         self.pagination.previous_page_button.clicked.connect(self.main_display.previous_page)
-        self.pagination.previous_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number )))
+        self.pagination.previous_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
 
         self.pagination.next_page_button.clicked.connect(self.main_display.next_page)
         self.pagination.next_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
