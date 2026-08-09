@@ -8,13 +8,19 @@ from PyQt5.QtCore import QLoggingCategory
 # Queries like "spider man" do not work because there it looks for exact matches.
 # Using "spider-man" doesn't work either because the hyphen is removed.
 
+# When the user reaches one to two pages from the last page, start making the next pages and add each new page to the container.
+# When the user clicks the search button again, reset self.article_index to 0. This makes it so each search starts from the beginning and not in the middle of the articles list result.
+# WHen the user clicks the search button, if there are any pages from the previous search, delete them.
+
 class MainDisplay(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
         self.container = QStackedWidget()
-        self._init_landing_page()
 
+        self.landing_page: QLabel
+        self._init_landing_page()
+        
         # Index position within the database query.
         self.article_index = 0
 
@@ -25,27 +31,43 @@ class MainDisplay(QMainWindow):
         self.pages_to_get = 5
 
         # The current page number the user is on.
-        self.current_page_number: int
+        self.current_page_number = 1
         
         self._disable_icc_warning()
         self.setCentralWidget(self.container)
 
     def _init_landing_page(self) -> None:
-        """Initializes the first page of the container."""
-        first_page = QLabel("Use the inputs above to search for news articles.")
-        first_page.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.container.addWidget(first_page)
+        """Initialize the landing page of the container."""
+        self.landing_page = QLabel("Use the inputs above to search for news articles.")
+        self.landing_page.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.container.addWidget(self.landing_page)
         self.container.setStyleSheet("background-color: pink;")
 
+    def _remove_landing_page(self) -> None:
+        """Remove the landing page of the container."""
+        self.container.removeWidget(self.landing_page)
+        self.landing_page.deleteLater()
+
     def next_page(self) -> None:
-        """Changes the current page on the container to the next."""
+        """Change the current page of the container to the next."""
         self.current_page_number = self.next_index(reverse=False)
-        self.container.setCurrentIndex(self.current_page_number)
+        self._change_page()
 
     def previous_page(self) -> None:
-        """Changes the current page on the container to the previous."""
+        """Change the current page of the container to the previous."""
         self.current_page_number = self.next_index(reverse=True)
+        self._change_page()
+
+    def _change_page(self) -> None:
+        """
+        Change the current page of the container.
+        
+        self.current_page_number increases by 1 because it is initially equal
+        to the next valid index. This means that a valid index of 4 would be
+        page 5 instead.
+        """
         self.container.setCurrentIndex(self.current_page_number)
+        self.current_page_number += 1
 
     def update(self, articles: list) -> None:
         """
@@ -79,12 +101,11 @@ class MainDisplay(QMainWindow):
                 break
 
             self.article_index += 1
+        self.article_index += 1
 
         # If there are still articles left that amount to less than self.articles_per_page, add the rest of them.
         if len(current_page) > 0:
             news_cards.append(current_page.copy())
-
-        self.article_index += 1
 
         # Create page and add to container.
         for card in news_cards:
@@ -92,9 +113,11 @@ class MainDisplay(QMainWindow):
             page = self._create_page(layout)
             self.container.addWidget(page)
 
-        self.next_page()
+        # Remove landing page.
+        if self.landing_page in self.container.children():
+            self._remove_landing_page()
 
-    def next_index(self, reverse: bool):
+    def next_index(self, reverse: bool) -> int:
         """Returns the next valid index position in the QStackedWidget."""
         number_of_children = len(self.container.children()) - 1 # Excludes QStackedLayout.
         current_index = self.container.currentIndex()
@@ -111,7 +134,7 @@ class MainDisplay(QMainWindow):
                 next_index = number_of_children - 1
             else:
                 next_index = current_index - 1
-
+        
         return next_index
 
     def _create_page(self, layout: QVBoxLayout) -> QWidget:
