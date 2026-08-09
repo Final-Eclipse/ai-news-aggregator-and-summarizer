@@ -4,6 +4,8 @@ import requests, json, time, asyncio, aiohttp
 from top_bar import TopBar
 from main_display import MainDisplay
 from pagination import Pagination
+from services.localhosts import Localhosts
+import asyncio
 
 class Gui(QMainWindow):
     def __init__(self):
@@ -15,18 +17,23 @@ class Gui(QMainWindow):
         # Implement way to get summary button.
 
         # self.run_refresh_models() # Initializes the models available.
-        # Localhosts.run_localhosts()
 
         # Implement input fields to allow user to set query parameters and the type of endpoint.
         # Have a reset to defaults button as well under these.
 
-        self.top_bar = TopBar()
+        # Run localhosts.
+        threadpool = QThreadPool().globalInstance()
+        self.localhosts = Localhosts()
+        threadpool.start(self.localhosts)
+
+        # Initialize GUI element objects.
+        self.top_bar = TopBar() # Try making the dropdowns QListWidgets or QComboBoxes but when an option is chosen, append the chosen option to any other options there already.
         self.main_display = MainDisplay()
         self.pagination = Pagination()
 
+        # Initialize pagination connections.
         self.pagination.previous_page_button.clicked.connect(self.main_display.previous_page)
         self.pagination.previous_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
-
         self.pagination.next_page_button.clicked.connect(self.main_display.next_page)
         self.pagination.next_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
         
@@ -58,6 +65,10 @@ class Gui(QMainWindow):
         # container.setStyleSheet("background-color: #c8c8c8")
         container.setLayout(layout)
         return container
+    
+    def closeEvent(self, a0) -> None:
+        self.localhosts.stop()
+        return super().closeEvent(a0)
         
 def main():  
     app = QApplication([])
