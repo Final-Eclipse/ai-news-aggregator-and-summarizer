@@ -9,13 +9,8 @@ class Pagination(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-        self.signals = Signals()
-
         self.previous_page_button = QPushButton("Previous page")
-        self.previous_page_button.clicked.connect(self.signals.previous_page.emit)
-
         self.next_page_button = QPushButton("Next page")
-        self.next_page_button.clicked.connect(self.signals.next_page.emit)
 
         self.current_page_number = 1
         self.current_page_label = QLabel(f"{self.current_page_number}")
@@ -37,13 +32,6 @@ class Pagination(QMainWindow):
         layout.addWidget(self.current_page_label)
         layout.addWidget(self.next_page_button)
         return layout
-
-class Signals(QObject):
-    # previous_page_button
-    previous_page = pyqtSignal()
-
-    # next_page_button
-    next_page = pyqtSignal()
 
 def main() -> None:  
     app = QApplication([])
