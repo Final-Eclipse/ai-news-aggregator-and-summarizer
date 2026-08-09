@@ -13,7 +13,7 @@ class MainDisplay(QMainWindow):
         super().__init__()
 
         self.container = QStackedWidget()
-        self._init_first_page()
+        self._init_landing_page()
 
         # Index position within the database query.
         self.article_index = 0
@@ -30,7 +30,7 @@ class MainDisplay(QMainWindow):
         self._disable_icc_warning()
         self.setCentralWidget(self.container)
 
-    def _init_first_page(self) -> None:
+    def _init_landing_page(self) -> None:
         """Initializes the first page of the container."""
         first_page = QLabel("Use the inputs above to search for news articles.")
         first_page.setAlignment(Qt.AlignmentFlag.AlignCenter)
