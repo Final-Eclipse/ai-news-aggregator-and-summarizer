@@ -75,26 +75,26 @@ class MainDisplay(QMainWindow):
 
         @param articles: List of articles to create news cards from.
         """
-        news_cards: list[QWidget] = self._assemble_news_cards(articles)
-        self._add_news_cards_to_container(news_cards)
+        pages: list[QWidget] = self._assemble_pages(articles)
+        self._add_pages_to_container(pages)
         
         # Remove landing page.
         if self.landing_page in self.container.children():
             self._remove_landing_page()
 
-    def _add_news_cards_to_container(self, news_cards: list[QWidget]) -> None:
+    def _add_pages_to_container(self, news_cards: list[list[QWidget]]) -> None:
         """
-        Add news cards to container.
+        Add pages to container.
 
-        @param news_cards: QWidget list of news cards.
+        @param news_cards: List of QWidget lists of pages.
         """
-        # Create page and add to container.
+        # Create page container and add to main display container.
         for card in news_cards:
-            layout = self._create_layout(card)
-            page = self._create_page(layout)
-            self.container.addWidget(page)
+            page_layout = self._create_layout(card)
+            page_container = self._create_page_container(page_layout)
+            self.container.addWidget(page_container)
 
-    def _assemble_news_cards(self, articles: list) -> list[QWidget]:
+    def _assemble_pages(self, articles: list) -> list[QWidget]:
         """
         Assemble news cards into pages.
 
@@ -160,7 +160,7 @@ class MainDisplay(QMainWindow):
         
         return next_index
 
-    def _create_page(self, layout: QVBoxLayout) -> QWidget:
+    def _create_page_container(self, layout: QVBoxLayout) -> QWidget:
         """
         Creates a page that contains a layout with articles.
 
