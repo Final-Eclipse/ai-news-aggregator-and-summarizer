@@ -102,7 +102,7 @@ class MainDisplay(QMainWindow):
         @return: QWidget list of pages.
         """
         news_cards = []
-        current_page = []
+        pages = []
         for article in articles[self.article_index:]:
             # Create thumbnail.
             thumbnail_url: str = article[6]
@@ -116,24 +116,24 @@ class MainDisplay(QMainWindow):
 
             # Create news card.
             news_card: QWidget = self._create_news_card_container(thumbnail, desc_container)
-            current_page.append(news_card)
+            news_cards.append(news_card)
 
-            if len(current_page) == self.articles_per_page:
-                news_cards.append(current_page.copy())
-                current_page.clear()
+            if len(news_cards) == self.articles_per_page:
+                pages.append(news_cards.copy())
+                news_cards.clear()
 
             # Prevents looping over entire list, which can take a lot of time when the user most likely won't go to the last page anyways.
-            if len(news_cards) == self.pages_to_get:
+            if len(pages) == self.pages_to_get:
                 break
 
             self.article_index += 1
         self.article_index += 1
 
         # If there are still articles left that amount to less than self.articles_per_page, add the rest of them.
-        if len(current_page) > 0:
-            news_cards.append(current_page.copy())
+        if len(news_cards) > 0:
+            pages.append(news_cards.copy())
 
-        return news_cards
+        return pages
 
     def next_index(self, reverse: bool) -> int:
         """
