@@ -71,9 +71,35 @@ class MainDisplay(QMainWindow):
 
     def update(self, articles: list) -> None:
         """
-        Create pages to view.
+        Update main display.
 
         @param articles: List of articles to create news cards from.
+        """
+        news_cards: list[QWidget] = self._assemble_news_cards(articles)
+        self._add_news_cards_to_container(news_cards)
+        
+        # Remove landing page.
+        if self.landing_page in self.container.children():
+            self._remove_landing_page()
+
+    def _add_news_cards_to_container(self, news_cards: list[QWidget]) -> None:
+        """
+        Add news cards to container.
+
+        @param news_cards: QWidget list of news cards.
+        """
+        # Create page and add to container.
+        for card in news_cards:
+            layout = self._create_layout(card)
+            page = self._create_page(layout)
+            self.container.addWidget(page)
+
+    def _assemble_news_cards(self, articles: list) -> list[QWidget]:
+        """
+        Assemble news cards into pages.
+
+        @param articles: List of articles.
+        @return: QWidget list of pages.
         """
         news_cards = []
         current_page = []
@@ -89,7 +115,7 @@ class MainDisplay(QMainWindow):
             desc_container: QWidget = self._create_desc_container(news_outlet, title, author)
 
             # Create news card.
-            news_card: QWidget = self._create_news_card(thumbnail, desc_container)
+            news_card: QWidget = self._create_news_card_container(thumbnail, desc_container)
             current_page.append(news_card)
 
             if len(current_page) == self.articles_per_page:
@@ -107,18 +133,15 @@ class MainDisplay(QMainWindow):
         if len(current_page) > 0:
             news_cards.append(current_page.copy())
 
-        # Create page and add to container.
-        for card in news_cards:
-            layout = self._create_layout(card)
-            page = self._create_page(layout)
-            self.container.addWidget(page)
-
-        # Remove landing page.
-        if self.landing_page in self.container.children():
-            self._remove_landing_page()
+        return news_cards
 
     def next_index(self, reverse: bool) -> int:
-        """Returns the next valid index position in the QStackedWidget."""
+        """
+        Returns the next/previous valid index position in the QStackedWidget.
+        
+        @param reverse: Boolean to get the next/previous valid index.
+        @return: Integer of the next/previous valid index.
+        """
         number_of_children = len(self.container.children()) - 1 # Excludes QStackedLayout.
         current_index = self.container.currentIndex()
         next_index = 0
@@ -160,7 +183,7 @@ class MainDisplay(QMainWindow):
 
         return layout
 
-    def _create_news_card(self, thumbnail: QLabel, desc_container: QWidget) -> QWidget:
+    def _create_news_card_container(self, thumbnail: QLabel, desc_container: QWidget) -> QWidget:
         """
         Creates a news card that contains an article's description and thumbnail.
 
