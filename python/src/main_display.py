@@ -67,20 +67,33 @@ class MainDisplay(QMainWindow):
         page 5 instead.
         """
         self.container.setCurrentIndex(self.current_page_number)
+
+        # Create more pages if current page reaches a certain number.
+        if self._get_container_children() - 2 <= self.current_page_number:
+            self.update()
+
         self.current_page_number += 1
 
-    def update(self, articles: list) -> None:
+    def update(self) -> None:
         """
         Update main display.
 
         @param articles: List of articles to create news cards from.
         """
-        pages: list[QWidget] = self._assemble_pages(articles)
+        pages: list[QWidget] = self._assemble_pages(self.articles)
         self._add_pages_to_container(pages)
         
         # Remove landing page.
         if self.landing_page in self.container.children():
             self._remove_landing_page()
+
+    def _set_articles(self, articles: list) -> None:
+        """
+        Set articles to parameter.
+
+        @param articles: List of articles.
+        """
+        self.articles = articles
 
     def _add_pages_to_container(self, news_cards: list[list[QWidget]]) -> None:
         """
@@ -135,6 +148,16 @@ class MainDisplay(QMainWindow):
 
         return pages
 
+    def _get_container_children(self) -> int:
+        """
+        Return number of children widgets in the main display container.
+
+        QStackedLayout is not included in the number of children.
+
+        @return: Number of children widgets.
+        """
+        return len(self.container.children()) - 1 # Excludes QStackedLayout.
+
     def next_index(self, reverse: bool) -> int:
         """
         Returns the next/previous valid index position in the QStackedWidget.
@@ -142,7 +165,7 @@ class MainDisplay(QMainWindow):
         @param reverse: Boolean to get the next/previous valid index.
         @return: Integer of the next/previous valid index.
         """
-        number_of_children = len(self.container.children()) - 1 # Excludes QStackedLayout.
+        number_of_children = self._get_container_children()
         current_index = self.container.currentIndex()
         next_index = 0
 
