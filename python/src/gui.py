@@ -33,12 +33,11 @@ class Gui(QMainWindow):
 
         # Initialize pagination connections.
         self.pagination.previous_page_button.clicked.connect(self.main_display.previous_page)
-        self.pagination.previous_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
         self.pagination.next_page_button.clicked.connect(self.main_display.next_page)
-        self.pagination.next_page_button.clicked.connect(lambda: self.pagination.current_page_label.setText(str(self.main_display.current_page_number)))
+        self.main_display.signals.page_changed.connect(lambda page: self.pagination.current_page_label.setText(str(page)))
         
         self.top_bar.signals.database_results_stored.connect(lambda: self.main_display._set_articles(self.top_bar.get_database_results()))
-        self.top_bar.signals.database_results_stored.connect(self.main_display.update)
+        self.top_bar.signals.database_results_stored.connect(lambda: self.main_display.update(reset_pages=True))
         
         self.container: QWidget = self.create_layout()
         self.setCentralWidget(self.container)

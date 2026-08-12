@@ -16,6 +16,8 @@ class MainDisplay(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
+        self.signals = Signals()
+
         self.container = QStackedWidget()
 
         self.landing_page: QLabel
@@ -50,42 +52,65 @@ class MainDisplay(QMainWindow):
 
     def next_page(self) -> None:
         """Change the current page of the container to the next."""
-        self.current_page_number = self.next_index(reverse=False)
-        self._change_page()
+        self._change_page(self.next_index(reverse=False))
 
     def previous_page(self) -> None:
-        """Change the current page of the container to the previous."""
-        self.current_page_number = self.next_index(reverse=True)
-        self._change_page()
+        """
+        Change the current page of the container to the previous.
+        
+        Does not move from page 1 to the last page.
+        """
+        if self.current_page_number == 1:
+            return
+        
+        self._change_page(self.next_index(reverse=True))
 
-    def _change_page(self) -> None:
+    def _change_page(self, new_page_index: int) -> None:
         """
         Change the current page of the container.
         
         self.current_page_number increases by 1 because it is initially equal
         to the next valid index. This means that a valid index of 4 would be
         page 5 instead.
+
+        Also creates more pages if the user reaches near the end of what is 
+        currently available.
+
+        @param new_page_number: Integer value of the new page index.
         """
-        self.container.setCurrentIndex(self.current_page_number)
+        self.container.setCurrentIndex(new_page_index)
 
         # Create more pages if current page reaches a certain number.
-        if self._get_container_children() - 2 <= self.current_page_number:
-            self.update()
+        if self._get_container_children() - 2 <= new_page_index:
+            self.update(reset_pages=False)
 
-        self.current_page_number += 1
+        self.current_page_number = new_page_index + 1
+        self.signals.page_changed.emit(self.current_page_number)
 
-    def update(self) -> None:
+    def update(self, reset_pages: bool) -> None:
         """
         Update main display.
 
         @param articles: List of articles to create news cards from.
         """
-        pages: list[QWidget] = self._assemble_pages(self.articles)
+        if reset_pages == True:
+            self._delete_previous_pages()
+
+        pages: list[list[QWidget]] = self._assemble_pages(self.articles)
         self._add_pages_to_container(pages)
         
         # Remove landing page.
         if self.landing_page in self.container.children():
             self._remove_landing_page()
+
+    def _delete_previous_pages(self) -> None:
+        """Delete all previous pages in the main display container."""
+        self.article_index = 0
+        for page in self.container.children():
+            if type(page) == QWidget:
+                self._change_page(0)
+                self.container.removeWidget(page)
+                page.deleteLater()
 
     def _set_articles(self, articles: list) -> None:
         """
@@ -95,19 +120,20 @@ class MainDisplay(QMainWindow):
         """
         self.articles = articles
 
-    def _add_pages_to_container(self, news_cards: list[list[QWidget]]) -> None:
+    def _add_pages_to_container(self, pages: list[list[QWidget]]) -> None:
         """
         Add pages to container.
 
         @param news_cards: List of QWidget lists of pages.
         """
         # Create page container and add to main display container.
-        for card in news_cards:
-            page_layout = self._create_layout(card)
+        for page in pages:
+            page: list[QWidget]
+            page_layout = self._create_layout(page)
             page_container = self._create_page_container(page_layout)
             self.container.addWidget(page_container)
 
-    def _assemble_pages(self, articles: list) -> list[QWidget]:
+    def _assemble_pages(self, articles: list) -> list[list[QWidget]]:
         """
         Assemble news cards into pages.
 
@@ -304,6 +330,9 @@ class MainDisplay(QMainWindow):
     def _disable_icc_warning(self) -> None:
         """Disable warning when loading image with an incorrect ICC color profile."""
         QLoggingCategory.setFilterRules("qt.gui.icc.warning=false\n")
+
+class Signals(QObject):
+    page_changed = pyqtSignal(int)
 
 def main() -> None:  
     app = QApplication([])
