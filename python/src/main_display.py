@@ -91,7 +91,7 @@ class MainDisplay(QMainWindow):
         """
         Update main display.
 
-        @param articles: List of articles to create news cards from.
+        @param reset_pages: Delete previous pages and reset article index if true.
         """
         if reset_pages == True:
             self._delete_previous_pages()
