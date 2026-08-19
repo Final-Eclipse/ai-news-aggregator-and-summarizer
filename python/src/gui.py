@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout, QLineEdit, QStackedWidget
 from PyQt5.QtCore import QObject, QSize, QThread, QThreadPool, Qt, pyqtSignal, QRunnable
 import requests, json, time, asyncio, aiohttp
 from top_bar import TopBar
@@ -28,7 +28,12 @@ class Gui(QMainWindow):
 
         # Initialize GUI element objects.
         self.top_bar = TopBar() # Try making the dropdowns QListWidgets or QComboBoxes but when an option is chosen, append the chosen option to any other options there already.
+
         self.main_display = MainDisplay()
+        self.summary_page: QWidget
+        self.main_display.signals.show_summary.connect(lambda page: self.switch_to_summary(page))
+        self.main_display.signals.remove_summary.connect(self.switch_to_main_gui)
+
         self.pagination = Pagination()
 
         # Initialize pagination connections.
@@ -38,12 +43,25 @@ class Gui(QMainWindow):
         
         self.top_bar.signals.database_results_stored.connect(lambda: self.main_display._set_articles(self.top_bar.get_database_results()))
         self.top_bar.signals.database_results_stored.connect(lambda: self.main_display.update(reset_pages=True))
-        
-        self.container: QWidget = self.create_layout()
+
+        self.main_gui = self.get_main_gui(self.create_main_gui_layout())
+        self.container = QStackedWidget()
+        self.container.addWidget(self.main_gui)
+        self.container.setCurrentIndex(0)
+
         self.setCentralWidget(self.container)
         self.setMinimumSize(750, 750)
 
-    def create_layout(self) -> QWidget:
+    def switch_to_summary(self, page: QWidget) -> None:
+        self.container.setParent(None)
+        self.summary_page = page
+        self.setCentralWidget(self.summary_page)
+
+    def switch_to_main_gui(self) -> None:
+        self.summary_page.setParent(None)
+        self.setCentralWidget(self.container)
+
+    def create_main_gui_layout(self) -> QVBoxLayout:
         layout = QVBoxLayout()
         # layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         # layout.setContentsMargins(0, 0, 0, 0)
@@ -61,6 +79,9 @@ class Gui(QMainWindow):
         pagination_container: QWidget = self.pagination.container
         layout.addWidget(pagination_container)
 
+        return layout
+
+    def get_main_gui(self, layout: QVBoxLayout) -> QWidget:
         container = QWidget()
         # container.setStyleSheet("background-color: #c8c8c8")
         container.setLayout(layout)

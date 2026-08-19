@@ -257,6 +257,55 @@ class MainDisplay(QMainWindow):
         
         self.signals.page_division_finished.emit(pages)
 
+    # def _create_summary_page(self, card, thumbnail: QLabel, desc_container: QWidget) -> None:
+    def _create_summary_page(self, index: int, card) -> None:
+        summary_container = QWidget()
+        summary_container.setStyleSheet("background-color: pink")
+
+        layout = QGridLayout()
+        
+        back_button = QPushButton("Back")
+        back_button.clicked.connect(lambda: self.signals.remove_summary.emit())
+        layout.addWidget(back_button, 0, 0, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+
+        # Load pixmap.
+        data = requests.get(self.articles[index][6]).content
+        placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
+        pixmap = QPixmap()
+        if data == "N/A":
+            pixmap.load(placeholder_thumbnail_path)
+        elif pixmap.loadFromData(data) == False:
+            pixmap.load(placeholder_thumbnail_path)
+
+        thumbnail = QLabel()
+        thumbnail.setPixmap(pixmap)
+        layout.addWidget(thumbnail, 1, 0, Qt.AlignmentFlag.AlignCenter)
+
+        # Add name.
+        name_text = self.articles[index][1]
+        name = QLabel(name_text)
+        layout.addWidget(name, 1, 1, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+
+        # Add name.
+        author_text = self.articles[index][2]
+        author = QLabel(author_text)
+        layout.addWidget(author, 2, 2, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+
+        # Add title.
+        title_text = self.articles[index][3]
+        title = QLabel(title_text)
+        layout.addWidget(title, 3, 3, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+
+        # Add description.
+        description_text = self.articles[index][4]
+        description = QLabel(description_text)
+        layout.addWidget(description, 4, 4, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
+
+
+
+        summary_container.setLayout(layout)        
+        self.signals.show_summary.emit(summary_container)
+
     def _create_news_card_containers(self, thumbnails: list[QLabel]) -> None:
         """
         Create news cards that contain an article's description and thumbnail.
@@ -265,7 +314,14 @@ class MainDisplay(QMainWindow):
         """
         news_cards: list[QWidget] = []
         for x in range(0, len(thumbnails)):
-            container = QWidget()
+            # container = QWidget()
+            
+            # thumbnail = thumbnails[x]
+            index = self.article_index - len(thumbnails) + x
+            container = NewsCard(index, self.articles[x])
+
+            # thumbnail = thumbnails[container.index]
+            # desc_container = self.desc_containers[container.index]
 
             layout = QHBoxLayout()
             layout.addWidget(thumbnails[x])
@@ -278,6 +334,14 @@ class MainDisplay(QMainWindow):
             container.setMaximumSize(width, height)
 
             news_cards.append(container)
+
+        for card in news_cards:
+            card: NewsCard
+            card.clicked.connect(lambda index: self._create_summary_page(index, card))
+            
+        #     thumbnail = thumbnails[card.index]
+        #     desc_container = self.desc_containers[card.index]
+        #     card.clicked.connect(lambda: self._create_summary_page(card, thumbnail, desc_container))
 
         self.signals.news_cards_finished.emit(news_cards)
 
@@ -364,6 +428,40 @@ class MainDisplay(QMainWindow):
         QThreadPool().globalInstance().clear()
         return super().closeEvent(a0)
 
+class NewsCard(QWidget):
+    clicked = pyqtSignal(int)
+
+    def __init__(self, index: int, article: dict) -> None:
+        super().__init__()
+        
+        self.index = index
+    
+        # self.name: str = article[1]
+        # self.author: str = article[2]
+        # self.title: str = article[3]
+        # self.description: str = article[4]
+        # self.url: str = article[5]
+        # self.urlToImage: str = article[6]
+        # self.content: str = article[8]
+
+    # def get_widgets(self) -> list[QLabel]:
+    #     widgets = []
+    #     for component in self.children():
+    #         if type(component) != QWidget:
+    #             continue
+
+    #         for widget in component.children():
+    #             if type(widget) != QLabel:
+    #                 continue
+    #             else:
+    #                 widgets.append(widget)
+
+    #     return widgets
+
+    def mousePressEvent(self, a0):
+        self.clicked.emit(self.index)
+        return super().mousePressEvent(a0)
+
 class Signals(QObject):
     # Pagination
     page_changed = pyqtSignal(int)
@@ -372,6 +470,8 @@ class Signals(QObject):
     thumbnails_finished = pyqtSignal(list)
     news_cards_finished = pyqtSignal(list)
     page_division_finished = pyqtSignal(list)
+    show_summary = pyqtSignal(QWidget)
+    remove_summary = pyqtSignal()
 
 class ThumbnailHandler():
     def __init__(self, list_size: int) -> None:
