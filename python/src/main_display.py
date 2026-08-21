@@ -14,15 +14,21 @@ from news_card import NewsCard
 # WHen the user clicks the search button, if there are any pages from the previous search, delete them.
 
 class MainDisplay(QMainWindow):
+    page_changed = pyqtSignal(int)
+    thumbnails_finished = pyqtSignal(list)
+    news_cards_finished = pyqtSignal()
+    page_division_finished = pyqtSignal(list)
+    show_summary = pyqtSignal(QWidget)
+    remove_summary = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
 
         self.news_cards = []
         self.finished_news_cards = []
 
-        self.signals = Signals()
-        self.signals.news_cards_finished.connect(self._divide_news_cards_into_pages)
-        self.signals.page_division_finished.connect(lambda pages: self._add_pages_to_container(pages))
+        self.news_cards_finished.connect(self._divide_news_cards_into_pages)
+        self.page_division_finished.connect(lambda pages: self._add_pages_to_container(pages))
 
         self.container = QStackedWidget()
         self.desc_containers: list[QWidget]
@@ -99,7 +105,7 @@ class MainDisplay(QMainWindow):
             self.update(reset_pages=False)
 
         self.current_page_number = new_page_index + 1
-        self.signals.page_changed.emit(self.current_page_number)
+        self.page_changed.emit(self.current_page_number)
 
     def update(self, reset_pages: bool) -> None:
         """
@@ -159,7 +165,7 @@ class MainDisplay(QMainWindow):
         elif len(self.finished_news_cards) != articles_expected:
             return
         else:
-            self.signals.news_cards_finished.emit()
+            self.news_cards_finished.emit()
 
     def _create_news_cards(self, articles: list) -> None:
         """
@@ -252,7 +258,7 @@ class MainDisplay(QMainWindow):
             pages.append(current_page.copy())
             current_page.clear()
 
-        self.signals.page_division_finished.emit(pages)
+        self.page_division_finished.emit(pages)
 
     def _create_summary_page(self, card_instance: NewsCard) -> None:
         summary_container = QWidget()
@@ -261,7 +267,7 @@ class MainDisplay(QMainWindow):
         layout = QGridLayout()
         
         back_button = QPushButton("Back")
-        back_button.clicked.connect(lambda: self.signals.remove_summary.emit())
+        back_button.clicked.connect(lambda: self.remove_summary.emit())
         layout.addWidget(back_button, 0, 0, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
 
         # Load pixmap.
@@ -290,7 +296,7 @@ class MainDisplay(QMainWindow):
         layout.addWidget(description, 4, 4, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
 
         summary_container.setLayout(layout)        
-        self.signals.show_summary.emit(summary_container)
+        self.show_summary.emit(summary_container)
 
     def _disable_icc_warning(self) -> None:
         """Disable warning when loading image with an incorrect ICC color profile."""
@@ -300,17 +306,6 @@ class MainDisplay(QMainWindow):
         """Remove any unstarted runnables from the QThreadPool queue on application close."""
         QThreadPool().globalInstance().clear()
         return super().closeEvent(a0)
-
-class Signals(QObject):
-    # Pagination
-    page_changed = pyqtSignal(int)
-
-    # Update GUI
-    thumbnails_finished = pyqtSignal(list)
-    news_cards_finished = pyqtSignal()
-    page_division_finished = pyqtSignal(list)
-    show_summary = pyqtSignal(QWidget)
-    remove_summary = pyqtSignal()
 
 def main() -> None:  
     app = QApplication([])
