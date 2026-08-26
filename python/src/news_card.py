@@ -14,15 +14,25 @@ class NewsCard(QWidget):
     def __init__(self, article: list[str]) -> None:
         super().__init__()
 
-        self.id: str = article[0]        
-        self.name: str = article[1]        
-        self.author: str = article[2]        
-        self.title: str = article[3]        
-        self.description: str = article[4]        
-        self.url: str = article[5]        
-        self.urlToImage: str = article[6]        
-        self.publishedAt: str = article[7]
-        self.content: str = article[8]
+        self.id: str = article["source"]["id"]
+        self.name: str = article["source"]["name"]
+        self.author: str = article["author"]
+        self.title: str = article["title"]
+        self.description: str = article["description"]
+        self.url: str = article["url"]
+        self.urlToImage: str = article["urlToImage"]
+        self.publishedAt: str = article["publishedAt"]
+        self.content: str = article["content"]
+
+        # self.id: str = article[0]        
+        # self.name: str = article[1]        
+        # self.author: str = article[2]        
+        # self.title: str = article[3]        
+        # self.description: str = article[4]        
+        # self.url: str = article[5]        
+        # self.urlToImage: str = article[6]        
+        # self.publishedAt: str = article[7]
+        # self.content: str = article[8]
 
         self.desc_container = self._create_desc_container()
 

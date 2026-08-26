@@ -27,6 +27,8 @@ from endpoints import Everything, Sources
 """
 
 class TopBar(QMainWindow):
+    endpoint_response = pyqtSignal(dict)
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -74,7 +76,8 @@ class TopBar(QMainWindow):
 
         threadpool = QThreadPool().globalInstance()
         worker = EndpointResponseWorker(endpoint_type)
-        worker.signal.response_finished.connect(lambda response: self.save_articles_to_database(response))
+        # worker.signal.response_finished.connect(lambda response: self.save_articles_to_database(response))
+        worker.signal.response_finished.connect(lambda response: self.endpoint_response.emit(response))
         threadpool.start(worker)
 
     @pyqtSlot()

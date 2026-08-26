@@ -139,7 +139,10 @@ class MainDisplay(QMainWindow):
 
         @param articles: List of articles.
         """
-        self.articles = articles
+        # self.articles = articles
+        # print(self.articles[0])
+        # print(type(self.articles))
+        self.articles = articles["articles"]
 
     def _add_pages_to_container(self, pages: list[list[QWidget]]) -> None:
         """

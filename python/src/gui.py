@@ -40,9 +40,14 @@ class Gui(QMainWindow):
         self.pagination.previous_page_button.clicked.connect(self.main_display.previous_page)
         self.pagination.next_page_button.clicked.connect(self.main_display.next_page)
         self.main_display.page_changed.connect(lambda page: self.pagination.current_page_label.setText(str(page)))
-        
-        self.top_bar.signals.database_results_stored.connect(lambda: self.main_display._set_articles(self.top_bar.get_database_results()))
-        self.top_bar.signals.database_results_stored.connect(lambda: self.main_display.update(reset_pages=True))
+
+        # Fetching results from the database returns a list of tuples of results.
+        # Using results directly from News API returns a dictionary of results.
+        # If using News API, have to rework news_card.py to init fields using article[key] instead of article[index].
+        self.top_bar.endpoint_response.connect(lambda response: self.main_display._set_articles(response))
+        self.top_bar.endpoint_response.connect(lambda: self.main_display.update(reset_pages=True))
+        # self.top_bar.signals.database_results_stored.connect(lambda: self.main_display._set_articles(self.top_bar.get_database_results()))
+        # self.top_bar.signals.database_results_stored.connect(lambda: self.main_display.update(reset_pages=True))
 
         self.main_gui = self.get_main_gui(self.create_main_gui_layout())
         self.container = QStackedWidget()
