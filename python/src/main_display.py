@@ -6,6 +6,8 @@ import requests
 from pathlib import Path
 from PyQt5.QtCore import QLoggingCategory
 from news_card import NewsCard
+from summary import Summary
+
 # Queries like "spider man" do not work because there it looks for exact matches.
 # Using "spider-man" doesn't work either because the hyphen is removed.
 
@@ -261,42 +263,9 @@ class MainDisplay(QMainWindow):
         self.page_division_finished.emit(pages)
 
     def _create_summary_page(self, card_instance: NewsCard) -> None:
-        summary_container = QWidget()
-        summary_container.setStyleSheet("background-color: pink")
-
-        layout = QGridLayout()
-        
-        back_button = QPushButton("Back")
-        back_button.clicked.connect(lambda: self.remove_summary.emit())
-        layout.addWidget(back_button, 0, 0, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
-
-        # Load pixmap.
-        data = requests.get(card_instance.urlToImage).content
-        placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
-        pixmap = QPixmap()
-        if data == "N/A":
-            pixmap.load(placeholder_thumbnail_path)
-        elif pixmap.loadFromData(data) == False:
-            pixmap.load(placeholder_thumbnail_path)
-
-        thumbnail = QLabel()
-        thumbnail.setPixmap(pixmap)
-        layout.addWidget(thumbnail, 1, 0, Qt.AlignmentFlag.AlignCenter)
-
-        name = QLabel(card_instance.name)
-        layout.addWidget(name, 1, 1, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
-
-        author = QLabel(card_instance.author)
-        layout.addWidget(author, 2, 2, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
-
-        title = QLabel(card_instance.title)
-        layout.addWidget(title, 3, 3, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
-
-        description = QLabel(card_instance.description)
-        layout.addWidget(description, 4, 4, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter)
-
-        summary_container.setLayout(layout)        
-        self.show_summary.emit(summary_container)
+        summary = Summary(card_instance)
+        summary.back_button_clicked.connect(lambda: self.remove_summary.emit())
+        self.show_summary.emit(summary.container)
 
     def _disable_icc_warning(self) -> None:
         """Disable warning when loading image with an incorrect ICC color profile."""
