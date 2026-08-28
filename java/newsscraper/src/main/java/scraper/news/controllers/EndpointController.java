@@ -103,16 +103,22 @@ public class EndpointController
         return ResponseEntity.ok(summary);
     }
 
-    @GetMapping("/api/v1/models/ollama")
+    @GetMapping("/api/v1/models/ollama/current")
+    public ResponseEntity<String> getCurrentOllamaModel()
+    {
+        return ResponseEntity.ok(HttpService.getCurrentOllamaModel());
+    }
+
+    @GetMapping("/api/v1/models/ollama/local-models")
     public ResponseEntity<OllamaModelsDto> getLocalOllamaModels()
     {
         return ResponseEntity.ok(HttpService.getLocalOllamaModels());
     }
 
     @PostMapping("/api/v1/models/ollama")
-    public ResponseEntity<String> changeOllamaModel()
+    public ResponseEntity<String> changeOllamaModel(@RequestBody String newModel)
     {
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(HttpService.changeOllamaModel(newModel));
     }
 
     
