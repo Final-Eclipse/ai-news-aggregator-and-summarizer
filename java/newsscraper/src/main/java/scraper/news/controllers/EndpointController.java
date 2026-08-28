@@ -115,7 +115,7 @@ public class EndpointController
         return ResponseEntity.ok(HttpService.getLocalOllamaModels());
     }
 
-    @PostMapping("/api/v1/models/ollama")
+    @PostMapping("/api/v1/models/ollama/change")
     public ResponseEntity<String> changeOllamaModel(@RequestBody String newModel)
     {
         return ResponseEntity.ok(HttpService.changeOllamaModel(newModel));
