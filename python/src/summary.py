@@ -42,7 +42,7 @@ class Summary(QMainWindow):
         # Move to settings page eventually.
         # Set model.
         selected_model = "llama3.1:8b"
-        requests.post("http://localhost:8080/api/v1/models/ollama", data=selected_model)
+        requests.post("http://localhost:8080/api/v1/models/ollama/change", data=selected_model)
 
         threadpool = QThreadPool().globalInstance()
         worker = SummaryWorker(self.url)
