@@ -8,8 +8,15 @@ namespace ai_news_aggregator_and_summarizer.Controllers;
 [Route("[controller]")]
 public class SelectedModelController : ControllerBase
 {
+    // Return model currently selected.
+    [HttpGet("current-model")]
+    public string GetCurrentModel()
+    {
+        return SummaryService.SelectedModel;
+    }
+
     // Return IActionResult, ActionResult, or IEnumerable?
-    [HttpGet]
+    [HttpGet("available-models")]
     public OllamaModelsDto GetLocalModels()
     {
         // Figure out a way to prevent controllers from running if Ollama isn't running.

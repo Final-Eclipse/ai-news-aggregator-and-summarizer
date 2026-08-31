@@ -92,10 +92,26 @@ public class HttpService
         return response.body();
     }
 
+    public static String getCurrentOllamaModel()
+    {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:5172/selectedmodel/current-model"))
+            .header("Content-Type", "application/json")
+            .GET()
+            .build();
+        
+        HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
+        
+        System.out.println("THIS IS THE RESPONSE BODY JOJPODAIDJDPADAODJO" + response.body());
+
+        handleErrorCodes(response);
+        return response.body();
+    }
+
     public static OllamaModelsDto getLocalOllamaModels()
     {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5172/selectedmodel"))
+            .uri(URI.create("http://localhost:5172/selectedmodel/available-models"))
             .header("Content-Type", "application/json")
             .GET()
             .build();
@@ -106,7 +122,6 @@ public class HttpService
         OllamaModelsDto ollamaModelsDto = objectMapper.readValue(response.body(), OllamaModelsDto.class);
         return ollamaModelsDto;
     }
-
 
     public static String changeOllamaModel(String newModel)
     {

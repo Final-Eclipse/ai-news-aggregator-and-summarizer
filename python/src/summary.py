@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QGridLayout, QHBoxLayout, QMainWindow, QPushButton, QWidget, QLabel, QVBoxLayout
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QThread, QThreadPool, QRunnable, QObject, pyqtSlot
 from PyQt5.QtGui import QPixmap
 import requests
 from pathlib import Path
@@ -33,26 +33,34 @@ class Summary(QMainWindow):
         # self.publishedAt: str = "2026-08-04T22:06:07Z"
         # self.content: str = "The Trump administration has finalized a plan to address the cybersecurity risks posed by increasingly capable artificial intelligence models, a White House official confirmed to WIRED. But at least … [+3676 chars]"
 
+        self.summary_label: QLabel
         self.container: QWidget = self._create_summary_page()
         self.setCentralWidget(self.container)
 
-    def _create_summary_page(self) -> QWidget:
-        main_container = QWidget()
-        main_container.setStyleSheet("background-color: pink")
+    def get_summary(self) -> None:
+        """Get article summary and emit signal."""
+        # Move to settings page eventually.
+        # Set model.
+        selected_model = "llama3.1:8b"
+        requests.post("http://localhost:8080/api/v1/models/ollama/change", data=selected_model)
 
-        # Overall summary page layout = QVBoxLayout
+        threadpool = QThreadPool().globalInstance()
+        worker = SummaryWorker(self.url)
+        worker.signals.finished.connect(lambda summary_text: self.set_summary_text(summary_text))
+        threadpool.start(worker)
+
+    def set_summary_text(self, summary_text: str) -> None:
+        """
+        Set summary label text.
         
-        # Back button and title both in first row in a container that has a QGridLayout = container a
-        # Use three columns with the third column being empty to push the title to the center
-        # Add container a to the overall summary page layout
-        
-        # Thumbnail, name, author, publishedAt all one container, QVBoxLayout = container b
-        # Summary, summarize button all one container, QVBoxLayout = container c
-        # Store container b and container c in a container that has a QHBoxLayout = container d
-        # Add container d to the overall summary page layout
-        
+        @param summary_text: Summary of the article.
+        """
+        self.summary_label.setText(summary_text)
+
+    def _create_top_container(self) -> QWidget:
         top_layout = QGridLayout()
         top_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
         back_button = QPushButton("Back")
         back_button.clicked.connect(lambda: self.back_button_clicked.emit())
         font = back_button.font()
@@ -60,6 +68,7 @@ class Summary(QMainWindow):
         font.setFamily("Sitka")
         back_button.setFont(font)
         back_button.setFixedSize(50, 50)
+
         title = QLabel(self.title)
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         font = title.font()
@@ -67,26 +76,38 @@ class Summary(QMainWindow):
         font.setBold(True)
         font.setFamily("Sitka")
         title.setFont(font)
-        top_layout.addWidget(back_button, 0, 0)
-        top_layout.addWidget(title, 0, 1)
+
         placeholder = QWidget()
         placeholder.setFixedSize(back_button.size())
         placeholder.setStyleSheet("background-color: red")
+
+        top_layout.addWidget(back_button, 0, 0)
+        top_layout.addWidget(title, 0, 1)
         top_layout.addWidget(placeholder, 0, 2)
+
         top_container = QWidget()
         top_container.setStyleSheet("background-color: #c19bff")
         top_container.setLayout(top_layout)
         top_container.setFixedHeight(top_container.sizeHint().height())
 
+        return top_container
+
+    def _create_thumbnail_container(self) -> QWidget:
         thumbnail_layout = QVBoxLayout()
         thumbnail_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         thumbnail_layout.addWidget(self._get_thumbnail())
         thumbnail_layout.addWidget(self._get_details())
+
         thumbnail_container = QWidget()
         thumbnail_container.setLayout(thumbnail_layout)
 
+        return thumbnail_container
+
+    def _create_summary_container(self) -> QWidget:
         summary_layout = QVBoxLayout()
         summary_layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
+
         content_header = QLabel("Content")
         font = content_header.font()
         font.setPointSize(15)
@@ -94,6 +115,7 @@ class Summary(QMainWindow):
         content_header.setFont(font)
         content_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         content_header.setStyleSheet("background-color: #2bfbc3")
+
         content_label = QLabel(self.content)
         font = content_label.font()
         font.setPointSize(14)
@@ -104,6 +126,7 @@ class Summary(QMainWindow):
         content_label.setFixedWidth(600)
         content_label.setFixedHeight(content_label.sizeHint().height())
         content_label.setStyleSheet("background-color: #ff4a89")
+
         summary_header = QLabel("Summary")
         summary_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         font = summary_header.font()
@@ -111,16 +134,20 @@ class Summary(QMainWindow):
         font.setFamily("Sitka")
         summary_header.setFont(font)
         summary_header.setStyleSheet("background-color: #c92bfb")
-        summary_label = QLabel()
-        summary_label.setFixedSize(content_label.width(), 600)
-        summary_label.setStyleSheet("background-color: #9bcbff")
+
+        self.summary_label = QLabel()
+        self.summary_label.setWordWrap(True)
+        self.summary_label.setFixedSize(content_label.width(), 600)
+        self.summary_label.setStyleSheet("background-color: #9bcbff")
 
         summary_button = QPushButton("Summarize")
+        summary_button.clicked.connect(self.get_summary)
         font = summary_button.font()
         font.setPointSize(15)
         font.setFamily("Sitka")
         summary_button.setFont(font)
         summary_button.setFixedSize(100, 50)
+
         button_layout = QHBoxLayout()
         button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         button_layout.addWidget(summary_button)
@@ -132,22 +159,38 @@ class Summary(QMainWindow):
         summary_layout.addWidget(content_header)
         summary_layout.addWidget(content_label)
         summary_layout.addWidget(summary_header)
-        summary_layout.addWidget(summary_label)
+        summary_layout.addWidget(self.summary_label)
         summary_layout.addWidget(button_container)
+
         summary_container = QWidget()
         summary_container.setLayout(summary_layout)
 
+        return summary_container
+
+    def _create_thumbnail_summary_container(self, thumbnail_container: QWidget, summary_container: QWidget) -> QWidget:
         thumbnail_summary_layout = QHBoxLayout()
         thumbnail_summary_layout.addWidget(thumbnail_container)
         thumbnail_summary_layout.addWidget(summary_container)
+
         thumbnail_summary_container = QWidget()
         thumbnail_summary_container.setLayout(thumbnail_summary_layout)
+
+        return thumbnail_summary_container
+
+    def _create_summary_page(self) -> QWidget:
+        top_container = self._create_top_container()
+        thumbnail_container = self._create_thumbnail_container()
+        summary_container = self._create_summary_container()
+        thumbnail_summary_container = self._create_thumbnail_summary_container(thumbnail_container, summary_container)
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(top_container)
         main_layout.addWidget(thumbnail_summary_container)
 
+        main_container = QWidget()
+        main_container.setStyleSheet("background-color: pink")
         main_container.setLayout(main_layout)        
+
         return main_container
 
     def _get_thumbnail(self) -> QLabel:
@@ -176,6 +219,26 @@ class Summary(QMainWindow):
         details.setAlignment(Qt.AlignmentFlag.AlignTop)
         details.setFixedSize(details.sizeHint().width(), details.sizeHint().height())
         return details
+
+class SummaryWorker(QRunnable):
+    finished = pyqtSignal()
+
+    def __init__(self, article_url: str) -> None:
+        super().__init__()
+
+        self.article_url = article_url
+        self.signals = SummarySignals()
+
+    @pyqtSlot()
+    def run(self) -> None:
+        headers = {"Content-Type": "application/json"}
+        request = requests.post("http://localhost:8080/api/v1/news/summary", data=self.article_url, headers=headers)
+
+        summary = request.text
+        self.signals.finished.emit(summary)
+
+class SummarySignals(QObject):
+    finished = pyqtSignal(str)
 
 def main() -> None:  
     app = QApplication([])

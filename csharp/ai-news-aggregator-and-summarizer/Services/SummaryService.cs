@@ -13,7 +13,8 @@ public static class SummaryService
         Analyze this news article and summarize it. 
         Only include the summarization. 
         Do not include anything unrelated such as \"Here's a summary of the article:\". 
-        Only return the summary of the news article and nothing more
+        Only return the summary of the news article and nothing more.
+        The summary must be 1000 characters or less.
         """;
 
     // Contacts local ollama model and Initializes summaryText;
