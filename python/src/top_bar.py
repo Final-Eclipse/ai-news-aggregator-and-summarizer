@@ -27,6 +27,7 @@ from endpoints import Everything, Sources
 """
 
 class TopBar(QMainWindow):
+    endpoint_response = pyqtSignal(dict)
     settings_button_clicked = pyqtSignal()
 
     def __init__(self) -> None:
