@@ -24,13 +24,16 @@ class Settings(QMainWindow):
         self.setCentralWidget(self.container)
 
     def _fetch_local_models(self) -> list:
-        request: dict = requests.get("http://localhost:8080/api/v1/models/ollama/local-models").json()
+        try:
+            request: dict = requests.get("http://localhost:8080/api/v1/models/ollama/local-models").json()
+            local_models: list
+            for key, model in request.items():
+                local_models = model
 
-        local_models: list
-        for key, model in request.items():
-            local_models = model
-
-        return local_models
+            return local_models
+        
+        except requests.exceptions.ConnectionError:
+            return []
 
     def _create_top_container(self) -> QWidget:
         top_layout = QGridLayout()
@@ -100,7 +103,7 @@ class Settings(QMainWindow):
         models_list.addItems(self._fetch_local_models())
 
         refresh_button = QPushButton("Refresh")
-        refresh_button.clicked.connect(lambda: self.current_model_widget.setText(self._fetch_current_model()))
+        refresh_button.clicked.connect(lambda: models_list.addItems(self._fetch_local_models()))
         refresh_button.setStyleSheet("background-color: #ffd493")
         
         layout = QVBoxLayout()

@@ -6,6 +6,7 @@ from main_display import MainDisplay
 from pagination import Pagination
 from services.localhosts import Localhosts
 import asyncio
+from settings import Settings
 
 class Gui(QMainWindow):
     def __init__(self):
@@ -28,9 +29,12 @@ class Gui(QMainWindow):
 
         # Initialize GUI element objects.
         self.top_bar = TopBar() # Try making the dropdowns QListWidgets or QComboBoxes but when an option is chosen, append the chosen option to any other options there already.
+        self.top_bar.settings_button_clicked.connect(self._switch_to_settings)
+
+        self.settings = Settings()
+        self.settings.back_button_clicked.connect(self.switch_to_main_gui)
 
         self.main_display = MainDisplay()
-        self.summary_page: QWidget
         self.main_display.show_summary.connect(lambda page: self.switch_to_summary(page))
         self.main_display.remove_summary.connect(self.switch_to_main_gui)
 
@@ -52,13 +56,16 @@ class Gui(QMainWindow):
         self.setCentralWidget(self.container)
         self.setMinimumSize(750, 750)
 
+    def _switch_to_settings(self) -> None:
+        self.container.setParent(None)
+        self.setCentralWidget(self.settings.container)
+
     def switch_to_summary(self, page: QWidget) -> None:
         self.container.setParent(None)
-        self.summary_page = page
-        self.setCentralWidget(self.summary_page)
+        self.setCentralWidget(page)
 
     def switch_to_main_gui(self) -> None:
-        self.summary_page.setParent(None)
+        self.settings.container.setParent(None)
         self.setCentralWidget(self.container)
 
     def create_main_gui_layout(self) -> QVBoxLayout:

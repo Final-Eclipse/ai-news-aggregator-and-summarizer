@@ -27,6 +27,8 @@ from endpoints import Everything, Sources
 """
 
 class TopBar(QMainWindow):
+    settings_button_clicked = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -234,27 +236,37 @@ class TopBar(QMainWindow):
     def get_database_results(self) -> list:
         """Return a list of database results."""
         return self.database_results
-                
+
     def _create_endpoint_selector_container(self) -> QWidget:
         """
         Creates a container made up of the endpoint selector and search button.
         
         @return: QWidget container.
         """
-        layout = QGridLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
-
         label = QLabel("Endpoint type")
         label.setAlignment(Qt.AlignmentFlag.AlignBottom)
-        layout.addWidget(label, 0, 0)
 
-        layout.addWidget(self.endpoint_selector, 1, 0)
-        layout.addWidget(self._create_search_button(), 1, 1)
+        left_layout = QGridLayout()
+        left_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+        left_layout.addWidget(label, 0, 0)
+        left_layout.addWidget(self.endpoint_selector, 1, 0)
+        left_layout.addWidget(self._create_search_button(), 1, 1)
 
-        container = QWidget()
-        container.setLayout(layout)
+        left_container = QWidget()
+        left_container.setLayout(left_layout)
+
+        settings_button = QPushButton("Settings")
+        settings_button.setFixedSize(50, 50)
+        settings_button.clicked.connect(lambda: self.settings_button_clicked.emit())
+
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(left_container)
+        main_layout.addWidget(settings_button)
+
+        main_container = QWidget()
+        main_container.setLayout(main_layout)
         
-        return container
+        return main_container
 
 class Signals(QObject):
     # _store_database_results()
