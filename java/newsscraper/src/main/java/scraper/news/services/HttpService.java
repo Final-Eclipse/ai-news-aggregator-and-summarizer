@@ -101,8 +101,6 @@ public class HttpService
             .build();
         
         HttpResponse<String> response = client.sendAsync(request, BodyHandlers.ofString()).join();
-        
-        System.out.println("THIS IS THE RESPONSE BODY JOJPODAIDJDPADAODJO" + response.body());
 
         handleErrorCodes(response);
         return response.body();

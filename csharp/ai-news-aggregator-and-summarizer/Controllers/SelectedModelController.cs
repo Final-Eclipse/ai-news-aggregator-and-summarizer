@@ -26,7 +26,6 @@ public class SelectedModelController : ControllerBase
     [HttpPost]
     public string PostSelectedModel([FromBody] string newModel)
     {
-        System.Console.WriteLine(newModel);
         // int offset = 3;
         // int start = newModel.IndexOf(": ") + offset;
         // int end = newModel.IndexOf("\"}");
