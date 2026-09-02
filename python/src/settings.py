@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPixmap
 import requests
 from pathlib import Path
 from news_card import NewsCard
+from enum import Enum
 
 class Settings(QMainWindow):
     back_button_clicked = pyqtSignal()
@@ -24,16 +25,10 @@ class Settings(QMainWindow):
         self.setCentralWidget(self.container)
 
     def _fetch_local_models(self) -> list:
-        try:
-            request: dict = requests.get("http://localhost:8080/api/v1/models/ollama/local-models").json()
-            local_models: list
-            for key, model in request.items():
-                local_models = model
-
-            return local_models
-        
-        except requests.exceptions.ConnectionError:
-            return []
+        threadpool = QThreadPool().globalInstance()
+        worker = HttpWorker(EndpointTypes.GET_LOCAL_MODELS.value)
+        worker.signals.local_models.connect(lambda local_models: self.models_list.addItems(local_models))
+        threadpool.start(worker)
 
     def _create_top_container(self) -> QWidget:
         top_layout = QGridLayout()
@@ -91,25 +86,30 @@ class Settings(QMainWindow):
 
         return container
 
+    def _post_new_model(self, new_model: str) -> None:
+        threadpool = QThreadPool().globalInstance()
+        worker = HttpWorker(EndpointTypes.POST_NEW_MODEL.value, new_model=new_model)
+        worker.signals.new_model.connect(lambda: self._update_current_model_widget(new_model))
+        threadpool.start(worker)
+
     def _create_local_models_widget(self) -> QWidget:
         header = QLabel("Ollama Models")
         header.setFixedSize(header.sizeHint())
         header.setAlignment(Qt.AlignmentFlag.AlignBottom)
         
-        models_list = QListWidget()
-        models_list.clicked.connect(lambda: requests.post("http://localhost:8080/api/v1/models/ollama/change", data=models_list.currentItem().text()))
-        models_list.clicked.connect(lambda: self._update_current_model_widget(models_list.currentItem().text()))
-        models_list.setFixedSize(models_list.sizeHint())
-        models_list.addItems(self._fetch_local_models())
+        self.models_list = QListWidget()
+        self.models_list.clicked.connect(lambda: self._post_new_model(self.models_list.currentItem().text()))
+        self.models_list.setFixedSize(self.models_list.sizeHint())
+        self._fetch_local_models()
 
         refresh_button = QPushButton("Refresh")
-        refresh_button.clicked.connect(lambda: models_list.addItems(self._fetch_local_models()))
+        refresh_button.clicked.connect(self._fetch_local_models)
         refresh_button.setStyleSheet("background-color: #ffd493")
         
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(header)
-        layout.addWidget(models_list)
+        layout.addWidget(self.models_list)
         layout.addWidget(refresh_button)
 
         container = QWidget()
@@ -121,21 +121,19 @@ class Settings(QMainWindow):
     def _update_current_model_widget(self, new_model) -> None:
         self.current_model_widget.setText(new_model)
 
-    def _fetch_current_model(self) -> str:
-        request = requests.get("http://localhost:8080/api/v1/models/ollama/current").text
-        return request
-
     def _create_current_model_widget(self) -> QWidget:
         header = QLabel("Current Model")
         header.setFixedSize(200, 20)
         header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header.setStyleSheet("background-color: #c1ffbe")
 
-        current_model = self._fetch_current_model()
-        if current_model == "":
-            current_model = "None"
+        # Fetch current model.
+        threadpool = QThreadPool().globalInstance()
+        worker = HttpWorker(EndpointTypes.GET_CURRENT_MODEL.value)
+        worker.signals.current_model.connect(lambda current_model: self.current_model_widget.setText(current_model))
+        threadpool.start(worker)
 
-        self.current_model_widget = QLabel(current_model)
+        self.current_model_widget = QLabel()
         self.current_model_widget.setFixedSize(200, 20)
         self.current_model_widget.setStyleSheet("background-color: #ff5b81")
 
@@ -178,6 +176,56 @@ class Settings(QMainWindow):
         main_container.setLayout(main_layout)        
 
         return main_container
+
+class EndpointTypes(Enum):
+    GET_CURRENT_MODEL = "current"
+    GET_LOCAL_MODELS = "local"
+    POST_NEW_MODEL = "change"
+
+class HttpWorker(QRunnable):
+    def __init__(self, endpoint_type: str, new_model: None|str=None):
+        super().__init__()
+
+        self.endpoint_type = endpoint_type
+        self.new_model = new_model
+        self.signals = HttpSignals()
+
+    @pyqtSlot()
+    def run(self):
+        try:
+            if self.endpoint_type == EndpointTypes.GET_LOCAL_MODELS.value:
+                request = requests.get("http://localhost:8080/api/v1/models/ollama/local-models").json()
+                local_models: list
+                for key, model in request.items():
+                    local_models = model
+
+                self.signals.local_models.emit(local_models)
+
+            elif self.endpoint_type == EndpointTypes.GET_CURRENT_MODEL.value:
+                request = requests.get("http://localhost:8080/api/v1/models/ollama/current").text
+                if request == "":
+                    request = "None"
+
+                self.signals.current_model.emit(request)
+
+            elif self.endpoint_type == EndpointTypes.POST_NEW_MODEL.value:
+                request = requests.post("http://localhost:8080/api/v1/models/ollama/change", data=self.new_model).text
+                self.signals.new_model.emit(request)
+
+        except requests.exceptions.ConnectionError as e:
+            if self.endpoint_type == EndpointTypes.GET_LOCAL_MODELS.value:
+                self.signals.local_models.emit([])
+
+            elif self.endpoint_type == EndpointTypes.GET_CURRENT_MODEL.value:
+                self.signals.current_model.emit("None")
+
+            elif self.endpoint_type == EndpointTypes.POST_NEW_MODEL.value:
+                self.signals.new_model.emit([])
+        
+class HttpSignals(QObject):
+    local_models = pyqtSignal(list)
+    current_model = pyqtSignal(str)
+    new_model = pyqtSignal(str)
 
 def main() -> None:  
     app = QApplication([])
