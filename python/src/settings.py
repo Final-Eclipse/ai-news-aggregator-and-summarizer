@@ -244,10 +244,12 @@ class PasswordEdit(QWidget):
         super().__init__()
 
         self.field = QLineEdit()
+        self.field.setEchoMode(QLineEdit.EchoMode.Password)
+
         self.reveal = QPushButton("Show")
         self.reveal.setFixedWidth(50)
         self.reveal.clicked.connect(lambda: self.reveal.setText("Hide") if self.reveal.text() == "Show" else self.reveal.setText("Show"))
-        self.reveal.clicked.connect(lambda: self.field.setEchoMode(QLineEdit.EchoMode.Normal) if self.reveal.text() == "Show" else self.field.setEchoMode(QLineEdit.EchoMode.Password))
+        self.reveal.clicked.connect(lambda: self.field.setEchoMode(QLineEdit.EchoMode.Password) if self.reveal.text() == "Show" else self.field.setEchoMode(QLineEdit.EchoMode.Normal))
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
