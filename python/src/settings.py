@@ -82,19 +82,19 @@ class Settings(QMainWindow):
             pass
         
     def _create_api_key_widget(self) -> QWidget:
-        api_key_label = QLabel("News API Key")
-        api_key_label.setStyleSheet("background-color: #fb9b2b")
-        api_key_label.setFixedSize(200, 20)
-        api_key_label.setAlignment(Qt.AlignmentFlag.AlignBottom)
+        header = QLabel("News API Key")
+        header.setStyleSheet("background-color: #fb9b2b")
+        header.setFixedHeight(20)
+        header.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
-        self.api_key_label = QLineEdit()
-        self.api_key_label.textChanged.connect(lambda api_key: self._update_env(api_key))
-        self.api_key_label.setPlaceholderText("Enter your News API key")
-        self.api_key_label.setFixedSize(200, 20)
+        self.api_key_label = PasswordEdit()
+        self.api_key_label.field.textChanged.connect(lambda api_key: self._update_env(api_key))
+        self.api_key_label.field.setPlaceholderText("Enter your News API key")
+        self.api_key_label.setFixedWidth(300)        
 
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignRight)
-        layout.addWidget(api_key_label)
+        layout.addWidget(header)
         layout.addWidget(self.api_key_label)
 
         container = QWidget()
@@ -238,6 +238,24 @@ class HttpWorker(QRunnable):
 
             elif self.endpoint_type == EndpointTypes.POST_NEW_MODEL.value:
                 self.signals.new_model.emit([])
+
+class PasswordEdit(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.field = QLineEdit()
+        self.reveal = QPushButton("Show")
+        self.reveal.setFixedWidth(50)
+        self.reveal.clicked.connect(lambda: self.reveal.setText("Hide") if self.reveal.text() == "Show" else self.reveal.setText("Show"))
+        self.reveal.clicked.connect(lambda: self.field.setEchoMode(QLineEdit.EchoMode.Normal) if self.reveal.text() == "Show" else self.field.setEchoMode(QLineEdit.EchoMode.Password))
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.field)
+        layout.addWidget(self.reveal)
+
+        self.setLayout(layout)
+        self.setStyleSheet("background-color: pink")
         
 class HttpSignals(QObject):
     local_models = pyqtSignal(list)

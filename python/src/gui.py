@@ -15,6 +15,13 @@ class Gui(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # Use .env file to save api key.
+        # When user types api key, replace it in the .env file.
+        # When the app runs, read the .env file, if there is an api key, display it as dots in the settings page.
+        # When the user hovers over the api key or clicks an eye icon, reveal the api key.
+        # https://search.brave.com/search?q=what+is+a+.env+file&conversation=0982ab20246ee8933f695b0cdb71148d6c18
+        # https://search.brave.com/search?q=how+to+save+api+key+that+user+types+in+local+host&conversation=0982c3b9c9638409533ee17707b344ba0b52
+
         # Implement way to get api key.
         # Implement way to get local Ollama models.
         # Implement button to refresh models.
@@ -43,7 +50,7 @@ class Gui(QMainWindow):
             self._create_env()
         load_dotenv(path)
         api_key = os.getenv("NEWS_API_KEY")
-        self.settings.api_key_label.setText(api_key)
+        self.settings.api_key_label.field.setText(api_key)
 
         self.main_display = MainDisplay()
         self.main_display.show_summary.connect(lambda page: self.switch_to_summary(page))
