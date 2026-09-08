@@ -7,6 +7,9 @@ from pagination import Pagination
 from services.localhosts import Localhosts
 import asyncio
 from settings import Settings
+from dotenv import load_dotenv, set_key, find_dotenv
+import os
+from pathlib import Path
 
 class Gui(QMainWindow):
     def __init__(self):
@@ -34,6 +37,14 @@ class Gui(QMainWindow):
         self.settings = Settings()
         self.settings.back_button_clicked.connect(self.switch_to_main_gui)
 
+        # Initialize api key label text and create .env file if not exists.
+        path = find_dotenv()
+        if path == "":
+            self._create_env()
+        load_dotenv(path)
+        api_key = os.getenv("NEWS_API_KEY")
+        self.settings.api_key_label.setText(api_key)
+
         self.main_display = MainDisplay()
         self.main_display.show_summary.connect(lambda page: self.switch_to_summary(page))
         self.main_display.remove_summary.connect(self.switch_to_main_gui)
@@ -60,6 +71,10 @@ class Gui(QMainWindow):
 
         self.setCentralWidget(self.container)
         self.setMinimumSize(750, 750)
+
+    def _create_env(self) -> None:
+        with open(f"{Path.cwd()}/src/.env", "w+") as file:
+            file.write("NEWS_API_KEY=''")
 
     def _switch_to_settings(self) -> None:
         self.container.setParent(None)

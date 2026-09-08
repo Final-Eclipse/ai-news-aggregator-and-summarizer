@@ -5,6 +5,7 @@ import requests
 from pathlib import Path
 from news_card import NewsCard
 from enum import Enum
+from dotenv import load_dotenv, set_key, find_dotenv
 
 class Settings(QMainWindow):
     back_button_clicked = pyqtSignal()
@@ -65,20 +66,36 @@ class Settings(QMainWindow):
 
         return top_container
 
+    def _update_env(self, api_key: str) -> None:
+        """Update .env file with new API key."""
+        # with open(f"{Path.cwd()}/src/.env", "w+") as file:
+            # file.write(f"NEWS_API_KEY='{api_key}'")
+
+        try:
+        # This causes race condition if multiple characters are typed in the api key label at once.
+        # The first character does not finish before the second character starts trying to access the file.
+        # This means that the file becomes blocked for the second character and produces and error.       
+            path = find_dotenv()
+            load_dotenv(path) 
+            set_key(path, "NEWS_API_KEY", api_key)   
+        except PermissionError:
+            pass
+        
     def _create_api_key_widget(self) -> QWidget:
         api_key_label = QLabel("News API Key")
         api_key_label.setStyleSheet("background-color: #fb9b2b")
         api_key_label.setFixedSize(200, 20)
         api_key_label.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
-        api_key_button = QLineEdit()
-        api_key_button.setPlaceholderText("Enter your News API key")
-        api_key_button.setFixedSize(200, 20)
+        self.api_key_label = QLineEdit()
+        self.api_key_label.textChanged.connect(lambda api_key: self._update_env(api_key))
+        self.api_key_label.setPlaceholderText("Enter your News API key")
+        self.api_key_label.setFixedSize(200, 20)
 
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignRight)
         layout.addWidget(api_key_label)
-        layout.addWidget(api_key_button)
+        layout.addWidget(self.api_key_label)
 
         container = QWidget()
         container.setLayout(layout)
