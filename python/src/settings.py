@@ -13,6 +13,9 @@ class Settings(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
+        # Automatically hide password after a certain amount of time.
+        # Automatically hide password when leaving settings screen, which may be handled by the case above.
+
         # Create settings object when gui.py init is called.
         # When settings page is opened, get current model and get local models every time.
         # Can be done using a signal.
