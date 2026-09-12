@@ -91,6 +91,7 @@ class Settings(QMainWindow):
         header.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
         self.api_key_label = PasswordEdit()
+        self.back_button_clicked.connect(lambda: self.api_key_label.hide())
         self.api_key_label.field.textChanged.connect(lambda api_key: self._update_env(api_key))
         self.api_key_label.field.setPlaceholderText("Enter your News API key")
         self.api_key_label.setFixedWidth(300)        
@@ -251,8 +252,9 @@ class PasswordEdit(QWidget):
 
         self.reveal = QPushButton("Show")
         self.reveal.setFixedWidth(50)
-        self.reveal.clicked.connect(lambda: self.reveal.setText("Hide") if self.reveal.text() == "Show" else self.reveal.setText("Show"))
-        self.reveal.clicked.connect(lambda: self.field.setEchoMode(QLineEdit.EchoMode.Password) if self.reveal.text() == "Show" else self.field.setEchoMode(QLineEdit.EchoMode.Normal))
+        self.reveal.clicked.connect(lambda: self.show() if self.reveal.text() == "Show" else self.hide())
+        # self.reveal.clicked.connect(lambda: self.reveal.setText("Hide") if self.reveal.text() == "Show" else self.reveal.setText("Show"))
+        # self.reveal.clicked.connect(lambda: self.field.setEchoMode(QLineEdit.EchoMode.Password) if self.reveal.text() == "Show" else self.field.setEchoMode(QLineEdit.EchoMode.Normal))
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -261,6 +263,14 @@ class PasswordEdit(QWidget):
 
         self.setLayout(layout)
         self.setStyleSheet("background-color: pink")
+
+    def hide(self) -> None:
+        self.field.setEchoMode(QLineEdit.EchoMode.Password)
+        self.reveal.setText("Show")
+
+    def show(self) -> None:
+        self.field.setEchoMode(QLineEdit.EchoMode.Normal)
+        self.reveal.setText("Hide")
         
 class HttpSignals(QObject):
     local_models = pyqtSignal(list)
