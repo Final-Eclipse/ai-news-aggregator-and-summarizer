@@ -15,9 +15,6 @@ class Gui(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Replace all "N/A" fields with empty strings "" for consistency.
-        # Some News API results can have empty strings like urlToImage.
-
         # Use .env file to save api key.
         # When user types api key, replace it in the .env file.
         # When the app runs, read the .env file, if there is an api key, display it as dots in the settings page.

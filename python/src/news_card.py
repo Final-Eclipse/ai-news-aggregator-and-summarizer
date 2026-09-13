@@ -108,7 +108,7 @@ class NewsCard(QWidget):
         placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
         pixmap = QPixmap()
 
-        if byte_data == "N/A" or byte_data == "":
+        if byte_data == "":
             pixmap.load(placeholder_thumbnail_path)
         elif pixmap.loadFromData(byte_data) == False:
             pixmap.load(placeholder_thumbnail_path)
@@ -165,15 +165,15 @@ class ThumbnailWorker(QRunnable):
         
         Long requests timeout after a given amount of time.
         """
-        if self.url == "N/A" or self.url == "":
-            self.url = "N/A"
+        if self.url == "":
             self.signal.non_bytes_finished.emit(self.url)
         else:
             try:
                 byte_data = requests.get(self.url, timeout=1).content
                 self.signal.bytes_finished.emit(byte_data)
             except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as e:
-                self.signal.non_bytes_finished.emit("N/A")
+                self.signal.non_bytes_finished.emit("")
+                # self.signal.non_bytes_finished.emit("N/A")
 
 class ThumbnailSignals(QObject):
     bytes_finished = pyqtSignal(bytes)
