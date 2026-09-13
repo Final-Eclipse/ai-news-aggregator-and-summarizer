@@ -24,6 +24,8 @@ class NewsCard(QWidget):
         self.publishedAt: str = article["publishedAt"]
         self.content: str = article["content"]
 
+        # print(2, self.url)
+
         # self.id: str = article[0]        
         # self.name: str = article[1]        
         # self.author: str = article[2]        
@@ -106,7 +108,7 @@ class NewsCard(QWidget):
         placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
         pixmap = QPixmap()
 
-        if byte_data == "N/A":
+        if byte_data == "N/A" or byte_data == "":
             pixmap.load(placeholder_thumbnail_path)
         elif pixmap.loadFromData(byte_data) == False:
             pixmap.load(placeholder_thumbnail_path)
@@ -163,7 +165,8 @@ class ThumbnailWorker(QRunnable):
         
         Long requests timeout after a given amount of time.
         """
-        if self.url == "N/A":
+        if self.url == "N/A" or self.url == "":
+            self.url = "N/A"
             self.signal.non_bytes_finished.emit(self.url)
         else:
             try:

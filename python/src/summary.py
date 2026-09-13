@@ -197,7 +197,7 @@ class Summary(QMainWindow):
         # Load pixmap.
         placeholder_thumbnail_path = f"{Path.cwd()}/src/images/placeholder_thumbnail.png"
         pixmap = QPixmap()
-        if self.urlToImage == "N/A":
+        if self.urlToImage == "N/A" or self.urlToImage == "":
             pixmap.load(placeholder_thumbnail_path)
         else: 
             data = requests.get(self.urlToImage).content
