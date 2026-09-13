@@ -121,82 +121,9 @@ public class EndpointController
         return ResponseEntity.ok(HttpService.changeOllamaModel(newModel));
     }
 
-    
-
-    // @PostMapping("/api/v1/news/summary")
-    // public ResponseEntity<String> summarization(@RequestBody ArticleTextDto articleText)
-    // {     
-    //     String text = articleText.getArticleText();
-    //     String summary = HttpService.getSummarization(text);
-    //     return ResponseEntity.ok(summary);
-    // }
-
-    // private ApiResponse getEndpointResponse(EndpointDto endpointData)
-    // {
-
-    //     switch (endpointData.getEndpoint())
-    //     {
-    //         case "everything":
-    //             return HttpService.getEverythingResponse(apiEndpointUrl);
-    //         case "top-headlines":
-    //             return HttpService.getTopHeadlinesResponse(apiEndpointUrl);
-    //         case "top-headlines/sources":
-    //             return HttpService.getSourcesResponse(apiEndpointUrl);
-    //         default:
-    //             throw new RuntimeException("Invalid endpoint type.");
-    //     }
-    //     // String responseString = HttpService.getNewsApiResponse(apiEndpointUrl);
-    //     // return responseString;
-    // }
-
-    // // Most likely remove these GET methods and replace with methods that take a url.
-    // @GetMapping("/api/v1/news/everything")
-    // public String everything()
-    // {
-    //     EverythingEndpointService x = new EverythingEndpointService.Builder()
-    //         // Use URL encoding to add "%20" between spaces (ex. department of justice -> department%20of%20justice).
-    //         // Wrap q in double quotes for exact phrase.
-    //         // Can also use URL encoding to add double quotes (ex. united states -> %22united%20states%22).
-    //         .q("trump")    // Add another boolean parameter, exactPhrase. Or detect if the user types double quotes and convert that if needed (ex. "\"south korea\"")
-    //         .searchIn("title")
-    //         .sources("associated-press")
-    //         .domains("apnews.com, nbcnews.com")
-    //         .excludeDomains("foxnews.com")
-    //         .from("2026-06-10")
-    //         .to("2026-06-12")
-    //         .language("en")
-    //         .sortBy(null)
-    //         .pageSize("10")
-    //         .page("1")
-    //         .build();
-
-    //     return HttpService.getResponse(x.getApiEndpointUrl());
-    // }
-
-    // @GetMapping("/api/v1/news/top-headlines")
-    // public String topHeadlines()
-    // {
-    //     TopHeadlinesEndpointService y = new TopHeadlinesEndpointService.Builder()
-    //         .country("US")
-    //         .category("general")
-    //         // .sources("associated-press") // Can't mix the sources parameter with the country or category parameters.
-    //         .q("trump")
-    //         .pageSize("10")
-    //         .page("1")
-    //         .build();
-
-    //     return HttpService.getResponse(y.getApiEndpointUrl());
-    // }
-
-    // @GetMapping("/api/v1/news/top-headlines/sources")
-    // public String sources()
-    // {
-    //     SourcesEndpointService z = new SourcesEndpointService.Builder()
-    //         .category("sports")
-    //         .language("en")
-    //         .country("us")
-    //         .build();
-
-    //     return HttpService.getResponse(z.getApiEndpointUrl());
-    // }
+    @PostMapping ("/api/v1/set-api-key")
+    public ResponseEntity<String> changeApiKey(@RequestBody String apiKey)
+    {
+        return ResponseEntity.ok(HttpService.setApiKey(apiKey));
+    }
 }

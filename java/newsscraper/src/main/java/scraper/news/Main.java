@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import scraper.news.services.HttpService;
+
 @SpringBootApplication
 public class Main 
 {
@@ -16,5 +18,6 @@ public class Main
         // To run from terminal, use "mvn spring-boot:run" in the newsscraper directory.
         // Spring Boot
         SpringApplication.run(Main.class, args);    // Implement Swagger API docs?
+        HttpService.setApiKey(HttpService.getApiKey());
     }
 }

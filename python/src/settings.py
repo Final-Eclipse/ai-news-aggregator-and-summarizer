@@ -92,6 +92,10 @@ class Settings(QMainWindow):
 
         self.api_key_label = PasswordEdit()
         self.back_button_clicked.connect(lambda: self.api_key_label.hide())
+
+        # When the back button in settings is clicked, send the new api key to Spring Boot.
+        self.back_button_clicked.connect(lambda: requests.post("http://localhost:8080/api/v1/set-api-key", data=self.api_key_label.field.text()))
+
         self.api_key_label.field.textChanged.connect(lambda api_key: self._update_env(api_key))
         self.api_key_label.field.setPlaceholderText("Enter your News API key")
         self.api_key_label.setFixedWidth(300)        

@@ -4,6 +4,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
 import java.net.URI;
 
 import tools.jackson.databind.ObjectMapper;
@@ -13,11 +16,47 @@ import scraper.news.models.data_transfer_objects.OllamaModelsDto;
 import scraper.news.models.data_transfer_objects.SourcesDto;
 import scraper.news.models.data_transfer_objects.TopHeadlinesDto;
 
+import java.io.File;
+import java.util.Scanner;
+
 public class HttpService 
 {
     private final static HttpClient client = HttpClient.newHttpClient();
-    private final static String apiKey = System.getenv("NEWSAPI_API_KEY");
+    private static String apiKey;
     private final static ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Sets the API key to the parameter's value.
+     * 
+     * @param newApiKey
+     * @return
+     */
+    public static String setApiKey(String newApiKey)
+    {
+        apiKey = newApiKey;
+        return "Successfully changed API key.";
+    }
+
+    /**
+     * Gets the API key from the .env file.
+     * 
+     * @return API key.
+     * @throws IOException
+     */
+    public static String getApiKey() throws IOException
+    {
+        Path filePath = Paths.get(Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/python/src/.env");
+        File file = new File(filePath.toString());
+        String apiKey;
+
+        try (Scanner scanner = new Scanner(file))
+        {
+            apiKey = scanner.nextLine();
+            apiKey = apiKey.substring(apiKey.indexOf("=") + 2, apiKey.length() - 1);
+        }
+
+        return apiKey;
+    }
 
     /**
      * Makes an HTTP GET request to NewsAPI and returns the result as a String.
