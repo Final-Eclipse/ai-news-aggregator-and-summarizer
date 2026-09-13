@@ -173,7 +173,6 @@ class ThumbnailWorker(QRunnable):
                 self.signal.bytes_finished.emit(byte_data)
             except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as e:
                 self.signal.non_bytes_finished.emit("")
-                # self.signal.non_bytes_finished.emit("N/A")
 
 class ThumbnailSignals(QObject):
     bytes_finished = pyqtSignal(bytes)
