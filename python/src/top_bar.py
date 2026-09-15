@@ -146,7 +146,7 @@ class TopBar(QMainWindow):
         @return: QWidget container for the top bar.
         """
         layout = QVBoxLayout()
-        layout.setSpacing(0)
+        # layout.setSpacing(0)
 
         layout.addWidget(self._create_endpoint_selector_container())
         
@@ -159,6 +159,7 @@ class TopBar(QMainWindow):
         # self.container.setStyleSheet(f"background-color: #eeeeee")
         # self.container.setStyleSheet(f"background-color: #D0D0D0")
         self.container.setLayout(layout)
+        
         # fixed_height = int(self.screen().size().height() * 0.12)
         fixed_height = int(self.container.sizeHint().height() * 1.65)   # Works differently on different devices. 
         self.container.setFixedHeight(fixed_height)
@@ -175,6 +176,7 @@ class TopBar(QMainWindow):
         @return: QWidget placeholder.
         """
         self.placeholder = QWidget()
+        self.placeholder.setStyleSheet("background-color: #cecece; border-radius: 20px")
         return self.placeholder
     
     def _create_endpoint_selector(self) -> QComboBox:
@@ -183,21 +185,26 @@ class TopBar(QMainWindow):
 
         @return: QComboBox of endpoints.
         """
-        endpoint_selector = QComboBox()        
+        endpoint_selector = QComboBox()
+        endpoint_selector.setStyleSheet("border: 2px solid black; border-radius: 10px")
         endpoint_selector.addItems(["Select an endpoint type", "Everything", "Sources"])
-
-        max_width = endpoint_selector.sizeHint().width()
-        endpoint_selector.setMaximumWidth(max_width)
+    
+        # max_width = endpoint_selector.sizeHint().width()
+        # print(endpoint_selector.sizeHint())
+        endpoint_selector.setFixedSize(150, 30)
 
         return endpoint_selector
 
     def _create_search_button(self) -> QPushButton:
         """
-        Creates a search button.
+        Create search button.
         
         @return: QPushButton.
         """
         search_button = QPushButton("Search")
+        print(search_button.sizeHint())
+        search_button.setFixedSize(75, 30)
+        search_button.setStyleSheet("border: 2px solid black; border-radius: 10px")
         search_button.clicked.connect(self._post_endpoint_data)
 
         max_width = search_button.sizeHint().width()
@@ -249,7 +256,8 @@ class TopBar(QMainWindow):
         label.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
         left_layout = QGridLayout()
-        left_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+        left_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        # left_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
         left_layout.addWidget(label, 0, 0)
         left_layout.addWidget(self.endpoint_selector, 1, 0)
         left_layout.addWidget(self._create_search_button(), 1, 1)
@@ -259,6 +267,7 @@ class TopBar(QMainWindow):
 
         settings_button = QPushButton("Settings")
         settings_button.setFixedSize(50, 50)
+        settings_button.setStyleSheet("border: 2px solid black; border-radius: 10px")
         settings_button.clicked.connect(lambda: self.settings_button_clicked.emit())
 
         main_layout = QHBoxLayout()
@@ -266,6 +275,7 @@ class TopBar(QMainWindow):
         main_layout.addWidget(settings_button)
 
         main_container = QWidget()
+        main_container.setStyleSheet("background-color: #e1e1e1; border-radius: 20px")
         main_container.setLayout(main_layout)
         
         return main_container

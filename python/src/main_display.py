@@ -33,6 +33,7 @@ class MainDisplay(QMainWindow):
         self.page_division_finished.connect(lambda pages: self._add_pages_to_container(pages))
 
         self.container = QStackedWidget()
+        # self.container.setContentsMargins(0, 0, 0, 0)
         self.desc_containers: list[QWidget]
 
         self.landing_page: QLabel
@@ -58,7 +59,7 @@ class MainDisplay(QMainWindow):
         self.landing_page = QLabel("Use the inputs above to search for news articles.")
         self.landing_page.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container.addWidget(self.landing_page)
-        self.container.setStyleSheet("background-color: pink;")
+        self.container.setStyleSheet("background-color: #b3b3b3; border-radius: 20px")
 
     def _remove_landing_page(self) -> None:
         """Remove the landing page of the container."""

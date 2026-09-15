@@ -36,24 +36,31 @@ class Everything(Endpoint):
         parameters = self.parameters
 
         q: QLineEdit = parameters["q"]
+        q.setStyleSheet("border: 2px solid black; border-radius: 10px")
         q.setPlaceholderText("Type query")
 
         searchIn: QComboBox = parameters["searchIn"]
+        searchIn.setStyleSheet("border: 2px solid black; border-radius: 10px")
         searchIn.addItems(["Select search type(s)", "Title", "Description", "Content"])
 
         sources: QComboBox = parameters["sources"]
+        sources.setStyleSheet("border: 2px solid black; border-radius: 10px")
         sources.addItems(Sources.qcombobox_options)
 
         domains: QComboBox = parameters["domains"]
+        domains.setStyleSheet("border: 2px solid black; border-radius: 10px")
         domains.addItems(Domains.qcombobox_options)
 
         excludeDomains: QComboBox = parameters["excludeDomains"]
+        excludeDomains.setStyleSheet("border: 2px solid black; border-radius: 10px")
         excludeDomains.addItems(Domains.qcombobox_options)
 
         from_: QLineEdit = parameters["from"]
+        from_.setStyleSheet("border: 2px solid black; border-radius: 10px")
         from_.setPlaceholderText("Type start date")
 
         to: QLineEdit = parameters["to"]
+        to.setStyleSheet("border: 2px solid black; border-radius: 10px")
         to.setPlaceholderText("Type end date")
 
         # language: QComboBox = parameters["language"]

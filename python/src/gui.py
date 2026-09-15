@@ -73,6 +73,8 @@ class Gui(QMainWindow):
 
         self.main_gui = self.get_main_gui(self.create_main_gui_layout())
         self.container = QStackedWidget()
+        self.container.setContentsMargins(0, 0, 0, 0)
+        self.container.setStyleSheet("background-color: #eeeeee")
         self.container.addWidget(self.main_gui)
         self.container.setCurrentIndex(0)
 
@@ -98,7 +100,7 @@ class Gui(QMainWindow):
     def create_main_gui_layout(self) -> QVBoxLayout:
         layout = QVBoxLayout()
         # layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        # layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(30, 15, 30, 5)
         layout.setSpacing(0)
 
         # Add top bar

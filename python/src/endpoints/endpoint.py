@@ -64,7 +64,7 @@ class Endpoint():
 
     def _create_layout(self) -> QGridLayout: 
         layout = QGridLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        # layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         layout.setHorizontalSpacing(10)
         
         row = 0
@@ -82,6 +82,7 @@ class Endpoint():
 
     def _create_container(self, layout) -> QWidget:
         container = QWidget()
+        container.setStyleSheet("background-color: #cecece; border-radius: 20px")
         container.setLayout(layout)
         return container
     
