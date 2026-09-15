@@ -240,6 +240,7 @@ class MainDisplay(QMainWindow):
         @return: QWidget page.
         """
         layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         for news_card in page:
             news_card: NewsCard
             layout.addWidget(news_card)
