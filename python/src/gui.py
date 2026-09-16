@@ -101,7 +101,7 @@ class Gui(QMainWindow):
         layout = QVBoxLayout()
         # layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         layout.setContentsMargins(30, 15, 30, 5)
-        layout.setSpacing(0)
+        # layout.setSpacing(0)
 
         # Add top bar
         top_bar_container: QWidget = self.top_bar.get_container()

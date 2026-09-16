@@ -147,6 +147,7 @@ class TopBar(QMainWindow):
         """
         layout = QVBoxLayout()
         # layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self._create_endpoint_selector_container())
         
@@ -163,6 +164,9 @@ class TopBar(QMainWindow):
         # fixed_height = int(self.screen().size().height() * 0.12)
         fixed_height = int(self.container.sizeHint().height() * 1.65)   # Works differently on different devices. 
         self.container.setFixedHeight(fixed_height)
+        
+        # self.container.setStyleSheet("background-color: blue")
+        # self.container.setContentsMargins(0, 0, 0, 0)
         
         return self.container
     
@@ -277,6 +281,8 @@ class TopBar(QMainWindow):
         main_container = QWidget()
         main_container.setStyleSheet("background-color: #e1e1e1; border-radius: 20px")
         main_container.setLayout(main_layout)
+
+        left_layout.setContentsMargins(0, left_layout.contentsMargins().left(), left_layout.contentsMargins().right(), left_layout.contentsMargins().bottom())
         
         return main_container
 

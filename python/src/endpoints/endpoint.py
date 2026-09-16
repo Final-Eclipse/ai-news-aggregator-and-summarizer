@@ -64,7 +64,7 @@ class Endpoint():
 
     def _create_layout(self) -> QGridLayout: 
         layout = QGridLayout()
-        # layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         layout.setHorizontalSpacing(10)
         
         row = 0
