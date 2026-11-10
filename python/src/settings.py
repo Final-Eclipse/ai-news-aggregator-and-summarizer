@@ -56,14 +56,14 @@ class Settings(QMainWindow):
 
         placeholder = QWidget()
         placeholder.setFixedSize(back_button.size())
-        placeholder.setStyleSheet("background-color: red")
+        # placeholder.setStyleSheet("background-color: red")
 
         top_layout.addWidget(back_button, 0, 0)
         top_layout.addWidget(title, 0, 1)
         top_layout.addWidget(placeholder, 0, 2)
 
         top_container = QWidget()
-        top_container.setStyleSheet("background-color: #c19bff")
+        top_container.setStyleSheet("background-color: #006989")
         top_container.setLayout(top_layout)
         top_container.setFixedHeight(top_container.sizeHint().height())
 
@@ -86,7 +86,7 @@ class Settings(QMainWindow):
         
     def _create_api_key_widget(self) -> QWidget:
         header = QLabel("News API Key")
-        header.setStyleSheet("background-color: #fb9b2b")
+        header.setStyleSheet("background-color: #0A86A9")
         header.setFixedHeight(20)
         header.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
@@ -107,7 +107,7 @@ class Settings(QMainWindow):
 
         container = QWidget()
         container.setLayout(layout)
-        container.setStyleSheet("background-color: #2b99fb")
+        # container.setStyleSheet("background-color: #2b99fb")
 
         return container
 
@@ -129,7 +129,7 @@ class Settings(QMainWindow):
 
         refresh_button = QPushButton("Refresh")
         refresh_button.clicked.connect(self._fetch_local_models)
-        refresh_button.setStyleSheet("background-color: #ffd493")
+        # refresh_button.setStyleSheet("background-color: #ffd493")
         
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignLeft)
@@ -139,7 +139,7 @@ class Settings(QMainWindow):
 
         container = QWidget()
         container.setLayout(layout)
-        container.setStyleSheet("background-color: #2bfb3c")
+        # container.setStyleSheet("background-color: #2bfb3c")
 
         return container
 
@@ -150,7 +150,7 @@ class Settings(QMainWindow):
         header = QLabel("Current Model")
         header.setFixedSize(200, 20)
         header.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        header.setStyleSheet("background-color: #c1ffbe")
+        # header.setStyleSheet("background-color: #c1ffbe")
 
         # Fetch current model.
         threadpool = QThreadPool().globalInstance()
@@ -160,7 +160,7 @@ class Settings(QMainWindow):
 
         self.current_model_widget = QLabel()
         self.current_model_widget.setFixedSize(200, 20)
-        self.current_model_widget.setStyleSheet("background-color: #ff5b81")
+        # self.current_model_widget.setStyleSheet("background-color: #ff5b81")
 
         layout = QVBoxLayout()
         layout.addWidget(header)
@@ -169,7 +169,7 @@ class Settings(QMainWindow):
 
         container = QWidget()
         container.setLayout(layout)
-        container.setStyleSheet("background-color: #67b7ff")
+        # container.setStyleSheet("background-color: #67b7ff")
 
         return container
 
@@ -187,7 +187,7 @@ class Settings(QMainWindow):
 
         settings_container = QWidget()
         settings_container.setFixedHeight(500)
-        settings_container.setStyleSheet("background-color: yellow")
+        # settings_container.setStyleSheet("background-color: yellow")
         settings_container.setLayout(settings_layout)
 
         main_layout = QVBoxLayout()
@@ -197,7 +197,7 @@ class Settings(QMainWindow):
         main_layout.addWidget(current_model_widget)
 
         main_container = QWidget()
-        main_container.setStyleSheet("background-color: pink")
+        main_container.setStyleSheet("background-color: #A3BAC3")
         main_container.setLayout(main_layout)        
 
         return main_container
@@ -266,7 +266,7 @@ class PasswordEdit(QWidget):
         layout.addWidget(self.reveal)
 
         self.setLayout(layout)
-        self.setStyleSheet("background-color: pink")
+        # self.setStyleSheet("background-color: pink")
 
     def hide(self) -> None:
         self.field.setEchoMode(QLineEdit.EchoMode.Password)

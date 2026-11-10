@@ -40,6 +40,9 @@ class TopBar(QMainWindow):
         self.endpoint_selector.currentIndexChanged.connect(self._update_top_bar)
 
         self.container: QWidget = self._create_layout()
+        self.container.setContentsMargins(0, 0, 0, 0)
+        # self.container.setFixedWidth(1920)
+        self.container.setStyleSheet("background-color: blue")
 
         # Initialized in self._store_database_results().
         self.database_results: list
@@ -146,7 +149,7 @@ class TopBar(QMainWindow):
         @return: QWidget container for the top bar.
         """
         layout = QVBoxLayout()
-        # layout.setSpacing(0)
+        layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self._create_endpoint_selector_container())
@@ -162,8 +165,8 @@ class TopBar(QMainWindow):
         self.container.setLayout(layout)
         
         # fixed_height = int(self.screen().size().height() * 0.12)
-        fixed_height = int(self.container.sizeHint().height() * 1.65)   # Works differently on different devices. 
-        self.container.setFixedHeight(fixed_height)
+        # fixed_height = int(self.container.sizeHint().height() * 1.65)   # Works differently on different devices. 
+        # self.container.setFixedHeight(fixed_height)
         
         # self.container.setStyleSheet("background-color: blue")
         # self.container.setContentsMargins(0, 0, 0, 0)
@@ -180,7 +183,8 @@ class TopBar(QMainWindow):
         @return: QWidget placeholder.
         """
         self.placeholder = QWidget()
-        self.placeholder.setStyleSheet("background-color: #cecece; border-radius: 20px")
+        # self.placeholder.setStyleSheet("background-color: #cecece; border-radius: 20px")
+        self.placeholder.setStyleSheet("background-color: #0a86a9")
         return self.placeholder
     
     def _create_endpoint_selector(self) -> QComboBox:
@@ -190,7 +194,7 @@ class TopBar(QMainWindow):
         @return: QComboBox of endpoints.
         """
         endpoint_selector = QComboBox()
-        endpoint_selector.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        endpoint_selector.setStyleSheet("border: 2px solid black; border-radius: 10px; color: #FFFFFF")
         endpoint_selector.addItems(["Select an endpoint type", "Everything", "Sources"])
     
         # max_width = endpoint_selector.sizeHint().width()
@@ -279,7 +283,8 @@ class TopBar(QMainWindow):
         main_layout.addWidget(settings_button)
 
         main_container = QWidget()
-        main_container.setStyleSheet("background-color: #e1e1e1; border-radius: 20px")
+        # main_container.setStyleSheet("background-color: #e0e0e0; border-radius: 20px")
+        main_container.setStyleSheet("background-color: #006989")
         main_container.setLayout(main_layout)
 
         left_layout.setContentsMargins(0, left_layout.contentsMargins().left(), left_layout.contentsMargins().right(), left_layout.contentsMargins().bottom())

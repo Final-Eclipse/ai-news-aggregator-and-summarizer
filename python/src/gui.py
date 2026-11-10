@@ -72,9 +72,11 @@ class Gui(QMainWindow):
         # self.top_bar.signals.database_results_stored.connect(lambda: self.main_display.update(reset_pages=True))
 
         self.main_gui = self.get_main_gui(self.create_main_gui_layout())
+        self.main_gui.setStyleSheet("background-color: #003e56")
         self.container = QStackedWidget()
         self.container.setContentsMargins(0, 0, 0, 0)
-        self.container.setStyleSheet("background-color: #eeeeee")
+        self.container.setStyleSheet("background-color: #f0f0f0")
+        # self.container.setStyleSheet("background-color: #eeeeee")
         self.container.addWidget(self.main_gui)
         self.container.setCurrentIndex(0)
 
@@ -100,7 +102,8 @@ class Gui(QMainWindow):
     def create_main_gui_layout(self) -> QVBoxLayout:
         layout = QVBoxLayout()
         # layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        layout.setContentsMargins(30, 15, 30, 5)
+        # layout.setContentsMargins(30, 15, 30, 5)
+        layout.setContentsMargins(0, 0, 0, 0)
         # layout.setSpacing(0)
 
         # Add top bar

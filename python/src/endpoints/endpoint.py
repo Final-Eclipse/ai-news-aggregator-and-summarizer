@@ -82,7 +82,8 @@ class Endpoint():
 
     def _create_container(self, layout) -> QWidget:
         container = QWidget()
-        container.setStyleSheet("background-color: #cecece; border-radius: 20px")
+        # container.setStyleSheet("background-color: #cecece; border-radius: 20px")
+        container.setStyleSheet("background-color: #0A86A9")
         container.setLayout(layout)
         return container
     

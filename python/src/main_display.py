@@ -33,6 +33,7 @@ class MainDisplay(QMainWindow):
         self.page_division_finished.connect(lambda pages: self._add_pages_to_container(pages))
 
         self.container = QStackedWidget()
+        self.container.setStyleSheet("background-color: #a3bac3")
         # self.container.setContentsMargins(0, 0, 0, 0)
         self.desc_containers: list[QWidget]
 
@@ -57,9 +58,16 @@ class MainDisplay(QMainWindow):
     def _init_landing_page(self) -> None:
         """Initialize the landing page of the container."""
         self.landing_page = QLabel("Use the inputs above to search for news articles.")
+        self.landing_page.setStyleSheet("color: #FFFFFF")
+        
+        font = self.landing_page.font()
+        font.setBold(True)
+        font.setPointSize(14)
+        self.landing_page.setFont(font)
+        
         self.landing_page.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.container.addWidget(self.landing_page)
-        self.container.setStyleSheet("background-color: #b3b3b3; border-radius: 20px")
+        # self.container.setStyleSheet("background-color: #b3b3b3; border-radius: 20px")
 
     def _remove_landing_page(self) -> None:
         """Remove the landing page of the container."""
@@ -153,6 +161,7 @@ class MainDisplay(QMainWindow):
         """
         for page in pages:
             page_container: QWidget = self._create_page_container(page)
+            # page_container.setStyleSheet("background-color: yellow")
             self.container.addWidget(page_container)
 
     def _are_news_cards_finished(self) -> None:
@@ -197,6 +206,7 @@ class MainDisplay(QMainWindow):
             card.finished.connect(lambda: self.finished_news_cards.append(card))
             card.finished.connect(self._are_news_cards_finished)
             card.clicked.connect(lambda card_instance: self._create_summary_page(card_instance))
+            card.clicked.connect(lambda: print(card.size()))
 
     def _get_number_of_container_children(self) -> int:
         """
@@ -243,10 +253,12 @@ class MainDisplay(QMainWindow):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         for news_card in page:
             news_card: NewsCard
+            news_card.setStyleSheet("background-color: red")
             layout.addWidget(news_card)
 
         page = QWidget()
         page.setLayout(layout)
+
         return page
 
     def _divide_news_cards_into_pages(self) -> None:

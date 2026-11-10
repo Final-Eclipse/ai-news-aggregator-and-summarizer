@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QLineEdit, QGridLayout
+from PyQt5.QtCore import Qt
 from endpoints.endpoint import Endpoint
 from endpoints.helpers import Language, Domains, Sources
 import json
@@ -36,31 +37,33 @@ class Everything(Endpoint):
         parameters = self.parameters
 
         q: QLineEdit = parameters["q"]
-        q.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        q.setStyleSheet("border: 1px solid white")
         q.setPlaceholderText("Type query")
+        q.setFixedHeight(30)
+        q.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
         searchIn: QComboBox = parameters["searchIn"]
-        searchIn.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        searchIn.setStyleSheet("border: 1px solid white")
         searchIn.addItems(["Select search type(s)", "Title", "Description", "Content"])
 
         sources: QComboBox = parameters["sources"]
-        sources.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        sources.setStyleSheet("border: 1px solid white")
         sources.addItems(Sources.qcombobox_options)
 
         domains: QComboBox = parameters["domains"]
-        domains.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        domains.setStyleSheet("border: 1px solid white")
         domains.addItems(Domains.qcombobox_options)
 
         excludeDomains: QComboBox = parameters["excludeDomains"]
-        excludeDomains.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        excludeDomains.setStyleSheet("border: 1px solid white")
         excludeDomains.addItems(Domains.qcombobox_options)
 
         from_: QLineEdit = parameters["from"]
-        from_.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        from_.setStyleSheet("border: 1px solid white")
         from_.setPlaceholderText("Type start date")
 
         to: QLineEdit = parameters["to"]
-        to.setStyleSheet("border: 2px solid black; border-radius: 10px")
+        to.setStyleSheet("border: 1px solid white")
         to.setPlaceholderText("Type end date")
 
         # language: QComboBox = parameters["language"]

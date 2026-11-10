@@ -50,6 +50,7 @@ class Pagination(QMainWindow):
 
     def _create_container(self) -> QWidget:
         container = QWidget()
+        container.setStyleSheet("background-color: #01a7c2")
         # container.setStyleSheet("background-color: #909090")
         # container.setContentsMargins(0, 0, 0, 0)
         layout = self._create_layout()

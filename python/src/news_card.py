@@ -24,17 +24,7 @@ class NewsCard(QWidget):
         self.publishedAt: str = article["publishedAt"]
         self.content: str = article["content"]
 
-        # print(2, self.url)
-
-        # self.id: str = article[0]        
-        # self.name: str = article[1]        
-        # self.author: str = article[2]        
-        # self.title: str = article[3]        
-        # self.description: str = article[4]        
-        # self.url: str = article[5]        
-        # self.urlToImage: str = article[6]        
-        # self.publishedAt: str = article[7]
-        # self.content: str = article[8]
+        self.setStyleSheet("")
 
         self.desc_container = self._create_desc_container()
 
@@ -44,6 +34,11 @@ class NewsCard(QWidget):
 
         self.thumbnail_finished.connect(self._create_layout)
         self.layout_set.connect(self.finished.emit)
+
+        # self.clicked.connect(lambda: print("news card was clicked"))
+        # self.clicked.connect(lambda: self.setStyleSheet("background-color: pink"))
+        # self.clicked.connect(lambda: print(self.size()))
+        # self.clicked.connect(lambda: print(self.styleSheet() + "\n"))
 
     def _create_label(self, text: str) -> QLabel:
         """
@@ -123,7 +118,7 @@ class NewsCard(QWidget):
         """
         thumbnail = QLabel()
         thumbnail.setScaledContents(True)
-        thumbnail.setMaximumSize(150, 150)
+        thumbnail.setMaximumSize(300, 300)
         thumbnail.setPixmap(pixmap)
 
         self.thumbnail = thumbnail
